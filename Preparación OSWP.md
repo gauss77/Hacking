@@ -70,5 +70,15 @@ caso diferente. Para aprobar el examen, debes averiguar la contraseña de los tr
 no te aprueban.
 
 La gran pregunta, ¿son cuatro horas suficientes?, mi respuesta es más que suficiente. En mi caso en una media
-hora aproximada ya había terminado el examen (lo cual me sorprendió). Recomiendo tener todos los comandos apuntados para cada caso,
-eso os permitirá ir a tiro hecho.
+hora aproximada ya había terminado el examen (lo cual me sorprendió). Recomiendo tener todos los comandos
+apuntados para cada caso, eso os permitirá ir a tiro hecho.
+
+#### ¿Cuáles son los siguientes pasos?
+
+La siguiente certificación que me estoy preparando es el **eWPT**, una certificación de Pentesting Web
+bastante valorada y orientada a Bug Bounty. Si me animo puede que mate dos pájaros de un tiro y tras tenerla
+pruebe a hacer el **AWAE** de Offensive Security, ya que estaré bien fresco de ideas una vez finalice el otro.
+
+Por si os interesa, el **eWPT** dispone de un plan (que es el que he pagado) que os permite tener un
+laboratorio de máquinas de por vida sobre los que practicar Pentesting Web, el cual os actualizan
+frecuentemente.
