@@ -5,6 +5,7 @@
 
 ## Índice y Estructura Principal
 - [Antecedentes - Experiencia Personal](#Antecedentes)
+- [Estructura de los apuntes](#estructura-de-los-apuntes)
 
 Antecedentes
 ===============================================================================================================================
@@ -73,6 +74,20 @@ La gran pregunta, ¿son cuatro horas suficientes?, mi respuesta es más que sufi
 hora aproximada ya había terminado el examen (lo cual me sorprendió). Recomiendo tener todos los comandos
 apuntados para cada caso, eso os permitirá ir a tiro hecho.
 
+#### ¿Tuve problemas a la hora de practicar con el laboratorio en local?
+
+Como dije anteriormente, esta certificación no dispone de laboratorio, lo que te obliga a montarte tu propio
+laboratorio en local para practicar.
+
+Los únicos ataques que no pude replicar fueron el **Chop Chop de Korek** y el **Fragmentation Attack**,
+empleado para redes que no disponen de clientes asociados. Este mismo problema lo he visto en más gente,
+leyendo en artículos donde detallaban el mismo inconveniente. Al parecer depende del modelo de router que
+tengas. 
+
+En la web de Offensive se cita el modelo a usar para practicar los vectores de ataque, pero como
+comprenderéis, no iba a gastar dinero por poder hacer dos ataques. Por lo demás, el resto de ataque los pude
+replicar correctamente.
+
 #### ¿Cuáles son los siguientes pasos?
 
 La siguiente certificación que me estoy preparando es el **eWPT**, una certificación de Pentesting Web
@@ -82,3 +97,6 @@ pruebe a hacer el **AWAE** de Offensive Security, ya que estaré bien fresco de 
 Por si os interesa, el **eWPT** dispone de un plan (que es el que he pagado) que os permite tener un
 laboratorio de máquinas de por vida sobre los que practicar Pentesting Web, el cual os actualizan
 frecuentemente.
+
+Estructura de los apuntes
+===============================================================================================================================
