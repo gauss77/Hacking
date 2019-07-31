@@ -6,6 +6,76 @@
 ## Índice y Estructura Principal
 - [Antecedentes - Experiencia Personal](#Antecedentes)
 - [Estructura de los apuntes](#estructura-de-los-apuntes)
+     * [Redes WPA](#redes-wpa)
+       * [Conceptos básicos](#conceptos-básicos)
+       * [Modo monitor](#modo-monitor)
+       * [Configuración de la tarjeta de red + tips](#configuración-de-la-tarjeta-de-red-+-tips)
+       * [Análisis del entorno](#análisis-del-entorno)
+       * [Modos de filtro](#modos-de-filtro)
+       * [Exportación de evidencias](#exportación-de-evidencias)
+       * [Concepto de Handshake](#concepto-de-handshake)
+       * [Técnicas para capturar un Handshake](#técnicas-para-capturar-un-handshake)
+            * [Ataque de Deautenticación dirigido](#ataque-de-deautenticación-dirigido)
+            * [Ataque de Deautenticación global (Broadcast MAC Address)](#ataque-de-deautenticación-global)
+            * [Ataque de Autenticación](#ataque-de-autenticación)
+            * [CTS Frame Attack - Secuestro del Ancho de Banda](#cts-frame-attack)
+            * [Beacon Flood Mode Attack](#beacon-flood-mode-attack)
+            * [Disassociation Amok Mode Attack](#disassociation-amok-mode-attack)
+            * [Michael Shutdown Exploitation](#michael-shutdown-exploitation)
+            * [Técnicas pasivas](#técnicas-pasivas)
+        * [Validación del Handshake con Pyrit](#validación-del-handshake-con-pyrit)
+        * [Tratamiento y filtro de la captura](#tratamiento-y-filtro-de-la-captura)
+        * [Análisis de paquetes de red con Tshark](#análisis-de-paquetes-de-red-con-tshark)
+        * [Extracción del hash en el Handshake](#extracción-del-hash-en-el-handshake)
+        * [Fuerza bruta con John](#fuerza-bruta-con-john)
+        * [Fuerza bruta con Aircrack](#fuerza-bruta-con-aircrack)
+        * [Fuerza bruta con Hashcat](#fuerza-bruta-con-hashcat)
+        * [Proceso de ataque con Bettercap](#proceso-de-ataque-con-bettercap)
+        * [Técnicas de aumento de la velocidad de cómputo](#técnicas-de-aumento-de-la-velocidad-de-cómputo)
+            * [Concepto de Rainbow Table](#concepto-de-rainbow-table)
+            * [Cracking con Pyrit](#cracking-con-pyrit)
+            * [Cracking con Cowpatty](#cracking-con-cowpatty)
+            * [Cracking con Airolib](#cracking-con-airolib)
+            * [Rainbow Table con GenPMK](#rainbow-table-con-genpmk)
+            * [Cracking con Pyrit frente a Rainbow Table](#cracking-con-pyrit-frente-a-rainbow-table)
+            * [Cracking con Cowpatty frente a Rainbow Table](#cracking-con-cowpatty-frente-a-rainbow-table)
+            * [Cracking con Pyrit a través de ataque por base de-datos](#cracking-con-pyrit-a-través-de-ataque-por-base-de-datos)
+        * [Técnicas de espionaje](#técnicas-de-espionaje)
+            * [Uso de Airdecap para el desencriptado de paquetes](#uso-de-airdecap-para-el-desencriptado-de-paquetes)
+            * [Análisis del desencriptado con Tshark y Wireshark](#análisis-del-desencriptado-con-tshark-y-wireshark)
+            * [Concepto de enrutamiento](#concepto-de-enrutamiento)
+            * [Espionaje con Ettercap y Driftnet + enrutamiento con iptables](#espionaje-con-ettercap-y-driftnet-+-enrutamiento-con-iptables)
+        * [Ataques graciosos](#ataques-graciosos)
+            * [Uso de Xersoploit](#uso-de-xerosploit)
+            * [Reemplazado de imágenes web](#reemplazado-de-imágenes-web)
+            * [Ataque Shaking Web](#ataque-shaking-web)
+        * [Ataque DNS Spoofing](#ataque-dns-spoofing)
+        * [Evil Twin Attack](#evil-twin-attack)
+           * [Creación de fichero DHCP](#creación-de-fichero-dhcp)
+           * [Configuración de página web](#configuración-de-página-web)
+           * [Inicialización de servicios](#inicialización-de-servicios)
+           * [Creación de base de datos via MYSQL](#creación-de-base-de-datos-via-mysql)
+           * [Creación de falso punto de acceso via Airbase](#creación-de-falso-punto-de-acceso-via-airbase)
+           * [Creación de interfaz y asignación de segmentos](#cración-de-interfaz-y-asignación-de-segmentos)
+           * [Control y creación de reglas de enrutamiento por iptables](#control-y-creación-de-reglas-de-enrutamiento-por-iptables)
+           * [Sincronización de reglas definidas con el Fake AP](#sincronización-de-reglas-definidas-con-el-fake-ap)
+           * [Robo de datos](#robo-de-datos)
+        * [Generación de contraseñas con crunch](#generación-de-contraseñas-con-crunch)
+        * [Ataques por WPS](#ataques-por-wps)
+            * [Uso de Reaver y pixiewps](#uso-de-reaver-y-pixiewps)
+            * [Tips con WPSApp](#tips-con-wpsapp)
+            * [Ataques por WPS](#ataques-por-wps)
+            * [Uso de Wifimosys](#uso-de-wifimosys)
+            * [Uso de Linset](#uso-de-linset)
+        * [Ataque a redes sin clientes](#ataque-a-redes-sin-clientes)
+            * [Client-less PKMID Attack](#client--less-pmkid-attack)
+                * [Ataque desde Bettercap](#ataque-desde-bettercap)
+                * [Uso de hcxpcaptool](#uso-de-hcxpcaptool)
+                * [Ataque via hcxdumptool](#ataque-via-hcxdumptool)
+
+            
+            
+       
 
 Antecedentes
 ===============================================================================================================================
@@ -100,3 +170,8 @@ frecuentemente.
 
 Estructura de los apuntes
 ===============================================================================================================================
+
+Para facilitar la repartición de apuntes, intuyo que es buena idea dividirlo por un lado en ataques a redes
+WPA y por otro lado en ataques a redes WEP con sus distintos casos, así que así lo haremos Mike!
+
+
