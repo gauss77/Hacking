@@ -1,6 +1,6 @@
 # Preparación para el OSWP (by s4vitar)
 
-![OSWP Image](https://funkyimg.com/i/2VTgT.jpg)
+![OSWP Image](https://funkyimg.com/i/2VTJW.jpg)
 #### Offensive Security Wireless Attacks (WiFu) course and Offensive Security Wireless Professional (OSWP) Cheat Sheet
 
 ## Índice y Estructura Principal
