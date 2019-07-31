@@ -42,4 +42,33 @@ o de protocolo WEP con sus distintos modos de autenticación.
 #### ¿Qué bases tuve antes de comenzar con la certificación?
 
 Como dije anteriormente, tenía altamente controlada la parte WiFi, por lo que el estudio de los ataques a
-redes WPA y WEP no supuso ningún problema.
+redes WPA y WEP no supuso ningún problema. La guía que te entregan junto a los vídeos están perfectamente
+estructurados, y cuentas con todo lo necesario para enfrentarte al examen.
+
+#### ¿Qué pasos me recomiendas para abordar con éxito la certificación?
+
+Recomiendo montar un laboratorio en local para practicar todos los vectores de ataque vistos durante el curso.
+
+Para abordar con éxito la certificación, es necesario que sepas al dedillo cómo manejarte en las siguientes
+situaciones, siguiendo como objetivo obtener la contraseña del punto de acceso inalámbrico:
+
+* Ataques a redes WPA con autenticación PSK
+* Ataques a redes WEP con clientes sin autenticación SKA
+* Ataques a redes WEP con clientes y autenticación SKA
+* Ataques a redes WEP sin clientes
+
+Ahora bien, para cada caso, hay distintas formas de efectuar el procedimiento, ya que depende a su vez del
+tráfico de la red, la calidad de los paquetes capturados y distintos factores.
+
+#### ¿Cómo está estructurado el examen?
+
+El examen tiene una duración de cuatro horas, te conectas a una máquina por VPN la cual dispone de una tarjeta
+de red configurada y a partir de ahí escaneas el entorno.
+
+En el entorno, hay un total de tres puntos de acceso que debes vulnerar, cada uno de ellos representando un
+caso diferente. Para aprobar el examen, debes averiguar la contraseña de los tres AP's, pues en caso contrario
+no te aprueban.
+
+La gran pregunta, ¿son cuatro horas suficientes?, mi respuesta es más que suficiente. En mi caso en una media
+hora aproximada ya había terminado el examen (lo cual me sorprendió). Recomiendo tener todos los comandos apuntados para cada caso,
+eso os permitirá ir a tiro hecho.
