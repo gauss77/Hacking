@@ -174,7 +174,7 @@ Estructura de los apuntes
 Para facilitar la repartición de apuntes, intuyo que es buena idea dividirlo por un lado en ataques a redes
 WPA y por otro lado en ataques a redes WEP con sus distintos casos, ¡así que así lo haremos Mike!
 
-# Redes WPA
+## Redes WPA
 Testing
 
 
