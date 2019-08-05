@@ -256,8 +256,8 @@ modo no admite conexión a internet, por lo que no os asustéis si de pronto vei
 cómo deshabilitar este modo para que todo vuelva a la normalidad.
 
 Cabe decir que al iniciar este modo, se generan una serie de **procesos conflictivos**. Esto es así dado que
-por ejemplo, si no vamos a tener acceso a internet... ¿por qué tener corriendo los procesos 'dhclient' y
-'wpa_supplicant'?, es algo absurdo, e incluso la propia suite nos lo recuerda, pues se encargan de darnos
+por ejemplo, si no vamos a tener acceso a internet... ¿por qué tener corriendo los procesos '**dhclient**' y
+'**wpa_supplicant**'?, es algo absurdo, e incluso la propia suite nos lo recuerda, pues se encargan de darnos
 conectividad y mantenernos con conexión en una red ya asociados.
 
 Matar estos procesos es sencillo, tenemos la siguiente forma:
