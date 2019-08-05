@@ -180,7 +180,7 @@ Este apartado engloba todos los vectores de ataque y técnicas ofensivas destina
 ### Conceptos básicos
 
 Hay que aclarar una serie de conceptos clave antes de empezar. La mayoría de los ataques que vamos a ver,
-además de en ocasiones servir para molestar... van destinados a obtener la contraseña de la red inalámbrica.
+además de en ocasiones servir para molestar... van destinados a obtener la contraseña de una red inalámbrica.
 
 El por qué es necesario realizar un ataque para obtener la contraseña es algo que veremos en los siguientes
 puntos. Hay que tener en cuenta que al tratarse de una autenticación de tipo PSK (Pre-Shared-Key), se está
