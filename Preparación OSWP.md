@@ -348,7 +348,7 @@ Estos tres primeros pares listados corresponden a lo que se conoce como **Organi
 Identifier**, un simple número de 24 bits que identifica al vendor, manufacturer u otra organización.
 
 Una dirección MAC está compuesta por 6 bytes, ya tenemos los primeros 3 bytes, ¿qué hay de los otros 3 bytes?.
-Los 24 bits restantes corresponden a lo que se conoce como Universally Administered Address, y sinceramente...
+Los 24 bits restantes corresponden a lo que se conoce como **Universally Administered Address**, y sinceramente...
 en mis prácticas, siempre me la invento.
 
 Es decir, que si quisiera falsificar una dirección MAC registrada bajo el **OUI** de la NSA, podría hacer lo
