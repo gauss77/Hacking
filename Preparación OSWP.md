@@ -401,6 +401,30 @@ tener en cuenta su nombre para acompañarlo junto al comando a aplicar.
 
 Al correr el comando citado anteriormente, obtenemos el siguiente resultado:
 
+```bash
+ CH 13 ][ Elapsed: 18 s ][ 2019-08-05 13:34                                         
+                                                                                                                                                                                       
+ BSSID              PWR  Beacons    #Data, #/s  CH  MB   ENC  CIPHER AUTH ESSID
+                                                                                                                                                                                       
+ 20:34:FB:B1:C5:53  -20       19        1    0   1  180  WPA2 CCMP   PSK  hacklab                                                                                                      
+ 1C:B0:44:D4:16:78  -59       23       13    0  11  130  WPA2 CCMP   PSK  MOVISTAR_1677                                                                                                
+ 30:D3:2D:58:3C:6B  -79       29        4    0  11  135  WPA2 CCMP   PSK  devolo-30d32d583c6b                                                                                          
+ 10:62:D0:F6:F7:D8  -81       15        0    0   6  130  WPA2 CCMP   PSK  LowiF7D3                                                                                                     
+ F8:8E:85:DF:3E:13  -85       14        0    0   9  130  WPA  CCMP   PSK  Wlan1                                                                                                        
+ FC:B4:E6:99:A9:09  -85       17        0    0   1  130  WPA2 CCMP   PSK  MOVISTAR_A908                                                                                                
+ 28:9E:FC:0C:40:3E  -90        2        0    0   6  195  WPA2 CCMP   PSK  vodafone4038                                                                                                 
+                                                                                                                                                                                       
+ BSSID              STATION            PWR   Rate    Lost    Frames  Probe                                                                                                             
+                                                                                                                                                                                        
+ 20:34:FB:B1:C5:53  34:41:5D:46:D1:38  -27    0 - 2e     0        1                                
+```
+
+Entonces bien, ¿cómo se interpreta este output?. 
+
+
+
+
+
 
 
 
