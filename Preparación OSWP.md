@@ -331,7 +331,7 @@ dirección MAC que se nos asocie, es lo equivalente a hacer un atraco con pasamo
 con nuestro DNI dentro del bolsillo y que en un descuido se nos caiga al suelo quedando a la exposición de
 todos los demás.
 
-Una buena practica consiste en falsificar la dirección MAC, y no hace falta saber de electrónico o Hardware
+Una buena practica consiste en falsificar la dirección MAC, y no hace falta saber de electrónica o Hardware
 para ello. A través de la utilidad **macchanger**, podemos jugar con la dirección MAC de nuestro dispositivo
 para manipularla a nuestro antojo.
 
