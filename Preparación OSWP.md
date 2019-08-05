@@ -192,7 +192,7 @@ nivel de paquetes (eapol), los cuales como atacante, pueden ser capturados y tra
 al punto de acceso para posteriormente extraer la contraseña de la red inalámbrica.
 
 Todo esto explicado de una manera no técnica para no entrar en materia tan rápido, ya a medida que vayamos
-avanzando se irá analizando mas a bajo nivel cómo funciona todo.
+avanzando se irá analizando mas a bajo nivel cómo funciona todo :)
 
 ### Modo monitor
 
