@@ -280,7 +280,7 @@ Killing these processes:
 ```
 
 Ya con esto, nuestra tarjeta de red está en modo monitor. Una forma de comprobar si estamos en modo monitor es
-listado nuestras interfaces de red. Ahora nuestra red **wlan0** debería llamarse **wlan0mon**:
+listando nuestras interfaces de red. Ahora nuestra red **wlan0** debería llamarse **wlan0mon**:
 
 ```bash
 ┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
