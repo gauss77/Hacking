@@ -201,7 +201,7 @@ paquetes que contienen información del entorno por el que nos movemos.
 
 Estos paquetes pueden ser capturados con tarjetas de red que acepten el modo monitor. El **modo monitor**, no
 es más que un modo por el cual podemos escuchar y capturar todos los paquetes que viajen por el aire. Tal vez
-lo mejor de todo es que no sólo podemos capturarlos, sino incluso llegar a manipularlos (veremos algunos
+lo mejor de todo es que no sólo podemos capturarlos, sino incluso poder llegar a manipularlos (veremos algunos
 ataques interesantes más adelante).
 
 Para comprobar si nuestra tarjeta de red acepta el modo monitor, haremos una prueba en el siguiente apartado.
