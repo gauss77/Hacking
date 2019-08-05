@@ -327,7 +327,7 @@ en sí puede dejar rastro es nuestra dirección MAC.
 
 La dirección MAC al fin y al cabo es como el DNI de cada dispositivo, es lo que identifica un dispositivo
 móvil, un router, un ordenador, etc. Sería feo estar haciendo cierto tipo de ataques actuando bajo una
-dirección MAC que se nos asocie, sería como hacer un atraco con máscara pero llevar una cartera con nuestro
+dirección MAC que se nos asocie, sería como hacer un atraco con pasamontañas pero llevar una cartera con nuestro
 DNI dentro y que se nos caiga al suelo.
 
 Una buena practica consiste en falsificar la dirección MAC, y no hace falta saber de electrónico o Hardware
