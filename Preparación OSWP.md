@@ -319,7 +319,69 @@ PING google.es (172.217.17.3) 56(84) bytes of data.
 rtt min/avg/max/mdev = 28.718/29.565/29.985/0.427 ms, pipe 3
 ```
 
-Por lo que fuera malestares y preocupaciones, no hay que tirar el ordenador a la basura.
+Por lo que fuera malestares y preocupaciones, no hay que tirar el ordenador a la basura. 
+
+Pero esto no es suficiente. A pesar de no estar conectados a ninguna red y no disponer de direccion IP, lo que
+en sí puede dejar rastro es nuestra dirección MAC. 
+
+La dirección MAC al fin y al cabo es como el DNI de cada dispositivo, es lo que identifica un dispositivo
+móvil, un router, un ordenador, etc. Sería feo estar haciendo cierto tipo de ataques actuando bajo una
+dirección MAC que se nos asocie.
+
+Una buena practica consiste en falsificar la dirección MAC, y no hace falta saber de electrónico o Hardware
+para ello. A través de la utilidad **macchanger**, podemos jugar con la dirección MAC de nuestro dispositivo
+para manipularla a nuestro antojo.
+
+Por ejemplo, imaginemos que quiero asignar a mi tarjeta de red una dirección MAC de la **NATIONAL SECURITY
+AGENCY** (**NSA**), ¿cómo se procedería?. Primero buscamos la dirección MAC en el amplio listado del que
+dispone 'macchanger':
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #macchanger -l | grep -i "national security agency"
+8310 - 00:20:91 - J125, NATIONAL SECURITY AGENCY
+```
+Estos tres primeros pares listados corresponden a lo que se conoce como **Organizationally Unique
+Identifier**, un simple número de 24 bits que identifica al vendor, manufacturer u otra organización.
+
+Una dirección MAC está compuesta por 6 bytes, ya tenemos los primeros 3 bytes, ¿qué hay de los otros 3 bytes?.
+Los 24 bits restantes corresponden a lo que se conoce como Universally Administered Address, y sinceramente...
+en mis prácticas, siempre me la invento.
+
+Es decir, que si quisiera falsificar una dirección MAC registrada bajo el **OUI** de la NSA, podría hacer lo
+siguiente:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #ifconfig wlan0mon down
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #echo "$(macchanger -l | grep -i "national security agency" | awk '{print $3}'):da:1b:6a"
+00:20:91:da:1b:6a
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #macchanger --mac=$(!!) wlan0mon
+Current MAC:   e4:70:b8:d3:93:5c (unknown)
+Permanent MAC: e4:70:b8:d3:93:5c (unknown)
+New MAC:       00:20:91:da:1b:6a (J125, NATIONAL SECURITY AGENCY)
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #ifconfig wlan0mon up
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #macchanger -s wlan0mon
+Current MAC:   00:20:91:da:1b:6a (J125, NATIONAL SECURITY AGENCY)
+Permanent MAC: e4:70:b8:d3:93:5c (unknown)
+```
+
+Aspectos a tener en cuenta de lo anterior:
+
+* Es necesario dar de baja la interfaz de red para manipular su dirección MAC, pues de lo contrario el propio
+  'macchanger' nos avisará de que es necesario darla de baja.
+
+* Con la utilidad '--mac', podemos especificar la dirección MAC a utilizar para la interfaz de red
+  especificada.
+
+* Una vez aplicados los cambios, damos de alta la interfaz y con el parámetro '-s' (**show**), validamos que
+  nuestra tarjeta de red corresponde al **OUI** asignado.
+
+Perfecto, si has llegado a este punto podemos continuar.
 
 ### Análisis del entorno
 
@@ -333,6 +395,10 @@ airodump-ng wlan0mon
 **IMPORTANTE**: Aunque tal vez lo debería haber mencionado en el anterior punto, no todas las tarjetas de red
 tienen por qué llamarse **wlan0**, pueden tener un nombre distinto (Ej: **wlp2s0**), por lo que habrá que
 tener en cuenta su nombre para acompañarlo junto al comando a aplicar.
+
+Al correr el comando citado anteriormente, obtenemos el siguiente resultado:
+
+
 
 
 
