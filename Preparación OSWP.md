@@ -188,8 +188,8 @@ haciendo uso de una clave pre-compartida como su nombre indica, una contraseña 
 disposición de cualquiera puede ser usada para llevar a cabo una asociación contra el AP.
 
 A la hora de llevar a cabo una asociación por una estación (**cliente**) contra el AP, se deja un rastro a
-nivel de paquetes (eapol), los cuales pueden ser tratados sin estar autenticados al punto de acceso para
-extraer la contraseña de la red inalámbrica.
+nivel de paquetes (eapol), los cuales pueden ser capturados y tratados sin estar autenticados al punto de
+acceso para extraer la contraseña de la red inalámbrica.
 
 Todo esto explicado de una manera no técnica para no entrar en materia tan rápido, ya a medida que vayamos
 avanzando se irá analizando mas a bajo nivel cómo funciona todo.
