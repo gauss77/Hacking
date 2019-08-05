@@ -9,7 +9,7 @@
      * [Redes WPA](#redes-wpa)
        * [Conceptos básicos](#conceptos-básicos)
        * [Modo monitor](#modo-monitor)
-       * [Configuración de la tarjeta de red + tips](#configuración-de-la-tarjeta-de-red-\+-tips)
+       * [Configuración de la tarjeta de red + tips](#configuración-de-la-tarjeta-de-red--+--tips)
        * [Análisis del entorno](#análisis-del-entorno)
        * [Modos de filtro](#modos-de-filtro)
        * [Exportación de evidencias](#exportación-de-evidencias)
