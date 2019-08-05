@@ -292,6 +292,39 @@ wlan0mon: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 ```
 
+Una vez llegados a este punto, se podría decir que ya somos capaces de capturar todos los paquetes que viajan
+por nuestro alrededor, pero dejaremos esto para el siguiente punto.
+
+Importante, ¿cómo desactivar el modo monitor y hacer que todo vuelva a la normalidad en términos de
+conectividad?, sencillo. Podemos hacer uso de los siguientes comandos para restablecer la conexión:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #airmon-ng stop wlan0mon && service network-manager restart
+
+PHY	Interface	Driver		Chipset
+
+phy0	wlan0mon	iwlwifi		Intel Corporation Wireless 7265 (rev 61)
+
+		(mac80211 station mode vif enabled on [phy0]wlan0)
+
+		(mac80211 monitor mode vif disabled for [phy0]wlan0mon)
+
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #ping -c 10 -i 0.01 -q google.es
+PING google.es (172.217.17.3) 56(84) bytes of data.
+
+--- google.es ping statistics ---
+10 packets transmitted, 10 received, 0% packet loss, time 309ms
+rtt min/avg/max/mdev = 28.718/29.565/29.985/0.427 ms, pipe 3
+```
+
+Por lo que fuera malestares y preocupaciones, no hay que tirar el ordenador a la basura.
+
+### Análisis del entorno
+
+
+
 
 
 
