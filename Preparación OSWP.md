@@ -251,9 +251,9 @@ phy0	wlan0		iwlwifi		Intel Corporation Wireless 7265 (rev 61)
 		(mac80211 station mode vif disabled for [phy0]wlan0)
 ```
 
-Ahora bien, cosas a tener en cuenta. Cuando estamos en modo monitor, algo a tener en cuenta es que perdemos
-conectividad a internet. Este modo no admite conexión a internet, por lo que no os asustéis si de pronto veis
-que no podéis navegar. Veremos cómo deshabilitar este modo para que todo vuelva a la normalidad.
+Ahora bien, cosas a tener en cuenta. Cuando estamos en modo monitor, perdemos conectividad a internet. Este
+modo no admite conexión a internet, por lo que no os asustéis si de pronto veis que no podéis navegar. Veremos
+cómo deshabilitar este modo para que todo vuelva a la normalidad.
 
 Cabe decir que al iniciar este modo, se generan una serie de **procesos conflictivos**. Esto es así dado que
 por ejemplo, si no vamos a tener acceso a internet... ¿por qué tener corriendo los procesos 'dhclient' y
