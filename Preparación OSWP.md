@@ -9,7 +9,7 @@
      * [Redes WPA](#redes-wpa)
        * [Conceptos básicos](#conceptos-básicos)
        * [Modo monitor](#modo-monitor)
-       * [Configuración de la tarjeta de red + tips](#configuración-de-la-tarjeta-de-red+tips)
+       * [Configuración de la tarjeta de red + tips](#configuración-de-la-tarjeta-de-red-y-tips)
        * [Análisis del entorno](#análisis-del-entorno)
        * [Modos de filtro](#modos-de-filtro)
        * [Exportación de evidencias](#exportación-de-evidencias)
@@ -206,7 +206,7 @@ ataques interesantes más adelante).
 
 Para comprobar si nuestra tarjeta de red acepta el modo monitor, haremos una prueba en el siguiente apartado.
 
-### Configuración de la tarjeta de red + tips
+### Configuración de la tarjeta de red y tips
 
 Empecemos con un par de comandos básicos. A continuación os listo mi tarjeta de red:
 
