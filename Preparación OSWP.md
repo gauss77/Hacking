@@ -323,6 +323,17 @@ Por lo que fuera malestares y preocupaciones, no hay que tirar el ordenador a la
 
 ### Análisis del entorno
 
+Llega el momento interesante. Ahora que estamos en modo monitor, para capturar todos los paquetes de nuestro
+alrededor, podemos hacer uso del siguiente comando:
+
+```bash
+airodump-ng wlan0mon
+```
+
+**IMPORTANTE**: Aunque tal vez lo debería haber mencionado en el anterior punto, no todas las tarjetas de red
+tienen por qué llamarse **wlan0**, pueden tener un nombre distinto (Ej: **wlp2s0**), por lo que habrá que
+tener en cuenta su nombre para acompañarlo junto al comando a aplicar.
+
 
 
 
