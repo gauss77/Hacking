@@ -196,6 +196,18 @@ avanzando se irá analizando mas a bajo nivel cómo funciona todo :)
 
 ### Modo monitor
 
+Hay que pensar que estamos rodeados de paquetes por todos lados, paquetes que no somos capaces de percibir,
+paquetes que contienen información del entorno por el que nos movemos. 
+
+Estos paquetes pueden ser capturados con tarjetas de red que acepten el modo monitor. El **modo monitor**, no
+es más que un modo por el cual podemos escuchar y capturar todos los paquetes que viajen por el aire. Tal vez
+lo mejor de todo es que no sólo podemos capturarlos, sino incluso llegar a manipularlos (veremos algunos
+ataques interesantes más adelante).
+
+Para comprobar si nuestra tarjeta de red acepta el modo monitor, haremos una prueba en el siguiente apartado.
+
+
+
 
 
 
