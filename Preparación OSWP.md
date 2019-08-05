@@ -206,6 +206,94 @@ ataques interesantes más adelante).
 
 Para comprobar si nuestra tarjeta de red acepta el modo monitor, haremos una prueba en el siguiente apartado.
 
+### Configuración de la tarjeta de red + tips
+
+Empecemos con un par de comandos básicos. A continuación os listo mi tarjeta de red:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #ifconfig wlan0
+wlan0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.1.187  netmask 255.255.255.0  broadcast 192.168.1.255
+        inet6 fe80::1d28:6b2b:a941:5796  prefixlen 64  scopeid 0x20<link>
+        ether e4:70:b8:d3:93:5d  txqueuelen 1000  (Ethernet)
+        RX packets 6426576  bytes 9229384163 (8.5 GiB)
+        RX errors 0  dropped 5  overruns 0  frame 0
+        TX packets 1160899  bytes 162727829 (155.1 MiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+```
+
+Espero que a partir de ahora os llevéis bien con ella, pues con esta practicaremos la mayoría de ataques.
+
+Para poner en modo monitor nuestra tarjeta de red, es tan simple como aplicar el siguiente comando:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #airmon-ng start wlan0
+
+Found 5 processes that could cause trouble.
+Kill them using 'airmon-ng check kill' before putting
+the card in monitor mode, they will interfere by changing channels
+and sometimes putting the interface back in managed mode
+
+  PID Name
+  818 avahi-daemon
+  835 wpa_supplicant
+  877 avahi-daemon
+ 5398 NetworkManager
+18308 dhclient
+
+PHY	Interface	Driver		Chipset
+
+phy0	wlan0		iwlwifi		Intel Corporation Wireless 7265 (rev 61)
+
+		(mac80211 monitor mode vif enabled for [phy0]wlan0 on [phy0]wlan0mon)
+		(mac80211 station mode vif disabled for [phy0]wlan0)
+```
+
+Ahora bien, cosas a tener en cuenta. Cuando estamos en modo monitor, algo a tener en cuenta es que perdemos
+conectividad a internet. Este modo no admite conexión a internet, por lo que no os asustéis si de pronto veis
+que no podéis navegar. Veremos cómo deshabilitar este modo para que todo vuelva a la normalidad.
+
+Cabe decir que al iniciar este modo, se generan una serie de **procesos conflictivos**. Esto es así dado que
+por ejemplo, si no vamos a tener acceso a internet... ¿por qué tener corriendo los procesos 'dhclient' y
+'wpa_supplicant'?, es algo absurdo, e incluso la propia suite nos lo recuerda.
+
+Matar estos procesos es sencillo, tenemos la siguiente forma:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #pkill dhclient && pkill wpa_supplicant
+```
+
+O si deseamos tirar de la propia suite:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #airmon-ng check kill
+
+Killing these processes:
+
+  PID Name
+  835 wpa_supplicant
+```
+
+Ya con esto, nuestra tarjeta de red está en modo monitor. Una forma de comprobar si estamos en modo monitor es
+listado nuestras interfaces de red. Ahora nuestra red **wlan0** debería llamarse **wlan0mon**:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #ifconfig | grep wlan0 -A 6
+wlan0mon: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        unspec E4-70-B8-D3-93-5C-30-3A-00-00-00-00-00-00-00-00  txqueuelen 1000  (UNSPEC)
+        RX packets 63  bytes 12032 (11.7 KiB)
+        RX errors 0  dropped 63  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+```
+
+
+
 
 
 
