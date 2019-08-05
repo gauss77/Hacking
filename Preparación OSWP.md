@@ -175,6 +175,31 @@ Para facilitar la repartición de apuntes, intuyo que es buena idea dividirlo po
 WPA y por otro lado en ataques a redes WEP con sus distintos casos, ¡así que así lo haremos Mike!
 
 ## Redes WPA
-Testing
+Este apartado engloba todos los vectores de ataque y técnicas ofensivas destinadas al protocolo WPA.
+
+### Conceptos básicos
+
+Hay que aclarar una serie de conceptos clave antes de empezar. La mayoría de los ataques que vamos a ver,
+además de en ocasiones servir para molestar... van destinados a obtener la contraseña de la red inalámbrica.
+
+El por qué es necesario realizar un ataque para obtener la contraseña es algo que veremos en los siguientes
+puntos. Hay que tener en cuenta que al tratarse de una autenticación de tipo PSK (Pre-Shared-Key), se está
+haciendo uso de una clave pre-compartida como su nombre indica, una contraseña única que de estar a
+disposición de cualquiera puede ser usada para llevar a cabo una asociación contra el AP.
+
+A la hora de llevar a cabo una asociación por una estación (**cliente**) contra el AP, se deja un rastro a
+nivel de paquetes (eapol), los cuales pueden ser tratados sin estar autenticados al punto de acceso para
+extraer la contraseña de la red inalámbrica.
+
+Todo esto explicado de una manera no técnica para no entrar en materia tan rápido, ya a medida que vayamos
+avanzando se irá analizando mas a bajo nivel cómo funciona todo.
+
+### Modo monitor
+
+
+
+
+
+
 
 
