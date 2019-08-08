@@ -774,6 +774,18 @@ a connected wireless client (-c <client's mac>).
 
 #### Ataque de autenticación
 
+Puede sonar raro, pero también existe un ataque llamado ataque de autenticación o asociación. A través de este
+ataque, en vez de expulsar a clientes de una red, lo que hacemos es añadirlos.
+
+Te preguntarás, ¿y qué consigo con eso?, buena pregunta. Nuestro objetivo como atacantes es hacer siempre que
+de una y otra forma, los clientes de una red sean reasociados para capturar un Handshake. 
+
+¿Qué crees que pasaría si en una red inyectamos 5.000 clientes?, exacto, por ahí van los tiros. Si una red
+dispone de tantos clientes asociados, el router se vuelve loco... incluso hasta notaríamos de hacerlo en local
+que la red comenzaría a ir lenta, llegando al punto en el que seríamos expulsados de esta hasta detener el
+ataque.
+
+
 
 
 
