@@ -857,7 +857,7 @@ A efectos prácticos, por el momento esto no genera ningún inconveniente, ¿có
 5.000 clientes?. Podríamos montarnos un simple script que lo hiciera por nosotros generando direcciones MAC
 aleatorias, pero ya contamos con una herramienta que nos hace todo el trabajo, **mdk3**.
 
-A través de la utilidad **mdk3**, tenemos un modo de ataque '**Authentication DoS Mode** que se encarga de
+A través de la utilidad **mdk3**, tenemos un modo de ataque '**Authentication DoS Mode**' que se encarga de
 asociar a miles de clientes al AP objetivo. Esto se hace haciendo uso de la siguiente sintaxis:
 
 * mdk3 wlan0mon a -a bssidAP
