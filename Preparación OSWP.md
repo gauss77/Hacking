@@ -564,7 +564,16 @@ como objetivo.
 
 #### Ataque de deautenticación dirigido
 
+El protocolo IEEE 802.11 (Wi-Fi), contiene la provisión para un **marco de deautenticación**. Como atacantes,
+para este ataque lo que haremos será enviar un marco de deautenticación al punto de acceso inalámbrico
+objetivo, especificando la dirección MAC del cliente que queremos que sea expulsado de la red.
 
+El proceso de enviar dicho marco al punto de acceso se denomina '**Técnica autorizada para informar a una
+estación no autorizada que se ha desconectado de la red**'.
+
+En otras palabras, estaríamos poniendo en práctica el siguiente esquema:
+
+![Deauth Attack](https://funkyimg.com/i/2W6cB.png)
 
 
  
