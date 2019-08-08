@@ -1008,7 +1008,15 @@ Ahora es cuando viene la parte divertida, inyectemos dicho paquete a nivel de re
 <img align="center" src="https://funkyimg.com/i/2W6iJ.png">
 
 Como vemos, se han tramitado un total de 10.000 paquetes de tipo **CTS** con un tiempo total de 30.000
-microsegundos para cada uno.
+microsegundos para cada uno. Encima le hemos añadido el parámetro '**--topspeed**' para evitar que el
+siguiente paquete se envié una vez el anterior se ha terminado de enviar, haciendo que todos queden en cola.
+
+Por aquí podemos ver los valores de cada uno de estos paquetes enviados:
+
+<img align="center" src="https://funkyimg.com/i/2W6iP.png">
+
+¿Resultado?, lo que se conoce como un secuestro del ancho de banda, haciendo que la red quede completamente
+inoperativa durante un largo período de tiempo. No recomiendo hacer en nuestra propia red el ataque.
 
 
 
