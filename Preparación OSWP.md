@@ -715,7 +715,7 @@ hará será reconectarse al AP, sin nosotros tener que hacer nada. Y es en este 
 
  Esto es mejor incluso, dado que siempre es probable que en una muestra de 20 clientes, 5 de ellos a lo mejor
  no se encuentren lo suficientemente cerca del router para elaborar el ataque (recordemos que esto se puede
- ver tanto desde el **PWR** como a nivel de **Frames** emitidos por la estación.) En vez de estar por tanto
+ ver tanto desde el **PWR** como a nivel de **Frames** emitidos por la estación). En vez de estar por tanto
  deautenticando de cliente en cliente hasta dar con aquel que se encuentre a una distancia considerable como
  para que capturemos un Handshake, resulta más cómodo expulsarlos a todos.
 
