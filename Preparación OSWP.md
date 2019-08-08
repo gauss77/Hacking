@@ -929,6 +929,27 @@ Lo que haremos será abrir **Wireshark** por un lado, capturando paquetes de tip
 
 <img align="center" src="https://funkyimg.com/i/2W6gT.png">
 
+Recomiendo investigar sobre este tipo de paquetes junto al **RTS**, tienen una historia muy bonita frente al
+problema del **nodo oculto**, evitando las famosas colisiones de trama.
+
+Un paquete **CTS** dispone generalmente de 4 campos:
+
+* Frame Control
+* Duración
+* RA (Dirección del Receptor)
+* FCS
+
+El campo del tiempo para dicho paquete puede ser visto rápidamente desde Wireshark (**304 microsegundos**):
+
+<img align="center" src="https://funkyimg.com/i/2W6h5.png">
+
+Lo que haremos una vez dispongamos de un paquete **CTS**, será exportar dicho paquete en un formato
+'**Wireshark/tcpdump/... -pcap**':
+
+<img align="center" src="https://funkyimg.com/i/2W6hf.png">
+
+
+
 
 
 
