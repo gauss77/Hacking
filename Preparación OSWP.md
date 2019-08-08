@@ -973,7 +973,7 @@ Para el último punto, por si han habido confusiones:
 <img align="center" src="https://funkyimg.com/i/2W6hA.png">
 
 Ahí vemos que corresponden a los 304 microsegundos. Ahora bien, aquí es donde viene el vector de ataque, vamos
-a ver cuál sería del valor en hexadecimal del valor tope permitido (**30.000 microsegundos**):
+a ver cuál sería el valor en hexadecimal del valor tope permitido (**30.000 microsegundos**):
 
 <img align="center" src="https://funkyimg.com/i/2W6hE.png">
 
