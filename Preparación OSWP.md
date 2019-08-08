@@ -957,6 +957,54 @@ editor hexadecimal:
 
 <img align="center" src="https://funkyimg.com/i/2W6hu.png">
 
+En esta parte es importante hacer la siguiente distinción:
+
+* Los últimos 4 valores: 11 D1 13 85 corresponden al FCS, deberán ser computados por cada variación que
+  hagamos sobre el resto de valores. Sin embargo, no nos preocupemos por ello... ya que nos lo dará el propio
+  Wireshark :)
+
+* Los 6 valores anteriores al FCS: **30 45 96 BF 9D 2C**, corresponden a la dirección MAC del router. Obviamente, este valor deberá de ser cambiado al deseado.
+
+* Los 2 valores anteriores al FCS: **30 01**, corresponden al tiempo en microsegundos puesto en hexadecimal y
+  **Little Endian**.
+
+Para el último punto, por si han habido confusiones:
+
+<img align="center" src="https://funkyimg.com/i/2W6hA.png">
+
+Ahí vemos que corresponden a los 304 microsegundos. Ahora bien, aquí es donde viene el vector de ataque, vamos
+a ver cuál sería del valor en hexadecimal del valor tope permitido (**30.000 microsegundos**):
+
+<img align="center" src="https://funkyimg.com/i/2W6hE.png">
+
+Tratemos desde **ghex** de sustituir el valor de los 304 microsegundos a 30.000 microsegundos, poniendo su
+representación en hexadecimal y Little Endian:
+
+<img align="center" src="https://funkyimg.com/i/2W6hP.png">
+
+**CONSIDERACIÓN**: También he especificado la dirección MAC del AP objetivo en **ghex** (**64:D1:54:88:BA:3C**)
+
+Podríamos pensar que es así de simple, pero no. Recordemos que para cada cambio realizado, hay que computar el
+valor del **FCS**, pues de lo contrario el paquete es inválido. Uno puede optar por comerse la cabeza y tratar
+de hacerlo manualmente, pero otra forma es guardando y abriendo esa propia captura desde **Wireshark**:
+
+<img align="center" src="https://funkyimg.com/i/2W6ia.png">
+
+Como vemos, es una maravilla, dado que ya el propio **Wireshark** nos da el valor del **FCS** que necesitamos
+para la captura manipulada. 
+
+Por tanto, le hacemos caso y lo cambiamos (Recordemos el Little Endian, también se aplica para este caso):
+
+<img align="center" src="https://funkyimg.com/i/2W6in.png">
+
+Una vez llegados a este punto, guardamos la captura y probamos a abrirla nuevamente desde Wireshark:
+
+<img align="center" src="https://funkyimg.com/i/2W6iy.png">
+
+Esto son buenas noticias, pues no nos sale ningún tipo de error, ¡hemos construido un paquete válido!.
+
+
+
 
 
 
