@@ -948,6 +948,14 @@ Lo que haremos una vez dispongamos de un paquete **CTS**, será exportar dicho p
 
 <img align="center" src="https://funkyimg.com/i/2W6hf.png">
 
+Si analizamos la captura, veremos que los datos contemplados siguen siendo los mismos:
+
+<img align="center" src="https://funkyimg.com/i/2W6hp.png">
+
+Una vez llegados a este punto, en mi caso haré uso de la herramienta '**ghex**' para abrir la captura con un
+editor hexadecimal:
+
+<img align="center" src="https://funkyimg.com/i/2W6hu.png">
 
 
 
