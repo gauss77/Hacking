@@ -456,6 +456,8 @@ el cual en este caso se indicará con un '**not associated**' en el campo **BSSI
 Frames aumentan considerablemente a intervalos cortos de tiempo, esto quiere decir que la estación se
 encuentra activa en el momento de la captura.
 
+### Modos de filtro
+
 
 
 
