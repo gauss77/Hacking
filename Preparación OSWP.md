@@ -421,6 +421,18 @@ Al correr el comando citado anteriormente, obtenemos el siguiente resultado:
 
 Entonces bien, ¿cómo se interpreta este output?. 
 
+De los campos más importantes por el momento, por un lado tenemos el campo **BSSID**, donde siempre podremos
+corroborar cuál es la dirección MAC del punto de acceso. Por otro lado, contamos con el campo **PWR**, donde a
+modo de consideración, a más cerca esté del valor 0, podremos decir que más cerca nos situamos del AP.
+
+El campo **CH**, indica el canal en el que se sitúa el AP. Cada AP, está posicionado en un canal distinto, con
+el objetivo de evitar que se dañe el espectro de onda entre las múltiples redes del entorno. Existe un ataque
+justamente de denegación de servicio, que se encarga de generar múltiples Fake AP's situados en el mismo canal
+que en el del AP objetivo, consiguiendo así que la red queda inoperativa temporalmente (lo veremos más adelante).
+
+El campo **DATA**, por el momento no lo tocaremos, ya que nos meteremos a fondo con este cuando tratemos las
+redes de protocolo **WEP**. 
+
 
 
 
