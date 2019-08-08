@@ -920,6 +920,14 @@ Exacto, una locura de clientes asociados que ni llego a seleccionar de lo largo 
 casi inmediata, la red comienza a ir lenta y se queda temporalmente inoperativa, llegando a expulsar incluso a
 los clientes más lejanos o con poca señal WiFi.
 
+#### CTS Frame Attack
+
+Un ataque bastante interesante, que incluso puede llegar a dejar inoperativa una red inalámbrica durante un
+largo período de tiempo, aunque paremos el ataque.
+
+Lo que haremos será abrir **Wireshark** por un lado, y capturaremos paquetes de tipo **CTS** (Clear-To-Send):
+
+<img align="center" src="https://funkyimg.com/i/2W6gT.png">
 
 
 
