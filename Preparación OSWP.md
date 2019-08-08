@@ -778,7 +778,7 @@ Puede sonar raro, pero también existe un ataque llamado ataque de autenticació
 ataque, en vez de expulsar a clientes de una red, lo que hacemos es añadirlos.
 
 Te preguntarás, ¿y qué consigo con eso?, buena pregunta. Nuestro objetivo como atacantes es hacer siempre que
-de una y otra forma, los clientes de una red sean reasociados para capturar un Handshake. 
+de una u otra forma, los clientes de una red sean reasociados para capturar un Handshake. 
 
 ¿Qué crees que pasaría si en una red inyectamos 5.000 clientes?, exacto, por ahí van los tiros. Si una red
 dispone de tantos clientes asociados, el router se vuelve loco... incluso hasta notaríamos de hacerlo en local
