@@ -559,6 +559,12 @@ posteriormente para iniciar un ataque de fuerza bruta.
 
 ### Técnicas para capturar un Handshake
 
+A continuación, se representan distintas técnicas con el propósito de capturar un Handshake de la red fijada
+como objetivo.
+
+#### Ataque de deautenticación dirigido
+
+
 
 
  
