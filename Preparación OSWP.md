@@ -554,7 +554,7 @@ Existe un escenario activo, el cual pondremos en práctica, donde como atacantes
 externamente sin estar asociados a un AP, un ataque de de-autenticación, consiguiendo así expulsar a uno o
 múltiples clientes de una red inalámbrica sin consentimiento.
 
-Un Handshake al fin y al cabo queda marcado como un Hash, el cual podremos extraer de la captura
+Un Handshake al fin y al cabo quedará marcado como un Hash, el cual podremos extraer de la captura
 posteriormente para iniciar un ataque de fuerza bruta.
 
 ### Técnicas para capturar un Handshake
