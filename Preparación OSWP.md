@@ -1003,6 +1003,13 @@ Una vez llegados a este punto, guardamos la captura y probamos a abrirla nuevame
 
 Esto son buenas noticias, pues no nos sale ningún tipo de error, ¡hemos construido un paquete válido!.
 
+Ahora es cuando viene la parte divertida, inyectemos dicho paquete a nivel de red:
+
+<img align="center" src="https://funkyimg.com/i/2W6iJ.png">
+
+Como vemos, se han tramitado un total de 10.000 paquetes de tipo **CTS** con un tiempo total de 30.000
+microsegundos para cada uno.
+
 
 
 
