@@ -573,7 +573,7 @@ estación no autorizada que se ha desconectado de la red**'.
 
 En otras palabras, estaríamos poniendo en práctica el siguiente esquema:
 
-<img align="center" src="https://funkyimg.com/i/2W6cB.png" size="30">
+<img align="center" src="https://funkyimg.com/i/2W6cB.png">
 
 Para retomar la captura por donde lo habíamos dejado, os vuelvo a representar el caso:
 
