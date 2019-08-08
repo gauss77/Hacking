@@ -925,7 +925,7 @@ los clientes más lejanos o con poca señal WiFi.
 Un ataque bastante interesante, que incluso puede llegar a dejar inoperativa una red inalámbrica durante un
 largo período de tiempo, aunque paremos el ataque.
 
-Lo que haremos será abrir **Wireshark** por un lado, y capturaremos paquetes de tipo **CTS** (Clear-To-Send):
+Lo que haremos será abrir **Wireshark** por un lado, capturando paquetes de tipo **CTS** (Clear-To-Send):
 
 <img align="center" src="https://funkyimg.com/i/2W6gT.png">
 
