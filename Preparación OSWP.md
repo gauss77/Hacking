@@ -717,7 +717,7 @@ hará será reconectarse al AP, sin nosotros tener que hacer nada. Y es en este 
  no se encuentren lo suficientemente cerca del router para elaborar el ataque (recordemos que esto se puede
  ver tanto desde el **PWR** como a nivel de **Frames** emitidos por la estación.) En vez de estar por tanto
  deautenticando de cliente en cliente hasta dar con aquel que se encuentre a una distancia considerable como
- paraque capturemos un Handshake, resulta más cómodo expulsarlos a todos.
+ para que capturemos un Handshake, resulta más cómodo expulsarlos a todos.
 
  Basta con que uno de todos esos clientes se reconecte, para capturar un Handshake válido. Hay que tener en
  cuenta que es posible capturar múltiples Handshakes por parte de distintas estaciones en un mismo AP, pero
