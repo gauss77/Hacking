@@ -72,6 +72,8 @@
                 * [Ataque desde Bettercap](#ataque-desde-bettercap)
                 * [Uso de hcxpcaptool](#uso-de-hcxpcaptool)
                 * [Ataque via hcxdumptool](#ataque-via-hcxdumptool)
+        * [Redes WPA Ocultas](#redes-wpa-ocultas)
+        * [Redes WEP](#redes-wep)
 
             
             
@@ -428,10 +430,31 @@ modo de consideración, a más cerca esté del valor 0, podremos decir que más 
 El campo **CH**, indica el canal en el que se sitúa el AP. Cada AP, está posicionado en un canal distinto, con
 el objetivo de evitar que se dañe el espectro de onda entre las múltiples redes del entorno. Existe un ataque
 justamente de denegación de servicio, que se encarga de generar múltiples Fake AP's situados en el mismo canal
-que en el del AP objetivo, consiguiendo así que la red queda inoperativa temporalmente (lo veremos más adelante).
+que en el del AP objetivo, consiguiendo así que la red queda inoperativa temporalmente (lo veremos más
+adelante).
+
+Por otro lado, los campos **ENC, CIPHER** y **AUTH**, donde podremos comprobar siempre con qué tipo de red
+estamos tratando. La mayoría de redes domésticas cumplen la encriptación WPA/WPA, con cifrado CCMP y modo de
+autenticación PSK.
+
+En el campo **ESSID**, podremos siempre saber el nombre de la red con la que estamos tratando, pudiendo así en
+una misma línea a través del campo **BSSID** saber cuál es su dirección MAC, de utilidad para cuando
+comencemos con la fase de filtrado.
 
 El campo **DATA**, por el momento no lo tocaremos, ya que nos meteremos a fondo con este cuando tratemos las
 redes de protocolo **WEP**. 
+
+Asimismo, en la parte inferior, podemos ver otros datos que están siendo capturados con la herramienta. Esta
+sección corresponde a la de los clientes. Consideraremos una estación como un cliente asociado. Para el
+ejemplo mostrado, existe una estación con dirección MAC **34:41:5D:46:D1:38** asociado al **BSSID**
+'20:34:FB:B1:C5:53', donde de manera inmediata en la parte superior podemos ver que se trata de la red
+**hacklab**, por lo que ya sabemos que dicha red cuenta con un cliente asociado.
+
+Es posible que en ocasiones lleguemos a capturar estaciones que no están asociadas a ningún punto de acceso,
+el cual en este caso se indicará con un '**not associated**' en el campo **BSSID**. Es a través del campo
+**Frames** de las estaciones, donde podremos ver qué tipo de actividad tiene el cliente sobre dicho AP. Si los
+Frames aumentan considerablemente a intervalos cortos de tiempo, esto quiere decir que la estación se
+encuentra activa en el momento de la captura.
 
 
 
