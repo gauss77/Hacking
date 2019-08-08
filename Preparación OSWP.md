@@ -652,7 +652,7 @@ Obteniendo los siguientes resultados:
 20:48:34  Sending 64 directed DeAuth (code 7). STMAC: [34:41:5D:46:D1:38] [ 0|64 ACKs]
 ```
 
-Ahora bien, para saber si nuestros paquetes están surgiendo efecto sobre la estación, el truco está en
+Ahora bien, para saber si nuestros paquetes están surtiendo efecto sobre la estación, el truco está en
 contemplar el valor izquierdo que figura en los valores situados a la derecha del todo '**[18|65 ACks]**'.
 Siempre que este sea mayor que 0, ello querrá decir que nuestros paquetes están siendo enviados correctamente
 a la estación.
@@ -705,7 +705,7 @@ hará será reconectarse al AP, sin nosotros tener que hacer nada. Y es en este 
 
  #### Ataque de deautenticación global
 
- 
+
 
 
 
