@@ -575,6 +575,46 @@ En otras palabras, estaríamos poniendo en práctica el siguiente esquema:
 
 ![Deauth Attack](https://funkyimg.com/i/2W6cB.png)
 
+Para retomar la captura por donde lo habíamos dejado, os vuelvo a representar el caso:
+
+```bash
+ CH  1 ][ Elapsed: 0 s ][ 2019-08-08 20:12                                         
+                                                                                                                                                                                       
+ BSSID              PWR RXQ  Beacons    #Data, #/s  CH  MB   ENC  CIPHER AUTH ESSID
+                                                                                                                                                                                       
+ 20:34:FB:B1:C5:53  -26 100       29        7    3   1  180  WPA2 CCMP   PSK  hacklab                                                                                                  
+                                                                                                                                                                                       
+ BSSID              STATION            PWR   Rate    Lost    Frames  Probe                                                                                                             
+                                                                                                                                                                                       
+ 20:34:FB:B1:C5:53  34:41:5D:46:D1:38  -26    0e- 6e     0        9                 
+```
+
+Por tanto, tenemos un cliente **34:41:5D:46:D1:38** asociado al AP **hacklab**. Tratemos de expulsarlo del
+punto de acceso. Para expulsar al cliente, haremos uso de la utilidad de **aireplay-ng**.
+
+'**Aireplay-ng**' cuenta con diferentes modos:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #echo; aireplay-ng --help | tail -n 13 | grep -v help | sed '/^\s*$/d' | sed 's/^ *//'; echo
+
+--deauth      count : deauthenticate 1 or all stations (-0)
+--fakeauth    delay : fake authentication with AP (-1)
+--interactive       : interactive frame selection (-2)
+--arpreplay         : standard ARP-request replay (-3)
+--chopchop          : decrypt/chopchop WEP packet (-4)
+--fragment          : generates valid keystream   (-5)
+--caffe-latte       : query a client for new IVs  (-6)
+--cfrag             : fragments against a client  (-7)
+--migmode           : attacks WPA migration mode  (-8)
+--test              : tests injection and quality (-9)
+```
+
+
+
+
+
+
 
  
 
