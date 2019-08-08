@@ -458,8 +458,46 @@ encuentra activa en el momento de la captura.
 
 ### Modos de filtro
 
+Aunque es una maravilla poder capturar todos los AP's y estaciones de nuestro entorno, como atacante siempre
+nos interesará atentar contra un AP específico. Por ello, introducimos en este punto los modos de filtro
+disponibles desde la herramienta para capturar aquellos puntos de acceso deseados.
+
+Volvamos al caso de antes:
+
+```bash
+ CH 13 ][ Elapsed: 18 s ][ 2019-08-05 13:34                                         
+                                                                                                                                                                                       
+ BSSID              PWR  Beacons    #Data, #/s  CH  MB   ENC  CIPHER AUTH ESSID
+                                                                                                                                                                                       
+ 20:34:FB:B1:C5:53  -20       19        1    0   1  180  WPA2 CCMP   PSK  hacklab                                                                                                      
+ 1C:B0:44:D4:16:78  -59       23       13    0  11  130  WPA2 CCMP   PSK  MOVISTAR_1677                                                                                                
+ 30:D3:2D:58:3C:6B  -79       29        4    0  11  135  WPA2 CCMP   PSK  devolo-30d32d583c6b                                                                                          
+ 10:62:D0:F6:F7:D8  -81       15        0    0   6  130  WPA2 CCMP   PSK  LowiF7D3                                                                                                     
+ F8:8E:85:DF:3E:13  -85       14        0    0   9  130  WPA  CCMP   PSK  Wlan1                                                                                                        
+ FC:B4:E6:99:A9:09  -85       17        0    0   1  130  WPA2 CCMP   PSK  MOVISTAR_A908                                                                                                
+ 28:9E:FC:0C:40:3E  -90        2        0    0   6  195  WPA2 CCMP   PSK  vodafone4038                                                                                                 
+                                                                                                                                                                                       
+ BSSID              STATION            PWR   Rate    Lost    Frames  Probe                                                                                                             
+                                                                                                                                                                                        
+ 20:34:FB:B1:C5:53  34:41:5D:46:D1:38  -27    0 - 2e     0        1  
+ ```
+
+ Imaginemos que queremos filtrar para que sólo se lista el punto de acceso cuyo **ESSID** es **hacklab**, ¿qué
+ podemos recaudar de primeras de esta red?
+
+ * El AP se sitúa en el canal 1
+ * El AP posee dirección MAC  20:34:FB:B1:C5:53
+ * El AP posee ESSID hacklab
+
+Generalmente con 2 datos ya es suficiente para llevar a cabo el filtro. Para este caso, podríamos filtrar la
+red en cuestión de las siguientes formas:
+
+* airodump-ng -c 1 --essid hacklab wlan0mon
+* airodump-ng -c 1 --bssid  20:34:FB:B1:C5:53 wlan0mon
+* airodump-ng -c 1 --bssid  20:34:FB:B1:C5:53 --essid hacklab wlan0mon
 
 
+ 
 
 
 
