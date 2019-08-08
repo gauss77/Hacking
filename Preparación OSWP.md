@@ -496,6 +496,45 @@ red en cuestión de las siguientes formas:
 * airodump-ng -c 1 --bssid  20:34:FB:B1:C5:53 wlan0mon
 * airodump-ng -c 1 --bssid  20:34:FB:B1:C5:53 --essid hacklab wlan0mon
 
+Para cualquiera de las formas representadas, obtendríamos los siguientes resultados:
+
+```bash
+ CH  1 ][ Elapsed: 0 s ][ 2019-08-08 20:12                                         
+                                                                                                                                                                                       
+ BSSID              PWR RXQ  Beacons    #Data, #/s  CH  MB   ENC  CIPHER AUTH ESSID
+                                                                                                                                                                                       
+ 20:34:FB:B1:C5:53  -26 100       29        7    3   1  180  WPA2 CCMP   PSK  hacklab                                                                                                  
+                                                                                                                                                                                       
+ BSSID              STATION            PWR   Rate    Lost    Frames  Probe                                                                                                             
+                                                                                                                                                                                       
+ 20:34:FB:B1:C5:53  34:41:5D:46:D1:38  -26    0e- 6e     0        9                 
+```
+
+### Exportación de evidencias
+
+Ahora bien, a efectos prácticos, nos encontramos en la misma situación que al principio. Como atacantes, lo
+que nos interesa siempre es recolectar la información del AP objetivo. En este caso, estamos monitorizando el
+tráfico del AP **hacklab**, pero sin generar evidencias.
+
+Resulta más interesante capturar y exportar todo el tráfico que se monitorea a un fichero, con el propósito de
+posteriormente poder analizarlo. Para ello se hace uso de la misma sintaxis pero incorporando el parámetro
+'**-w**', donde seguidamente especificamos el nombre del fichero:
+
+* airodump-ng -c 1 -w Captura --essid hacklab wlan0mon
+* airodump-ng -c 1 -w Captura --bssid  20:34:FB:B1:C5:53 wlan0mon
+* airodump-ng -c 1 -w Captura --bssid  20:34:FB:B1:C5:53 --essid hacklab wlan0mon
+
+De esta forma, una vez comienza el escaneo, se generan los siguientes ficheros en nuestro directorio de
+trabajo:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #ls
+Captura-01.cap  Captura-01.csv  Captura-01.kismet.csv  Captura-01.kismet.netxml  Captura-01.log.csv
+```
+Realmente, de todos estos ficheros, con el que la gran mayoría de veces trabajaremos es con el que tiene
+extensión '.cap'
+
 
  
 
