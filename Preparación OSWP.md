@@ -533,7 +533,7 @@ trabajo:
 Captura-01.cap  Captura-01.csv  Captura-01.kismet.csv  Captura-01.kismet.netxml  Captura-01.log.csv
 ```
 Realmente, de todos estos ficheros, con el que la gran mayoría de veces trabajaremos es con el que tiene
-extensión '.cap'
+extensión '.cap', esto es así dando que es el que contendrá el ** Handshake** capturado, con el que trataremos en breve.
 
 
  
