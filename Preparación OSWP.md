@@ -533,7 +533,32 @@ trabajo:
 Captura-01.cap  Captura-01.csv  Captura-01.kismet.csv  Captura-01.kismet.netxml  Captura-01.log.csv
 ```
 Realmente, de todos estos ficheros, con el que la gran mayoría de veces trabajaremos es con el que tiene
-extensión '.cap', esto es así dando que es el que contendrá el ** Handshake** capturado, con el que trataremos en breve.
+extensión '.cap', esto es así dando que es el que contendrá el ** Handshake** capturado, con el que trataremos
+en breve.
+
+### Concepto de Handshake
+
+Por cada vez que una estación se asocia o re-asocia a un AP, durante el proceso de asociación viaja la
+contraseña del AP encriptada. A efectos prácticos, se dice siempre que el **Handshake** en estos casos se
+genera en el momento en el que un cliente se re-conecta a la red. 
+
+Como estamos monitorizando todo el tráfico de la red en un fichero... viene de maravilla capturar una
+re-asociación, pues esta autenticación dejará rastro en nuestra captura y seremos capaces de visualizar la
+contraseña encriptada de la red.
+
+Podrías pensar, ¿entonces tengo que quedarme esperando hasta que por X razón una estación se re-asocie al AP?,
+no exactamente. Ese tipo de escenario se le consideraría escenario pasivo, pues nosotros como atacantes no
+estaríamos interviniendo para manipular el tráfico del AP. 
+
+Existe un escenario activo el cual pondremos en práctica, donde como atacantes somos capaces de elaborar
+externamente sin estar asociados a un AP, un ataque de de-autenticación, consiguiendo así expulsar a uno o
+múltiples clientes de una red inalámbrica sin consentimiento.
+
+Un Handshake al fin y al cabo queda marcado como un Hash, el cual podremos extraer de la captura
+posteriormente para iniciar un ataque de fuerza bruta.
+
+### Técnicas para capturar un Handshake
+
 
 
  
