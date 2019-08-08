@@ -658,7 +658,7 @@ Siempre que este sea mayor que 0, ello querrá decir que nuestros paquetes está
 a la estación.
 
 Si haces estas practicas en local, podrás comprobar cómo tu dispositivo en caso de haber sido la estación
-víctima, habría sido desconectado del AP. Ahora bien, aunque lo veremos más adelante, imaginemos que ahora
+víctima, habría sido desconectado del AP. Por otro lado, aunque lo veremos más adelante, imaginemos que ahora
 paramos el ataque, ¿qué creéis que pasaría?. Fijaros que en la mayoría de las veces, los dispositivos tienden
 a recordar los puntos de acceso a los que alguna vez han estado conectados. 
 
