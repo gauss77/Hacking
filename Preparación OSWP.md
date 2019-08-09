@@ -25,6 +25,7 @@
             * [Técnicas pasivas](#técnicas-pasivas)
         * [Validación del Handshake con Pyrit](#validación-del-handshake-con-pyrit)
         * [Tratamiento y filtro de la captura](#tratamiento-y-filtro-de-la-captura)
+        * [Parseador para redes del entorno](#parseador-para-redes-del-entorno)
         * [Análisis de paquetes de red con Tshark](#análisis-de-paquetes-de-red-con-tshark)
         * [Extracción del hash en el Handshake](#extracción-del-hash-en-el-handshake)
         * [Fuerza bruta con John](#fuerza-bruta-con-john)
@@ -1360,6 +1361,346 @@ dado que se recopilan las anotaciones. El uso del parámetro '**-R**' requiere d
 añadamos el parámetro '**-2**'.
 
 Os dejo por aquí una pequeña aclaratoria de la utilidad de estos parámetros: <a href="https://osqa-ask.wireshark.org/questions/19794/what-is-the-meaning-of-two-pass-analysis">Interés</a>
+
+### Parseador para redes del entorno
+
+Hasta ahora hemos estado parseando redes específicas, pero, ¿no te has parado a pensar en que también
+podríamos hacer esto?:
+
+* airodump-ng wlan0mon -w Captura
+
+Es decir, capturar todo el tráfico de todas las redes disponibles en el entorno en un fichero. ¿Por qué íbamos
+a querer hacer esto?, bueno, desde **airodump-ng**, en el momento de escanear las redes del entorno, lo vemos
+todo claro, bien representado, sin embargo, una vez las evidencias son exportadas al fichero especificado, ya
+la manera de representar los datos no son los mismos.
+
+Por ello, os comparto el siguiente script en Bash:
+
+```bash
+#!/bin/bash
+
+if [[ "$1" && -f "$1" ]]; then
+    FILE="$1"
+else
+    echo -e '\nEspecifica el fichero .csv a analizar\n';
+    echo 'Uso:';
+    echo -e "\t./parser.sh Captura-01.csv\n";
+    exit  
+fi
+
+test -f oui.txt 2>/dev/null
+
+if [ "$(echo $?)" == "0" ]; then
+  
+    echo -e "\n\033[1mNúmero total de puntos de acceso: \033[0;31m`grep -E '([A-Za-z0-9._: @\(\)\\=\[\{\}\"%;-]+,){14}' $FILE | wc -l`\e[0m"
+    echo -e "\033[1mNúmero total de estaciones: \033[0;31m`grep -E '([A-Za-z0-9._: @\(\)\\=\[\{\}\"%;-]+,){5} ([A-Z0-9:]{17})|(not associated)' $FILE | wc -l`\e[0m"
+    echo -e "\033[1mNúmero total de estaciones no asociadas: \033[0;31m`grep -E '(not associated)' $FILE | wc -l`\e[0m"
+    
+    echo -e "\n\033[0;36m\033[1mPuntos de acceso disponibles:\e[0m\n"
+    
+    while read -r line ; do
+    
+        if [ "`echo "$line" | cut -d ',' -f 14`" != " " ]; then
+            echo -e "\033[1m" `echo -e "$line" | cut -d ',' -f 14` "\e[0m"
+        else
+            echo -e " \e[3mNo es posible obtener el nombre de la red (ESSID)\e[0m"
+        fi
+    
+        fullMAC=`echo "$line" | cut -d ',' -f 1`
+        echo -e "\tDirección MAC: $fullMAC"
+    
+        MAC=`echo "$fullMAC" | sed 's/ //g' | sed 's/-//g' | sed 's/://g' | cut -c1-6`
+    
+        result="$(grep -i -A 1 ^$MAC ./oui.txt)";
+    
+        if [ "$result" ]; then
+            echo -e "\tVendor: `echo "$result" | cut -f 3`"
+        else
+            echo -e "\tVendor: \e[3mInformación no encontrada en la base de datos\e[0m"
+        fi
+    
+        is5ghz=`echo "$line" | cut -d ',' -f 4 | grep -i -E '36|40|44|48|52|56|60|64|100|104|108|112|116|120|124|128|132|136|140'`
+    
+        if [ "$is5ghz" ]; then
+            echo -e "\t\033[0;31mOpera en 5 GHz!\e[0m"
+        fi
+    
+        printonce="\tEstaciones:"
+    
+        while read -r line2 ; do
+    
+            clientsMAC=`echo $line2 | grep -E "$fullMAC"`
+            if [ "$clientsMAC" ]; then
+    
+                if [ "$printonce" ]; then
+                    echo -e $printonce
+                    printonce=''
+                fi
+    
+                echo -e "\t\t\033[0;32m" `echo $clientsMAC | cut -d ',' -f 1` "\e[0m"
+                MAC2=`echo "$clientsMAC" | sed 's/ //g' | sed 's/-//g' | sed 's/://g' | cut -c1-6`
+    
+                result2="$(grep -i -A 1 ^$MAC2 ./oui.txt)";
+    
+                if [ "$result2" ]; then
+                    echo -e "\t\t\tVendor: `echo "$result2" | cut -f 3`"
+                    ismobile=`echo $result2 | grep -i -E 'Olivetti|Sony|Mobile|Apple|Samsung|HUAWEI|Motorola|TCT|LG|Ragentek|Lenovo|Shenzhen|Intel|Xiaomi|zte'`
+                    warning=`echo $result2 | grep -i -E 'ALFA|Intel'`
+                    if [ "$ismobile" ]; then
+                        echo -e "\t\t\t\033[0;33mEs probable que se trate de un dispositivo móvil\e[0m"
+                    fi
+    
+                    if [ "$warning" ]; then
+                        echo -e "\t\t\t\033[0;31;5;7mEl dispositivo soporta el modo monitor\e[0m"
+                    fi
+    
+                else
+                    echo -e "\t\t\tVendor: \e[3mInformación no encontrada en la base de datos\e[0m"
+                fi
+    
+                probed=`echo $line2 | cut -d ',' -f 7`
+    
+                if [ "`echo $probed | grep -E [A-Za-z0-9_\\-]+`" ]; then
+                    echo -e "\t\t\tRedes a las que el dispositivo ha estado asociado: $probed"
+                fi        
+            fi
+        done < <(grep -E '([A-Za-z0-9._: @\(\)\\=\[\{\}\"%;-]+,){5} ([A-Z0-9:]{17})|(not associated)' $FILE)
+        
+    done < <(grep -E '([A-Za-z0-9._: @\(\)\\=\[\{\}\"%;-]+,){14}' $FILE)
+    
+    echo -e "\n\033[0;36m\033[1mEstaciones no asociadas:\e[0m\n"
+    
+    while read -r line2 ; do
+    
+        clientsMAC=`echo $line2  | cut -d ',' -f 1`
+    
+        echo -e "\033[0;31m" `echo $clientsMAC | cut -d ',' -f 1` "\e[0m"
+        MAC2=`echo "$clientsMAC" | sed 's/ //g' | sed 's/-//g' | sed 's/://g' | cut -c1-6`
+    
+        result2="$(grep -i -A 1 ^$MAC2 ./oui.txt)";
+    
+        if [ "$result2" ]; then
+            echo -e "\tVendor: `echo "$result2" | cut -f 3`"
+            ismobile=`echo $result2 | grep -i -E 'Olivetti|Sony|Mobile|Apple|Samsung|HUAWEI|Motorola|TCT|LG|Ragentek|Lenovo|Shenzhen|Intel|Xiaomi|zte'`
+            warning=`echo $result2 | grep -i -E 'ALFA|Intel'`
+            if [ "$ismobile" ]; then
+                echo -e "\t\033[0;33mEs probable que se trate de un dispositivo móvil\e[0m"
+            fi
+            if [ "$warning" ]; then
+                echo -e "\t\033[0;31;5;7mEl dispositivo soporta el modo monitor\e[0m"
+            fi
+        else
+            echo -e "\tVendor: \e[3mInformación no encontrada en la base de datos\e[0m"
+        fi
+    
+        probed=`echo $line2 | cut -d ',' -f 7`
+    
+        if [ "`echo $probed | grep -E [A-Za-z0-9_\\-]+`" ]; then
+            echo -e "\tRedes a las que el dispositivo ha estado asociado: $probed"
+        fi        
+    
+    done < <(grep -E '(not associated)' $FILE)
+else
+    echo -e "\n[!] Archivo oui.txt no encontrado, descárgalo desde aquí: http://standards-oui.ieee.org/oui/oui.txt\n"
+fi
+```
+
+Aprovechando el fichero '.csv' generado automáticamente tras correr **airodump** sobre la red objetivo,
+podemos hacer uso de este parseador para representar toda la información de los datos capturados.
+
+Correr el script es bastante sencillo:
+
+```bash
+┌─[✗]─[root@parrot]─[/home/s4vitar/Desktop]
+└──╼ #./file.sh 
+
+Especifica el fichero .csv a analizar
+
+Uso:
+	./parser.sh Captura-01.csv
+
+┌─[root@parrot]─[/home/s4vitar/Desktop]
+└──╼ #./file.sh captura-01.csv 
+
+[!] Archivo oui.txt no encontrado, descárgalo desde aquí: http://standards-oui.ieee.org/oui/oui.txt
+```
+
+Como vemos, la primera vez que lo corremos, en caso de no contar con el fichero 'oui.txt', se genera un
+pequeño aviso para avisar de que necesitamos descargarlo para correr el script, pues en caso contrario los
+datos no serán bien representados.
+
+Por tanto:
+
+* wget http://standards-oui.ieee.org/oui/oui.txt
+
+Una vez hecho, ya podemos ejecutar el script, obteniendo los siguientes resultados:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop]
+└──╼ #./file.sh captura-01.csv 
+
+Número total de puntos de acceso: 43
+Número total de estaciones: 5
+Número total de estaciones no asociadas: 5
+
+Puntos de acceso disponibles:
+
+ Invitados 
+	Dirección MAC: 4C:96:14:2C:42:82
+	Vendor: Juniper Networks
+ MiFibra-CECC 
+	Dirección MAC: 44:FE:3B:FE:CE:CE
+	Vendor: Arcadyan Corporation
+ WIFI_EXT 
+	Dirección MAC: 4C:96:14:2C:42:86
+	Vendor: Juniper Networks
+ MOVISTAR_A908 
+	Dirección MAC: FC:B4:E6:99:A9:09
+	Vendor: ASKEY COMPUTER CORP
+ No es posible obtener el nombre de la red (ESSID)
+	Dirección MAC: 00:9A:CD:E7:C0:24
+	Vendor: HUAWEI TECHNOLOGIES CO.,LTD
+ MiFibra-91BD 
+	Dirección MAC: 70:4F:57:9F:9A:8B
+	Vendor: TP-LINK TECHNOLOGIES CO.,LTD.
+ Interno 
+	Dirección MAC: 4C:96:14:2C:42:80
+	Vendor: Juniper Networks
+ MOVISTAR_171B 
+	Dirección MAC: 78:29:ED:9D:17:1C
+	Vendor: ASKEY COMPUTER CORP
+ JAZZTEL_1301. 
+	Dirección MAC: 00:B6:B7:36:06:0C
+	Vendor: Información no encontrada en la base de datos
+ WIFI_EXT2 
+	Dirección MAC: 44:48:C1:F1:97:03
+	Vendor: Hewlett Packard Enterprise
+ Interno 
+	Dirección MAC: 4C:96:14:2C:47:40
+	Vendor: Juniper Networks
+	Estaciones:
+		 4C:96:14:2C:47:40 
+			Vendor: Juniper Networks
+			Redes a las que el dispositivo ha estado asociado: MAPFRE
+ iMovil 
+	Dirección MAC: 4C:96:14:27:B9:84
+	Vendor: Juniper Networks
+ MOVISTAR_9E71 
+	Dirección MAC: 94:91:7F:0E:9E:72
+	Vendor: ASKEY COMPUTER CORP
+ MiFibra-7BB4 
+	Dirección MAC: 94:6A:B0:60:7B:B6
+	Vendor: Arcadyan Corporation
+ MOVISTAR_D8C1 
+	Dirección MAC: 1C:B0:44:50:D8:C2
+	Vendor: ASKEY COMPUTER CORP
+ MiFibra-226A 
+	Dirección MAC: 94:6A:B0:9B:22:6C
+	Vendor: Arcadyan Corporation
+ MOVISTAR_4DE8 
+	Dirección MAC: 78:29:ED:22:4D:E9
+	Vendor: ASKEY COMPUTER CORP
+ Interno 
+	Dirección MAC: 4C:96:14:27:B9:80
+	Vendor: Juniper Networks
+ WIFI_EXT 
+	Dirección MAC: 4C:96:14:27:B9:86
+	Vendor: Juniper Networks
+ Invitados 
+	Dirección MAC: A8:D0:E5:C1:C9:42
+	Vendor: Juniper Networks
+ iMovil 
+	Dirección MAC: A8:D0:E5:C1:C9:44
+	Vendor: Juniper Networks
+ Invitados 
+	Dirección MAC: 4C:96:14:27:B9:82
+	Vendor: Juniper Networks
+ WIFI_EXT 
+	Dirección MAC: 4C:96:14:2C:47:46
+	Vendor: Juniper Networks
+ Interno 
+	Dirección MAC: A8:D0:E5:C1:C9:40
+	Vendor: Juniper Networks
+ vodafone18AC 
+	Dirección MAC: 24:DF:6A:10:18:B4
+	Vendor: HUAWEI TECHNOLOGIES CO.,LTD
+ MOVISTAR_3126 
+	Dirección MAC: CC:D4:A1:0C:31:28
+	Vendor: MitraStar Technology Corp.
+ WIFI_EXT 
+	Dirección MAC: A8:D0:E5:C1:C9:46
+	Vendor: Juniper Networks
+ Orange-A238 
+	Dirección MAC: 50:7E:5D:2F:A2:3A
+	Vendor: Arcadyan Technology Corporation
+ MOVISTAR_1083 
+	Dirección MAC: F8:8E:85:43:10:84
+	Vendor: Comtrend Corporation
+ MIWIFI_2G_2Xhs 
+	Dirección MAC: E4:CA:12:96:21:FE
+	Vendor: zte corporation
+ Interno2 
+	Dirección MAC: 44:48:C1:F1:96:A0
+	Vendor: Hewlett Packard Enterprise
+ WLAN_4A4C 
+	Dirección MAC: 00:1A:2B:AC:0B:CF
+	Vendor: Ayecom Technology Co., Ltd.
+ iMovil2 
+	Dirección MAC: 44:48:C1:F1:96:A4
+	Vendor: Hewlett Packard Enterprise
+ MOVISTAR_2F95 
+	Dirección MAC: E8:D1:1B:21:2F:96
+	Vendor: ASKEY COMPUTER CORP
+ MOVISTAR_5A18 
+	Dirección MAC: A4:2B:B0:FB:90:D1
+	Vendor: TP-LINK TECHNOLOGIES CO.,LTD.
+ WIFI_EXT2 
+	Dirección MAC: 44:48:C1:F1:96:A3
+	Vendor: Hewlett Packard Enterprise
+ No es posible obtener el nombre de la red (ESSID)
+	Dirección MAC: 44:48:C1:F1:96:A1
+	Vendor: Hewlett Packard Enterprise
+ VILLACRISIS 
+	Dirección MAC: 84:16:F9:5B:45:B8
+	Vendor: TP-LINK TECHNOLOGIES CO.,LTD.
+ No es posible obtener el nombre de la red (ESSID)
+	Dirección MAC: 44:48:C1:F1:96:A2
+	Vendor: Hewlett Packard Enterprise
+ MOVISTAR_4C30 
+	Dirección MAC: E2:41:36:08:4C:30
+	Vendor: Información no encontrada en la base de datos
+ TP-LINK_79D4 
+	Dirección MAC: D4:6E:0E:F8:79:D4
+	Vendor: TP-LINK TECHNOLOGIES CO.,LTD.
+ MOVISTAR_1677 
+	Dirección MAC: 1C:B0:44:D4:16:78
+	Vendor: ASKEY COMPUTER CORP
+ No es posible obtener el nombre de la red (ESSID)
+	Dirección MAC: 4C:1B:86:02:54:EA
+	Vendor: Arcadyan Corporation
+
+Estaciones no asociadas:
+
+ 34:12:F9:77:49:5E 
+	Vendor: HUAWEI TECHNOLOGIES CO.,LTD
+	Es probable que se trate de un dispositivo móvil
+	Redes a las que el dispositivo ha estado asociado: BUY&RECICLE
+ 00:24:2B:BC:4E:57 
+	Vendor: Hon Hai Precision Ind. Co.,Ltd.
+	Redes a las que el dispositivo ha estado asociado: MAPFRE
+ 10:44:00:9C:76:66 
+	Vendor: HUAWEI TECHNOLOGIES CO.,LTD
+	Es probable que se trate de un dispositivo móvil
+ 4C:96:14:2C:47:40 
+	Vendor: Juniper Networks
+	Redes a las que el dispositivo ha estado asociado: MAPFRE
+ AC:D1:B8:17:91:C0 
+	Vendor: Hon Hai Precision Ind. Co.,Ltd.
+```
+
+¡Qué belleza!
+
+
 
 
 
