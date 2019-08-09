@@ -1698,7 +1698,9 @@ Estaciones no asociadas:
 	Vendor: Hon Hai Precision Ind. Co.,Ltd.
 ```
 
-¡Qué belleza!
+¡Qué belleza!, de bastante utilidad incluso para visualizar los paquetes **Probe Request**, contemplando las
+redes a las que el cliente ha estado conectado en el pasado, pudiendo así posteriormente efectuar un ataque de
+tipo **Evil Twin**, que veremos más adelante
 
 ### Análisis de paquetes de red con tshark
 
