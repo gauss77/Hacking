@@ -1354,7 +1354,7 @@ Read 19 packets.
 1 potential targets
 ```
 
-Destacar que he hecho uso del parámetro '**-R**' en vez del '**-Y**' porque estoy hacienod uso del parámetro
+Destacar que he hecho uso del parámetro '**-R**' en vez del '**-Y**' porque estoy haciendo uso del parámetro
 '**-2**', con el objetivo de hacer un doble pase durante la fase de análisis. Esta opción es incluso mejor,
 dado que se recopilan las anotaciones. El uso del parámetro '**-R**' requiere de forma obligatoria que
 añadamos el parámetro **-2**.
