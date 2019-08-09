@@ -1357,7 +1357,7 @@ Read 19 packets.
 Destacar que he hecho uso del parámetro '**-R**' en vez del '**-Y**' porque estoy haciendo uso del parámetro
 '**-2**', con el objetivo de hacer un doble pase durante la fase de análisis. Esta opción es incluso mejor,
 dado que se recopilan las anotaciones. El uso del parámetro '**-R**' requiere de forma obligatoria que
-añadamos el parámetro **-2**.
+añadamos el parámetro '**-2**'.
 
 Os dejo por aquí una pequeña aclaratoria de la utilidad de estos parámetros: <a href="https://osqa-ask.wireshark.org/questions/19794/what-is-the-meaning-of-two-pass-analysis">Interés</a>
 
