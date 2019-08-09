@@ -1125,6 +1125,164 @@ Siempre el Handshake se va a generar en el momento en el que el cliente se vuelv
 nuestros medios activos o sin hacer nada a voluntad de la calidad de la señal entre la estación y el AP, o por
 el propio cliente que se ha vuelto a reconectar por 'X' razones.
 
+### Validación del Handshake con Pyrit
+
+Hasta ahora hemos visto técnicas para capturar un Handshake. Ahora bien, en ocasiones, puede suceder que la
+suite de aircrack-ng nos diga que ha capturado un Handshake cuando realmente no es así, no sería la primera
+vez que me ha llegado a suceder.
+
+¿Qué mejor que validar la captura con otra herramienta?, con **pyrit**. Pyrit es una herramienta bestial para
+el cracking, análisis de capturas y monitorizado de redes inalámbricas. Uno de los modos de los que dispone,
+es de una especie de '**checker**', con el cual podemos analizar la captura para ver si esta cuenta con un
+**Handshake** o no.
+
+Por ejemplo, imaginemos que hemos capturado un supuesto Handshake de una red inalámbrica, o al menos eso vemos
+desde **aircrack-ng**. Si quisiéramos ahora validarlo desde **Pyrit**, haríamos lo siguiente sobre la captura
+'.cap':
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #pyrit -r Captura-01.cap analyze
+Pyrit 0.5.1 (C) 2008-2011 Lukas Lueg - 2015 John Mora
+https://github.com/JPaulMora/Pyrit
+This code is distributed under the GNU General Public License v3+
+
+Parsing file 'Captura-01.cap' (1/1)...
+Parsed 2 packets (2 802.11-packets), got 1 AP(s)
+
+#1: AccessPoint 1c:b0:44:d4:16:78 ('MOVISTAR_1677'):
+No valid EAOPL-handshake + ESSID detected.
+```
+
+Como vemos, '**No valid EAOPL-handshake + ESSID detected.**', por lo que la captura no cuenta con ningún
+Handshake.
+
+Veamos ahora un caso donde sí nos reporta que la captura cuenta con un Handshake válido:
+
+```bash
+┌─[✗]─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #pyrit -r Captura-02.cap analyze
+Pyrit 0.5.1 (C) 2008-2011 Lukas Lueg - 2015 John Mora
+https://github.com/JPaulMora/Pyrit
+This code is distributed under the GNU General Public License v3+
+
+Parsing file 'Captura-02.cap' (1/1)...
+Parsed 63 packets (63 802.11-packets), got 1 AP(s)
+
+#1: AccessPoint 20:34:fb:b1:c5:53 ('hacklab'):
+  #1: Station 34:41:5d:46:d1:38, 1 handshake(s):
+    #1: HMAC_SHA1_AES, good*, spread 1
+```
+
+Tal y como se puede observar, la red **hacklab** cuenta con un Handshake generado por parte de la estación
+**34:41:5d:46:d1:38**, lo cual incluso nos viene de maravilla, porque así tenemos una traza de todo lo
+referente a dicha captura, incluido el nombre de la red inalámbrica en caso de que el nombre de nuestra
+captura no identifique al AP.
+
+### Tratamiento y filtro de la captura
+
+Cabe decir que a la hora de capturar un Handshake, capturamos tal vez más de lo que necesitamos durante el
+tiempo de espera. La captura final, puede ser tratada para extraer simplemente la información más relevante
+del AP, que sería el **eapol**.
+
+Con la herramienta **tshark**, podemos generar una nueva captura filtrando únicamente los paquetes que nos
+interesa de la captura previamente realizada:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #tshark -r Captura-02.cap -Y "eapol" 2>/dev/null
+   34   7.903744 XiaomiCo_b1:c5:53 → IntelCor_46:d1:38 EAPOL 133 Key (Message 1 of 4)
+   36   7.907316 IntelCor_46:d1:38 → XiaomiCo_b1:c5:53 EAPOL 155 Key (Message 2 of 4)
+   40   7.912448 XiaomiCo_b1:c5:53 → IntelCor_46:d1:38 EAPOL 189 Key (Message 3 of 4)
+   42   7.914483 IntelCor_46:d1:38 → XiaomiCo_b1:c5:53 EAPOL 133 Key (Message 4 of 4)
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #tshark -r Captura-02.cap -Y "eapol" 2>/dev/null -w filteredCapture
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #pyrit -r filteredCapture analyze
+Pyrit 0.5.1 (C) 2008-2011 Lukas Lueg - 2015 John Mora
+https://github.com/JPaulMora/Pyrit
+This code is distributed under the GNU General Public License v3+
+
+Parsing file 'filteredCapture' (1/1)...
+Parsed 4 packets (4 802.11-packets), got 1 AP(s)
+
+#1: AccessPoint 20:34:fb:b1:c5:53 ('None'):
+  #1: Station 34:41:5d:46:d1:38, 1 handshake(s):
+    #1: HMAC_SHA1_AES, good, spread 1
+No valid EAOPL-handshake + ESSID detected.
+```
+
+Y como vemos, nos sigue notificando de que hay 1 Handshake válido por parte de la estación especificada. Sin
+embargo, vemos que ahora en el campo 'ESSID' de la red ahora pone **None**. Esto es así dado que el campo
+**eapol** no guarda ese tipo de información. 
+
+Ahora es cuando recapitulamos, ¿qué tipo de paquete es el que
+guarda esa información?... exacto, los paquetes **Beacon**, por tanto podemos ajustar un poco más nuestro
+filtro para seguir desechando paquetes no necesarios pero filtrando algo más de información en lo referente a
+nuestro AP víctima:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #tshark -r Captura-02.cap -Y "wlan.fc.type_subtype==0x08 || eapol" 2>/dev/null
+    1   0.000000 XiaomiCo_b1:c5:53 → Broadcast    802.11 239 Beacon frame, SN=1893, FN=0, Flags=........, BI=100, SSID=hacklab
+   34   7.903744 XiaomiCo_b1:c5:53 → IntelCor_46:d1:38 EAPOL 133 Key (Message 1 of 4)
+   36   7.907316 IntelCor_46:d1:38 → XiaomiCo_b1:c5:53 EAPOL 155 Key (Message 2 of 4)
+   40   7.912448 XiaomiCo_b1:c5:53 → IntelCor_46:d1:38 EAPOL 189 Key (Message 3 of 4)
+   42   7.914483 IntelCor_46:d1:38 → XiaomiCo_b1:c5:53 EAPOL 133 Key (Message 4 of 4)
+```
+
+En este caso, vemos que ha habido un paquete Beacon capturado (debería ser así), indicando el nombre del ESSID
+al final de la primera línea.
+
+Si exportamos dicha captura y analizamos ahora desde **Pyrit**:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #tshark -r Captura-02.cap -Y "wlan.fc.type_subtype==0x08 || eapol" 2>/dev/null -w filteredCapture
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #pyrit -r filteredCapture analyze
+Pyrit 0.5.1 (C) 2008-2011 Lukas Lueg - 2015 John Mora
+https://github.com/JPaulMora/Pyrit
+This code is distributed under the GNU General Public License v3+
+
+Parsing file 'filteredCapture' (1/1)...
+Parsed 5 packets (5 802.11-packets), got 1 AP(s)
+
+#1: AccessPoint 20:34:fb:b1:c5:53 ('hacklab'):
+  #1: Station 34:41:5d:46:d1:38, 1 handshake(s):
+    #1: HMAC_SHA1_AES, good, spread 1
+```
+
+El campo **'None'** es sustituido por el **ESSID** de la red. 
+
+**ANOTACIÓN**: En mi opinión, recomiendo hacer uso del siguiente filtrado para este tipo de casos, donde
+además de los paquetes **Beacon** es preferible filtrar también por los paquetes **Probe Response**.
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #tshark -r Captura-02.cap -Y "wlan.fc.type_subtype==0x08 || wlan.fc.type_subtype==0x05 || eapol" 2>/dev/null
+    1   0.000000 XiaomiCo_b1:c5:53 → Broadcast    802.11 239 Beacon frame, SN=1893, FN=0, Flags=........, BI=100, SSID=hacklab
+    3   0.374849 XiaomiCo_b1:c5:53 → HonHaiPr_17:91:c0 802.11 210 Probe Response, SN=2287, FN=0, Flags=........, BI=100, SSID=hacklab
+    5   0.586817 XiaomiCo_b1:c5:53 → HonHaiPr_17:91:c0 802.11 210 Probe Response, SN=2288, FN=0, Flags=........, BI=100, SSID=hacklab
+    6   0.590400 XiaomiCo_b1:c5:53 → HonHaiPr_17:91:c0 802.11 210 Probe Response, SN=2288, FN=0, Flags=........, BI=100, SSID=hacklab
+    7   0.594497 XiaomiCo_b1:c5:53 → HonHaiPr_17:91:c0 802.11 210 Probe Response, SN=2288, FN=0, Flags=........, BI=100, SSID=hacklab
+    8   0.596543 XiaomiCo_b1:c5:53 → HonHaiPr_17:91:c0 802.11 210 Probe Response, SN=2288, FN=0, Flags=....R..., BI=100, SSID=hacklab
+    9   0.600640 XiaomiCo_b1:c5:53 → HonHaiPr_17:91:c0 802.11 210 Probe Response, SN=2288, FN=0, Flags=........, BI=100, SSID=hacklab
+   10   0.602688 XiaomiCo_b1:c5:53 → HonHaiPr_17:91:c0 802.11 210 Probe Response, SN=2288, FN=0, Flags=....R..., BI=100, SSID=hacklab
+   11   0.605759 XiaomiCo_b1:c5:53 → HonHaiPr_17:91:c0 802.11 210 Probe Response, SN=2288, FN=0, Flags=....R..., BI=100, SSID=hacklab
+   12   0.610367 XiaomiCo_b1:c5:53 → HonHaiPr_17:91:c0 802.11 210 Probe Response, SN=2288, FN=0, Flags=........, BI=100, SSID=hacklab
+   13   4.188928 XiaomiCo_b1:c5:53 → IntelCor_46:d1:38 802.11 229 Probe Response, SN=1935, FN=0, Flags=........, BI=100, SSID=hacklab
+   34   7.903744 XiaomiCo_b1:c5:53 → IntelCor_46:d1:38 EAPOL 133 Key (Message 1 of 4)
+   36   7.907316 IntelCor_46:d1:38 → XiaomiCo_b1:c5:53 EAPOL 155 Key (Message 2 of 4)
+   40   7.912448 XiaomiCo_b1:c5:53 → IntelCor_46:d1:38 EAPOL 189 Key (Message 3 of 4)
+   42   7.914483 IntelCor_46:d1:38 → XiaomiCo_b1:c5:53 EAPOL 133 Key (Message 4 of 4)
+  112   8.252481 XiaomiCo_b1:c5:53 → HonHaiPr_17:91:c0 802.11 210 Probe Response, SN=2292, FN=0, Flags=........, BI=100, SSID=hacklab
+  113   8.259649 XiaomiCo_b1:c5:53 → HonHaiPr_17:91:c0 802.11 210 Probe Response, SN=2292, FN=0, Flags=........, BI=100, SSID=hacklab
+  114   8.261696 XiaomiCo_b1:c5:53 → HonHaiPr_17:91:c0 802.11 210 Probe Response, SN=2292, FN=0, Flags=....R..., BI=100, SSID=hacklab
+  115   8.272449 XiaomiCo_b1:c5:53 → HonHaiPr_17:91:c0 802.11 210 Probe Response, SN=2292, FN=0, Flags=........, BI=100, SSID=hacklab
+```
+
+
 
 
 
