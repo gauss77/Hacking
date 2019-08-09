@@ -1075,7 +1075,7 @@ especificar parámetros:
 
 * mdk3 wlan0mon b
 
-Estaríamos generando puntos de acceso con estos **ESSID's**:
+Estaríamos generando puntos de acceso con **ESSID's** aleatorios:
 
 <img align="center" src="https://funkyimg.com/i/2W6sd.png">
 
