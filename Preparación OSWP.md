@@ -1231,8 +1231,8 @@ nuestro AP víctima, haciendo uso para ello del operador **OR**:
    42   7.914483 IntelCor_46:d1:38 → XiaomiCo_b1:c5:53 EAPOL 133 Key (Message 4 of 4)
 ```
 
-En este caso, vemos que ha habido un paquete Beacon capturado (debería ser así), indicando el nombre del ESSID
-al final de la primera línea.
+En este caso, vemos que ha habido un paquete Beacon capturado, indicando el nombre del ESSID al final de la
+primera línea.
 
 Si exportamos dicha captura y analizamos ahora desde **Pyrit**:
 
