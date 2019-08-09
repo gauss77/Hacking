@@ -1107,6 +1107,25 @@ La sintaxis sería la siguiente:
 
 #### Técnicas Pasivas
 
+Todo lo visto hasta el momento, requiere de la intervención por nuestra parte en el lado del atacante. 
+
+Tendríamos un modo de actuar de forma pasiva para obtener el Handshake, y es simplemente armarnos de valor y
+tener paciencia. 
+
+Podríamos quedarnos esperando hasta que algunas de las estaciones asociadas disponga de mala
+señal, se desconecte y reasocie automáticamente sin nosotros tener que hacer nada. Podríamos quedarnos
+esperando hasta que de pronto alguien nuevo que ya estaba asociado en el pasado a la red se asocie de nuevo al
+AP. Se podría hacer de montón de maneras distintas.
+
+Lo importante de todo esto, es que el Handshake, no tiene por qué generarse de la reautenticación del cliente
+a la red pero sólo si nosotros lo hemos expulsado de la red. Me refiero, el Handshake no guarda relación
+alguna con el ataque de de-autenticación para forzar al cliente a que se reconecte a la red.
+
+Siempre el Handshake se va a generar en el momento en el que el cliente se vuelva a conectar a la red, sea por
+nuestros medios activos o sin hacer nada a voluntad de la calidad de la señal entre la estación y el AP, o por
+el propio cliente que se ha vuelto a reconectar por 'X' razones.
+
+
 
 
 
