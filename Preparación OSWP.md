@@ -1081,6 +1081,18 @@ Estaríamos generando puntos de acceso con estos **ESSID's**:
 
 #### Disassociation Amok Mode Attack
 
+Realmente esto no deja de parecerse a un ataque de de-autenticación dirigido, pero por cultura, **mdk3**
+cuenta con unos modos de operación de tipo **Black List/White List**, desde los cuales podemos especificar qué
+clientes queremos que no sean deautenticados del AP, añadiendo a los mismos en un White List y viceversa.
+
+Para construir el ataque, simplemente debemos crear un fichero con las direcciones MAC de los clientes a los
+cuales queremos de-autenticar del AP. Posteriormente, corremos **mdk3** especificando el modo de ataque y el
+canal en el que se encuentra la red:
+
+<img align="center" src="https://funkyimg.com/i/2W6tU.png">
+
+#### Michael Shutdown Exploitation
+
 
 
 
