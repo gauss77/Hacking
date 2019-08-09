@@ -1093,6 +1093,19 @@ canal en el que se encuentra la red:
 
 #### Michael Shutdown Exploitation
 
+Tal y como dice la propia descripción de la utilidad:
+
+`"Can shut down APs using TKIP encryption and QoS Extension with 1 sniffed and 2 injected QoS Data Packets"`
+
+Es decir, podemos llegar a apagar un router a través de este ataque. 
+
+**ANOTACIÓN:** En la práctica, no es muy efectivo.
+
+La sintaxis sería la siguiente:
+
+* mdk3 wlan0mon m -t bssidAP
+
+#### Técnicas Pasivas
 
 
 
