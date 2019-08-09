@@ -1312,6 +1312,54 @@ Pyrit), una buena práctica sería hacer lo siguiente:
   115   8.272449 XiaomiCo_b1:c5:53 → HonHaiPr_17:91:c0 802.11 210 Probe Response, SN=2292, FN=0, Flags=........, BI=100, SSID=hacklab
 ```
 
+Por último y para que no os asustéis, fijaros qué curioso:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #tshark -r Captura-02.cap -Y "(wlan.fc.type_subtype==0x08 || wlan.fc.type_subtype==0x05 || eapol) && wlan.addr==20:34:fb:b1:c5:53" -w filteredCapture 2>/dev/null
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #aircrack-ng filteredCapture 
+Opening filteredCapture wait...
+Unsupported file format (not a pcap or IVs file).
+Read 0 packets.
+
+No networks found, exiting.
+
+
+Quitting aircrack-ng...
+```
+
+La suite de **aircrack-ng**, debería ser capaz de distinguirnos el punto de acceso y el Handshake capturado,
+hemos visto que **Pyrit** lo detecta sin problemas, ¿por qué aircrack no?, la respuesta es sencilla. A la hora
+de exportar la captura desde **tshark**, si queremos que **aircrack** nos lo interprete, debemos de
+especificar en el modo de exportación para la captura el formato **pcap**, de la siguiente forma:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #tshark -r Captura-02.cap -R "(wlan.fc.type_subtype==0x08 || wlan.fc.type_subtype==0x05 || eapol) && wlan.addr==20:34:fb:b1:c5:53" -2 -w filteredCapture -F pcap 2>/dev/null
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #aircrack-ng filteredCapture 
+Opening filteredCapture wait...
+Read 19 packets.
+
+   #  BSSID              ESSID                     Encryption
+
+   1  20:34:FB:B1:C5:53  hacklab                   WPA (1 handshake)
+
+Choosing first network as target.
+
+Opening filteredCapture wait...
+Read 19 packets.
+
+1 potential targets
+```
+
+Destacar que he hecho uso del parámetro '**-R**' en vez del '**-Y**' porque estoy hacienod uso del parámetro
+'**-2**', con el objetivo de hacer un doble pase durante la fase de análisis. Esta opción es incluso mejor,
+dado que se recopilan las anotaciones. El uso del parámetro '**-R**' requiere de forma obligatoria que
+añadamos el parámetro **-2**.
+
+Os dejo por aquí una pequeña aclaratoria de la utilidad de estos parámetros: <a href="https://osqa-ask.wireshark.org/questions/19794/what-is-the-meaning-of-two-pass-analysis">Interés</a>
 
 
 
