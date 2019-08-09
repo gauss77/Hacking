@@ -1219,7 +1219,7 @@ embargo, vemos que ahora en el campo 'ESSID' de la red nos pone **None**. Esto e
 Ahora es cuando recapitulamos, ¿qué tipo de paquete es el que
 guarda esa información?... exacto, los paquetes **Beacon**, por tanto podemos ajustar un poco más nuestro
 filtro para seguir desechando paquetes no necesarios pero filtrando algo más de información en lo referente a
-nuestro AP víctima:
+nuestro AP víctima, haciendo uso para ello del operador **OR**:
 
 ```bash
 ┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
