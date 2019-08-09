@@ -1213,7 +1213,7 @@ No valid EAOPL-handshake + ESSID detected.
 ```
 
 Y como vemos, nos sigue notificando de que hay 1 Handshake válido por parte de la estación especificada. Sin
-embargo, vemos que ahora en el campo 'ESSID' de la red ahora pone **None**. Esto es así dado que el campo
+embargo, vemos que ahora en el campo 'ESSID' de la red nos pone **None**. Esto es así dado que el campo
 **eapol** no guarda ese tipo de información. 
 
 Ahora es cuando recapitulamos, ¿qué tipo de paquete es el que
