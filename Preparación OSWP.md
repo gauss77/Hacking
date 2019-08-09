@@ -1079,6 +1079,10 @@ Estaríamos generando puntos de acceso con estos **ESSID's**:
 
 <img align="center" src="https://funkyimg.com/i/2W6sd.png">
 
+#### Disassociation Amok Mode Attack
+
+
+
 
 
 
