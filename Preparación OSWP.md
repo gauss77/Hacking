@@ -1117,9 +1117,9 @@ señal, se desconecte y reasocie automáticamente sin nosotros tener que hacer n
 esperando hasta que de pronto alguien nuevo que ya estaba asociado en el pasado a la red se asocie de nuevo al
 AP. Se podría hacer de montón de maneras distintas.
 
-Lo importante de todo esto es, que el Handshake, no tiene por qué generarse de la reautenticación del cliente
-a la red pero sólo si nosotros lo hemos expulsado de la red. Me refiero, el Handshake no guarda relación
-alguna con el ataque de de-autenticación para forzar al cliente a que se reconecte a la red.
+Lo importante de todo esto es, que el Handshake, no tiene por qué generarse en base a la reautenticación del
+cliente a la red pero sólo si nosotros lo hemos expulsado de la red. Me refiero, el Handshake no guarda
+relación alguna con el ataque de de-autenticación para forzar al cliente a que se reconecte a la red.
 
 Siempre el Handshake se va a generar en el momento en el que el cliente se vuelva a conectar a la red, sea por
 nuestros medios activos o sin hacer nada a voluntad de la calidad de la señal entre la estación y el AP, o por
