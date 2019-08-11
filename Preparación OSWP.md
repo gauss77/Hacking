@@ -2724,7 +2724,7 @@ Está claro que podríamos iniciar con una fase de Pentesting para tratar de vul
 sistemas y comenzar a comprometer todos los equipos, pero no es la idea. Partiremos a nivel de red, viendo
 hasta qué punto podemos llegar con la información que hemos recopilado.
 
-Si nos fijamos, las capturas de monitorizado activo que exportamos con ‘airodump-ng’ viajan encriptados, es
+Si nos fijamos, las capturas de monitorizado activo que exportamos con ‘airodump-ng’ viajan encriptadas, es
 decir, no es posible visualizar consultas HTTP ni peticiones a nivel privado de red:
 
 ```bash
