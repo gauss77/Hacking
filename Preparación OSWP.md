@@ -2710,12 +2710,12 @@ Y fijaros que velocidad más vertiginosa:
 
 * **18.289.321 contraseñas por segundo**
 
-#### Técnicas de Espionaje
+### Técnicas de Espionaje
 
 Este punto englobal algunas técnicas básicas **sin entrar en fase de Pentesting** para a nivel de red ser capaces
 de saber qué es lo que están haciendo nuestras víctimas, incluido el robo de datos.
 
-### Uso de Airdecap para el desencriptado de paquetes
+#### Uso de Airdecap para el desencriptado de paquetes
 
 
 
