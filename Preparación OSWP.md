@@ -1963,6 +1963,9 @@ contraseña siempre y cuando esta se encuentre en el diccionario especificado:
       EAPOL HMAC     : 1A EB 42 13 85 E4 A1 FC 99 AF AA 97 4D AA EE 25
 ```
 
+La velocidad de cómputo siempre va a depender de nuestra CPU, pero veremos un par de técnicas más adelante
+para aumentar nuestra velocidad de cómputo, superando las 10 millones de contraseñas por segundo.
+
 
 
 
