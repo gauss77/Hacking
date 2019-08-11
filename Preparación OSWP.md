@@ -46,7 +46,6 @@
             * [Análisis del desencriptado con Tshark y Wireshark](#análisis-del-desencriptado-con-tshark-y-wireshark)
             * [Espionaje con Ettercap Driftnet y enrutamiento con iptables](#espionaje-con-ettercap-driftnet-y-enrutamiento-con-iptables)
         * [Ataques graciosos](#ataques-graciosos)
-            * [Uso de Xersoploit](#uso-de-xerosploit)
             * [Reemplazado de imágenes web](#reemplazado-de-imágenes-web)
             * [Ataque Shaking Web](#ataque-shaking-web)
         * [Ataque DNS Spoofing](#ataque-dns-spoofing)
@@ -2959,7 +2958,10 @@ web:
 
 ### Ataques graciosos
 
+Estos ataques forman parte de una categoría que considero algo Off-Topic, porque no obtenemos nada de interés
+con ello.. pero bueno, puede servir para echarnos unas risas de vez en cuando.
 
+#### Reemplazado de imágenes web
 
 
 
