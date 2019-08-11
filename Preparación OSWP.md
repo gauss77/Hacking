@@ -2266,7 +2266,18 @@ Parsed 7 packets (7 802.11-packets), got 1 AP(s)
     #4: HMAC_SHA1_AES, good, spread 2
 ```
 
+#### Técnicas de aumento de la velocidad de cómputo
 
+Si bien es cierto que considero que la velocidad de cómputo de mi ordenador es bastante aceptable
+(7.000/10.000 contraseñas por segundo), ¿hay alguna forma de ir más rápido aún?, ¿hay alguna forma de
+multiplicar por 1.000 la velocidad si ser necesario un ordenador de altos requisitos?, la respuesta es si.
+
+A la hora de iniciar el proceso de fuerza bruta con **aircrack**, por ejemplo, estamos llevando a cabo varios pasos:
+
+* Filtrado de la captura para extraer el Hash (Handshake)
+* Lectura de diccionario (CCMP por cada contraseña en texto claro)
+* Comparativa del Hash resultante con el Handshake capturado
+* True/False (Si hay Match, es que esa es la contraseña)
 
 
 
