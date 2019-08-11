@@ -2545,7 +2545,19 @@ Lo sé, flipante, pero es que se puede ir aún más rápido.
 
 ### Rainbow Table con Genpmk
 
+Hemos visto cómo podemos aumentar considerablemente la velocidad de cómputo haciendo uso de la suite de
+**aircrack**. Ahora distanciémonos un poco de **aircrack** y pensemos en **Cowpatty** y **Pyrit**, no nos
+sorprendió mucho la última vez, ¿verdad?, sin embargo, vamos a hacer que tomen un papel más importante.
 
+El fichero **passwords-airolib** no puede ser aprovechado por **Cowpatty** ni por **Pyrit**, en este caso
+tendremos que hacer uso de **genpmk** para generar un nuevo diccionario de claves precomputadas adaptado para
+que sea interpretado por estas fantásticas herramientas.
+
+La sintaxis es la siguiente:
+
+```bash
+
+```
 
 
 
