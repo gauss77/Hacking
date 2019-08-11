@@ -1978,7 +1978,7 @@ Detected NVIDIA GPUs:
 ```
 
 Lo mejor es tirar de **Hashcat** para estos casos. Para correr la herramienta, primero necesitamos saber cuál
-es el método numérico correpsondiente a **WPA**:
+es el método numérico correspondiente a **WPA**:
 
 ```bash
 ┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
