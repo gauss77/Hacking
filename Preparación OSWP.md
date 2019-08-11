@@ -1704,6 +1704,126 @@ tipo **Evil Twin**, que veremos más adelante.
 
 ### Análisis de paquetes de red con tshark
 
+Hasta ahora hemos estado viendo diversos modos de filtro con **tshark** pero sin dedicar una sección
+específica para los modos de filtro. A continuación, vamos a ver distintos modos de filtrado, de utilidad para
+el análisis de paquetes y capturas:
+
+* Paquetes Probe Request
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #tshark -i wlan0mon -Y "wlan.fc.type_subtype==4" 2>/dev/null
+  175 22.140053472 JuniperN_2c:47:40 → Broadcast    802.11 178 Probe Request, SN=2376, FN=0, Flags=........C, SSID=WLAN_C311
+  185 26.153075819 Apple_ed:e2:63 → Broadcast    802.11 214 Probe Request, SN=1959, FN=0, Flags=........C, SSID=Wlan1
+  186 26.234864238 Apple_ed:e2:63 → Broadcast    802.11 214 Probe Request, SN=1963, FN=0, Flags=........C, SSID=Wlan1
+  187 26.245021241 Apple_ed:e2:63 → Broadcast    802.11 214 Probe Request, SN=1964, FN=0, Flags=........C, SSID=Wlan1
+  188 26.257907684 Apple_ed:e2:63 → Broadcast    802.11 214 Probe Request, SN=1965, FN=0, Flags=........C, SSID=Wlan1
+  189 26.268055504 Apple_ed:e2:63 → Broadcast    802.11 214 Probe Request, SN=1966, FN=0, Flags=........C, SSID=Wlan1
+```
+
+* Paquetes Probe Response
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #tshark -r Captura-01.cap -Y "wlan.fc.type_subtype==5" 2>/dev/null
+    2   1.617473 XiaomiCo_b1:c5:53 → 32:7d:a9:4f:21:99 802.11 229 Probe Response, SN=1872, FN=0, Flags=........, BI=100, SSID=hacklab
+    5   1.628735 XiaomiCo_b1:c5:53 → 32:7d:a9:4f:21:99 802.11 229 Probe Response, SN=1874, FN=0, Flags=........, BI=100, SSID=hacklab
+   10   3.698368 XiaomiCo_b1:c5:53 → IntelCor_46:d1:38 802.11 210 Probe Response, SN=2340, FN=0, Flags=........, BI=100, SSID=hacklab
+   12   3.701951 XiaomiCo_b1:c5:53 → IntelCor_46:d1:38 802.11 210 Probe Response, SN=2341, FN=0, Flags=........, BI=100, SSID=hacklab
+   14   3.756735 XiaomiCo_b1:c5:53 → IntelCor_46:d1:38 802.11 210 Probe Response, SN=2342, FN=0, Flags=........, BI=100, SSID=hacklab
+   16   3.759295 XiaomiCo_b1:c5:53 → IntelCor_46:d1:38 802.11 210 Probe Response, SN=2343, FN=0, Flags=........, BI=100, SSID=hacklab
+```
+
+* Paquetes Association Request
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #tshark -r Captura-01.cap -Y "wlan.fc.type_subtype==0" 2>/dev/null
+   22   5.041479 IntelCor_46:d1:38 → XiaomiCo_b1:c5:53 802.11 122 Association Request, SN=227, FN=0, Flags=........, SSID=hacklab
+```
+
+* Paquetes Association Response
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #tshark -r Captura-01.cap -Y "wlan.fc.type_subtype==1" 2>/dev/null
+   24   5.049663 XiaomiCo_b1:c5:53 → IntelCor_46:d1:38 802.11 127 Association Response, SN=2346, FN=0, Flags=........
+```
+
+* Paquetes Beacon
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #tshark -r Captura-01.cap -Y "wlan.fc.type_subtype==8" 2>/dev/null
+    1   0.000000 XiaomiCo_b1:c5:53 → Broadcast    802.11 239 Beacon frame, SN=1855, FN=0, Flags=........, BI=100, SSID=hacklab
+```
+
+* Paquete Authentication
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #tshark -r Captura-01.cap -Y "wlan.fc.type_subtype==11" 2>/dev/null
+   18   5.033280 IntelCor_46:d1:38 → XiaomiCo_b1:c5:53 802.11 30 Authentication, SN=226, FN=0, Flags=........
+   20   5.035840 XiaomiCo_b1:c5:53 → IntelCor_46:d1:38 802.11 30 Authentication, SN=2344, FN=0, Flags=........
+```
+
+* Paquetes Deauthentication
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #tshark -i wlan0mon -Y "wlan.fc.type_subtype==12" 2>/dev/null
+  200 39.994017471 AskeyCom_d4:16:78 → Broadcast    802.11 38 Deauthentication, SN=0, FN=0, Flags=........
+  201 39.994777432 AskeyCom_d4:16:78 → Broadcast    802.11 39 Deauthentication, SN=0, FN=0, Flags=........
+  202 39.996199413    Broadcast → AskeyCom_d4:16:78 802.11 38 Deauthentication, SN=1, FN=0, Flags=........
+  203 39.996798243    Broadcast → AskeyCom_d4:16:78 802.11 39 Deauthentication, SN=1, FN=0, Flags=........
+  205 39.999554640 AskeyCom_d4:16:78 → Broadcast    802.11 38 Deauthentication, SN=2, FN=0, Flags=........
+  206 40.000174666 AskeyCom_d4:16:78 → Broadcast    802.11 39 Deauthentication, SN=2, FN=0, Flags=........
+```
+
+* Paquetes Dissasociation
+
+```bash
+tshark -i wlan0mon -Y "wlan.fc.type_subtype==10" 2>/dev/null # Para este caso no pude pillar ninguno jeje
+```
+
+* Paquetes Clear To Send (CTS)
+
+```bash
+┌─[✗]─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #tshark -i wlan0mon -Y "wlan.fc.type_subtype==28" 2>/dev/null
+  183 11.333769733              → XiaomiCo_b1:c5:53 (20:34:fb:b1:c5:53) (RA) 802.11 70 Clear-to-send, Flags=........C
+  186 11.334796342              → XiaomiCo_b1:c5:53 (20:34:fb:b1:c5:53) (RA) 802.11 70 Clear-to-send, Flags=........C
+  189 11.336432358              → XiaomiCo_b1:c5:53 (20:34:fb:b1:c5:53) (RA) 802.11 70 Clear-to-send, Flags=........C
+  192 11.339134653              → XiaomiCo_b1:c5:53 (20:34:fb:b1:c5:53) (RA) 802.11 70 Clear-to-send, Flags=........C
+  196 11.352502740              → XiaomiCo_b1:c5:53 (20:34:fb:b1:c5:53) (RA) 802.11 70 Clear-to-send, Flags=........C
+  199 11.357122880              → XiaomiCo_b1:c5:53 (20:34:fb:b1:c5:53) (RA) 802.11 70 Clear-to-send, Flags=........C
+  204 11.362841524              → XiaomiCo_b1:c5:53 (20:34:fb:b1:c5:53) (RA) 802.11 70 Clear-to-send, Flags=........C
+  222 11.418923972              → AskeyCom_d4:16:78 (1c:b0:44:d4:16:78) (RA) 802.11 70 Clear-to-send, Flags=........C
+  224 11.419977797              → AskeyCom_d4:16:78 (1c:b0:44:d4:16:78) (RA) 802.11 70 Clear-to-send, Flags=........C
+  226 11.427114234              → AskeyCom_d4:16:78 (1c:b0:44:d4:16:78) (RA) 802.11 70 Clear-to-send, Flags=........C
+  230 11.427645439              → AskeyCom_d4:16:78 (1c:b0:44:d4:16:78) (RA) 802.11 70 Clear-to-send, Flags=........C
+  235 11.430118052              → XiaomiCo_b1:c5:53 (20:34:fb:b1:c5:53) (RA) 802.11 70 Clear-to-send, Flags=........C
+  240 11.434558344              → XiaomiCo_b1:c5:53 (20:34:fb:b1:c5:53) (RA) 802.11 70 Clear-to-send, Flags=........C
+  243 11.435567660              → XiaomiCo_b1:c5:53 (20:34:fb:b1:c5:53) (RA) 802.11 70 Clear-to-send, Flags=........C
+  246 11.441881524              → XiaomiCo_b1:c5:53 (20:34:fb:b1:c5:53) (RA) 802.11 70 Clear-to-send, Flags=........C
+```
+
+* Paquetes ACK
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #tshark -i wlan0mon -Y "wlan.fc.type_subtype==29" 2>/dev/null
+   44 2.532918866              → XiaomiCo_d0:51:c5 (a4:50:46:d0:51:c5) (RA) 802.11 70 Acknowledgement, Flags=........C
+  213 4.870822127              → 72:4f:56:d5:f4:21 (72:4f:56:d5:f4:21) (RA) 802.11 70 Acknowledgement, Flags=........C
+  214 4.872287210              → 72:4f:56:27:f7:f5 (72:4f:56:27:f7:f5) (RA) 802.11 70 Acknowledgement, Flags=........C
+  215 4.873060680              → 72:4f:56:d5:f4:21 (72:4f:56:d5:f4:21) (RA) 802.11 70 Acknowledgement, Flags=........C
+  231 5.792287268              → Pegatron_5b:42:f6 (38:60:77:5b:42:f6) (RA) 802.11 70 Acknowledgement, Flags=........C
+  252 6.105136504              → Apple_24:f9:60 (70:14:a6:24:f9:60) (RA) 802.11 70 Acknowledgement, Flags=........C
+  254 6.109740279              → HewlettP_f1:96:a3 (44:48:c1:f1:96:a3) (RA) 802.11 70 Acknowledgement, Flags=........C
+  268 6.137270470              → Apple_24:f9:60 (70:14:a6:24:f9:60) (RA) 802.11 70 Acknowledgement, Flags=........C
+  279 6.161518783              → Apple_24:f9:60 (70:14:a6:24:f9:60) (RA) 802.11 70 Acknowledgement, Flags=........C
+  281 6.165512928              → Apple_24:f9:60 (70:14:a6:24:f9:60) (RA) 802.11 70 Acknowledgement, Flags=........C
+```
 
 
 
