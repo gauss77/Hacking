@@ -1825,7 +1825,86 @@ tshark -i wlan0mon -Y "wlan.fc.type_subtype==10" 2>/dev/null # Para este caso no
   281 6.165512928              → Apple_24:f9:60 (70:14:a6:24:f9:60) (RA) 802.11 70 Acknowledgement, Flags=........C
 ```
 
+#### Extracción del Hash en el Handshake
 
+Aunque no es necesario, por si queremos saber con qué estamos trabajando, es posible extraer el Hash
+correspondiente a la captura donde se encuentra nuestro Handshake.
+
+Qué mejor que ver nuestro Handshake representado en formato Hash, tanto que hemos hablado de él como para no
+prestarle un poco más de atención. Actualmente, **aircrack-ng** cuenta con el parámetro '**-J**', de utilidad
+para generar un archivo de '**.hccap**'.
+
+¿Por qué queremos generar un archivo **HCCAP**?, porque luego a través de la herramienta **hccap2john**
+podemos transformar ese archivo a un hash, igual que como haríamos como **ssh2john** u otra utilidad.
+
+Por tanto, aquí una demostración:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #ls
+Captura-01.cap
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #aircrack-ng -J miCaptura Captura-01.cap 
+Opening Captura-01.cape wait...
+Read 5110 packets.
+
+   #  BSSID              ESSID                     Encryption
+
+   1  20:34:FB:B1:C5:53  hacklab                   WPA (1 handshake)
+
+Choosing first network as target.
+
+Opening Captura-01.cape wait...
+Read 5110 packets.
+
+1 potential targets
+
+
+
+Building Hashcat file...
+
+[*] ESSID (length: 7): hacklab
+[*] Key version: 2
+[*] BSSID: 20:34:FB:B1:C5:53
+[*] STA: 34:41:5D:46:D1:38
+[*] anonce:
+    FE AD BB C5 CA AC 3C 41 52 56 B1 44 5D 61 29 2A 
+    72 E1 7D 73 6A 5E 16 A5 15 88 E4 9E 58 42 EC 78 
+[*] snonce:
+    47 5D 5A 50 E4 2D 1D 18 F8 67 5B 0A B6 B1 FF 1F 
+    6A 85 82 EC 66 3E 92 2A F0 CC B2 05 F3 8B DE E0 
+[*] Key MIC:
+    0C 0E B7 91 69 C1 FE FD E5 D9 08 42 2E E4 A5 3C
+[*] eapol:
+    01 03 00 75 02 01 0A 00 00 00 00 00 00 00 00 00 
+    01 47 5D 5A 50 E4 2D 1D 18 F8 67 5B 0A B6 B1 FF 
+    1F 6A 85 82 EC 66 3E 92 2A F0 CC B2 05 F3 8B DE 
+    E0 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+    00 00 16 30 14 01 00 00 0F AC 04 01 00 00 0F AC 
+    04 01 00 00 0F AC 02 00 00 
+
+Successfully written to miCaptura.hccap
+
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #ls
+Captura-01.cap  miCaptura.hccap
+```
+
+Una vez hecho, hacemos uso de **hccap2john** para visualizar el hash:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #hccap2john miCaptura.hccap > miHash
+┌─[✗]─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #cat !$
+cat miHash
+hacklab:$WPAPSK$hacklab#61HvgQJHB23RFh2sFppOICEh5FXsNpg8hf5z5qe3UilaDd6ewAmm/TC9ri1yfPj3mekwEJ7KgIFRMGYeQi3xQqdS3eIJWCGSK29gS.21.5I0.Ec............/FppOICEh5FXsNpg8hf5z5qe3UilaDd6ewAmm/TC9ri..................................................................3X.I.E..1uk2.E..1uk2.E..1uk0....................................................................................................................................................................................../t.....U....kCht3dkTvxtRY6EWvYdHk:34-41-5d-46-d1-38:20-34-fb-b1-c5-53:2034fbb1c553::WPA2:miCaptura.hccap
+```
+
+Y eso tan bonito que vemos, es el Hash correspondiente a la contraseña de la red WiFi, la cual podríamos
+sencillamente crackear llegados hasta este punto haciendo uso de la herramienta **John** junto a un diccionario.
 
 
 
