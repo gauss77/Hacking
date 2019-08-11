@@ -2279,6 +2279,62 @@ A la hora de iniciar el proceso de fuerza bruta con **aircrack**, por ejemplo, e
 * Comparativa del Hash resultante con el Handshake capturado
 * True/False (Si hay Match, es que esa es la contraseña)
 
+¿No has pensado en que todos estos pasos se podrían omitir, si contásemos con un diccionario de claves ya
+precomputadas?. Me explico, ¿y si en vez de tener un diccionario de contraseñas en texto claro, tenemos un
+diccionario de contraseñas ya pre-computadas con sus respectivos hashes?, fijaros que ahora sería simplemente
+hacer los siguientes pasos:
+
+* Lectura de la clave PMK del diccionario
+* True/False (Match con el Handshake)
+
+Esta reducción de pasos es equivalente a la velocidad del tiempo de cómputo, es decir, es mucho menor. Lo
+iremos viendo poco a poco, pero primero un poco de cultura :)
+
+### Concepto de Rainbow Table
+
+Las "**tablas arcoiris**, son tablas de consulta que ofrecen un compromiso espacio-tiempo para obtener claves
+en texto simple a partir del resultado de una función de hash.
+
+Cualquier sistema informático que requiera una autenticación por contraseña debe contener una base de datos de
+contraseñas, ya sea ordenada o en texto llano, y existen diversos métodos para el almacenamiento de dichas
+contraseñas. Debido a que las tablas son vulnerables al robo, el almacenamiento de la contraseña en texto
+llano es peligroso. 
+
+Por lo tanto, la mayoría de las bases de datos almacenan un hash criptográfico de la contraseña del usuario en
+la base de datos. En un entorno así, nadie, incluyendo la propia autenticación de sistema puede determinar
+cual es la contraseña del usuario simplemente observando el valor almacenado en la base de datos. En cambio,
+cuando un usuario introduce su contraseña para autenticarse, se calcula el hash de la contraseña introducida y
+se compara con el valor almacenado para ese usuario (que fue hash antes de ser almacenado). Si los dos valores
+hash coinciden, se concede el acceso.
+
+Una persona que tenga acceso a la tabla de contraseñas no puede simplemente copiar la entrada de la base de
+datos del usuario para obtener acceso (utilizar el hash como una contraseña sería, por supuesto, un error ya
+que el sistema de autenticación haría un hash por segunda vez, produciendo un resultado que no coincide con el
+valor almacenado). Con el fin de obtener la contraseña de un usuario, hay que encontrar una contraseña que
+produce el mismo valor hash.
+
+Las tablas arcoíris son una herramienta que se ha desarrollado en un esfuerzo por obtener una contraseña
+mirando solamente a un valor hash.
+
+Las tablas de arcoíris no siempre son necesarias, ya que existen métodos más simples de reversión de hash
+disponible, como ataques de fuerza bruta y ataques de diccionario, que son los métodos más simples disponibles.
+Sin embargo, estos no son adecuados para sistemas que utilizan contraseñas largas, debido a la dificultad de
+almacenar todas las opciones disponibles.
+
+Para abordar esta cuestión de la escala, se han llegado a generar tablas de búsqueda inversa que almacenan
+sólo una pequeña selección de los hashes, de manera que cuando se invierte, se pueden generar contraseñas de
+cadenas largas de texto. Aunque la búsqueda inversa de un hash en una tabla encadenada llevaría más tiempo de
+cálculo, el tiempo de búsqueda en la tabla en sí misma puede ser mucho menor, por lo que los hashes de las
+contraseñas más largas se pueden almacenar.
+
+Las tablas arcoíris son un refinamiento de esta técnica de encadenamiento y proporcionan una solución a un
+problema llamado «colisiones en cadena».
+
+### Cracking con Pyrit
+
+
+
+
 
 
 
