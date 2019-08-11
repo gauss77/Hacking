@@ -2717,6 +2717,16 @@ de saber qué es lo que están haciendo nuestras víctimas, incluido el robo de 
 
 #### Uso de Airdecap para el desencriptado de paquetes
 
+Hasta ahora hemos visto cómo obtener las credenciales de acceso a una red inalámbrica. Ahora bien, ¿qué pasa
+una vez estamos dentro?
+
+Está claro que podríamos iniciar con una fase de Pentesting para tratar de vulnerar la seguridad de los
+sistemas y comenzar a comprometer todos los equipos, pero no es la idea. Partiremos a nivel de red, viendo
+hasta qué punto podemos llegar con la información que hemos recopilado.
+
+Si nos fijamos, las capturas de monitorizado activo que exportamos con ‘airodump-ng’ viajan encriptados, es
+decir, no es posible visualizar consultas HTTP ni peticiones a nivel privado de red:
+
 
 
 
