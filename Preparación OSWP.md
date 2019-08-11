@@ -44,7 +44,6 @@
         * [Técnicas de espionaje](#técnicas-de-espionaje)
             * [Uso de Airdecap para el desencriptado de paquetes](#uso-de-airdecap-para-el-desencriptado-de-paquetes)
             * [Análisis del desencriptado con Tshark y Wireshark](#análisis-del-desencriptado-con-tshark-y-wireshark)
-            * [Concepto de enrutamiento](#concepto-de-enrutamiento)
             * [Espionaje con Ettercap Driftnet y enrutamiento con iptables](#espionaje-con-ettercap-driftnet-y-enrutamiento-con-iptables)
         * [Ataques graciosos](#ataques-graciosos)
             * [Uso de Xersoploit](#uso-de-xerosploit)
@@ -2857,8 +2856,6 @@ que percibamos estando en modo monitor, lo cual es fascinante.
 
 **IMPORTANTE**: Para desencriptar el tráfico de un cliente, es necesario capturar un Handshake por parte de
 dicha estación. En caso contrario, no será posible desencriptar su tráfico.
-
-#### Concepto de enrutamiento
 
 #### Espionaje con Ettercap Driftnet y enrutamiento con iptables
 
