@@ -2880,7 +2880,7 @@ al puerto 8080:
 └──╼ #
 ```
 
-Antes que nada recomiendo limpiar cualquier tipo de regla previa definida en iptables. Para el que le guste la
+Antes que nada recomiendo limpiar cualquier tipo de regla previa definida en iptables. Para al que le guste la
 idea, en mi caso tengo creado un alias a nivel de **bashrc**:
 
 ```bash
