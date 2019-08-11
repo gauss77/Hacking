@@ -2712,6 +2712,11 @@ Y fijaros que velocidad más vertiginosa:
 
 #### Técnicas de Espionaje
 
+Este punto englobal algunas técnicas básicas **sin entrar en fase de Pentesting** para a nivel de red ser capaces
+de saber qué es lo que están haciendo nuestras víctimas, incluido el robo de datos.
+
+### Uso de Airdecap para el desencriptado de paquetes
+
 
 
 
