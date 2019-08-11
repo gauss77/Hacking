@@ -48,7 +48,6 @@
         * [Ataques graciosos](#ataques-graciosos)
             * [Reemplazado de imágenes web](#reemplazado-de-imágenes-web)
             * [Ataque Shaking Web](#ataque-shaking-web)
-        * [Ataque DNS Spoofing](#ataque-dns-spoofing)
         * [Evil Twin Attack](#evil-twin-attack)
            * [Creación de fichero DHCP](#creación-de-fichero-dhcp)
            * [Configuración de página web](#configuración-de-página-web)
