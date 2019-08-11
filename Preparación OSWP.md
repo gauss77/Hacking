@@ -2896,7 +2896,7 @@ function flushIPTABLES(){
 
 Así cuando escribo **flushIPTABLES** se me limpian todas las reglas previamente definidas.
 
-Posteriormente, retocamos el fichero **/etc/ettercap/etter.conf**, cambiando los valores por defecto a 0:
+Posteriormente, retocamos el fichero **/etc/ettercap/etter.conf**, cambiando los valores por defecto a **0**:
 
 ```bash
 [privs]
