@@ -2727,6 +2727,42 @@ hasta qué punto podemos llegar con la información que hemos recopilado.
 Si nos fijamos, las capturas de monitorizado activo que exportamos con ‘airodump-ng’ viajan encriptados, es
 decir, no es posible visualizar consultas HTTP ni peticiones a nivel privado de red:
 
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #tshark -r Captura-01.cap -Y "http.request.method==POST" 2>/dev/null
+# Sin resultados
+```
+
+¿Por qué?, porque todo lo que estamos capturando es el tráfico externo que recopilamos en modo monitor:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #tshark -r Captura-01.cap 2>/dev/null | head -n 10 
+    1   0.000000 AskeyCom_d4:16:78 → Broadcast    802.11 268 Beacon frame, SN=2233, FN=0, Flags=........, BI=100, SSID=MOVISTAR_1677
+    2   2.150527 AskeyCom_d4:16:78 → XiaomiCo_b1:c5:53 802.11 341 Probe Response, SN=2255, FN=0, Flags=........, BI=100, SSID=MOVISTAR_1677
+    3   2.150557              → AskeyCom_d4:16:78 (1c:b0:44:d4:16:78) (RA) 802.11 10 Acknowledgement, Flags=........
+    4   2.165375 AskeyCom_d4:16:78 → XiaomiCo_b1:c5:53 802.11 341 Probe Response, SN=2256, FN=0, Flags=........, BI=100, SSID=MOVISTAR_1677
+    5   2.165405              → AskeyCom_d4:16:78 (1c:b0:44:d4:16:78) (RA) 802.11 10 Acknowledgement, Flags=........
+    6   2.635968 XiaomiCo_b1:c5:53 → Broadcast    802.11 94 Data, SN=2262, FN=0, Flags=.p....F.
+    7   2.941632 XiaomiCo_b1:c5:53 → Broadcast    802.11 94 Data, SN=2266, FN=0, Flags=.p....F.
+    8   6.679016 IntelCor_46:d1:38 → AskeyCom_d4:16:77 802.11 110 QoS Data, SN=1512, FN=0, Flags=.p.....T
+    9   6.678975              → IntelCor_46:d1:38 (34:41:5d:46:d1:38) (RA) 802.11 10 Acknowledgement, Flags=........
+   10   6.681029 AskeyCom_d4:16:78 (1c:b0:44:d4:16:78) (TA) → IntelCor_46:d1:38 (34:41:5d:46:d1:38) (RA) 802.11 16 Request-to-send, Flags=........
+```
+
+No podemos ver desde aquí ningún tipo de consulta HTTP o tráfico interno. 
+
+Entonces bien, ¿qué hacemos?, vamos a usar la cabeza por unos momentos. ¿Qué es lo que hace que los paquetes
+que capturemos estén encriptados y no podamos ver el tráfico privado?, la propia contraseña de la red, ¿no?,
+¿y qué pasa si la tenemos?, ¿no se supone que deberíamos ser capaces entonces de desencriptar estos paquetes?,
+correcto.
+
+A través de la herramienta **airdecap-ng** de la suite de **aircrack**, es posible desencriptar estas capturas
+siempre y cuando se proporcione la contraseña de la red correcta.
+
+
+
+
 
 
 
