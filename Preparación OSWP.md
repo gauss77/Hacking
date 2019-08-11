@@ -2859,6 +2859,85 @@ dicha estación. En caso contrario, no será posible desencriptar su tráfico.
 
 #### Espionaje con Ettercap Driftnet y enrutamiento con iptables
 
+Considerando que ya estamos conectados a la red y queremos actuar de manera activa, no pasiva como se vio en
+el punto anterior, lo primero que debemos hacer es habilitar el enrutamiento en nuestro equipo:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar]
+└──╼ #echo 1 > /proc/sys/net/ipv4/ip_forward
+┌─[root@parrot]─[/home/s4vitar]
+└──╼ #
+```
+
+Una vez hecho, generamos una pequeña regla en **iptables** para definir cómo se debe de comportar el tráfico a
+la hora de envenenar la red. Para este caso, queremos que todo el tráfico dirigido al puerto 80 sea enrutado
+al puerto 8080:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar]
+└──╼ #iptables -t nat -A PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8080
+┌─[root@parrot]─[/home/s4vitar]
+└──╼ #
+```
+
+Antes que nada recomiendo limpiar cualquier tipo de regla previa definida en iptables. Para el que le guste la
+idea, en mi caso tengo creado un alias a nivel de **bashrc**:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar]
+└──╼ #cat ~/.bashrc | grep flushIPTABLES -A 5
+function flushIPTABLES(){
+	iptables --flush
+	iptables --table nat --flush
+	iptables --delete-chain
+	iptables --table nat --delete-chain
+}
+```
+
+Así cuando escribo **flushIPTABLES** se me limpian todas las reglas previamente definidas.
+
+Posteriormente, retocamos el fichero **/etc/ettercap/etter.conf**, retocando los siguientes valores:
+
+```bash
+[privs]
+ec_uid = 0                # nobody is the default
+ec_gid = 0                # nobody is the default
+```
+
+Por otro lado, descomentamos estas 2 líneas de dicho archivo:
+
+```bash
+# if you use iptables:
+   redir_command_on = "iptables -t nat -A PREROUTING -i %iface -p tcp --dport %port -j REDIRECT --to-port %rport"
+   redir_command_off = "iptables -t nat -D PREROUTING -i %iface -p tcp --dport %port -j REDIRECT --to-port %rport"
+```
+
+Una vez hecho, abrimos **Ettercap** en modo gráfico a través del parámetro '**-G**'. Lo primero que haremos
+será escanear los Hosts disponibles en la red:
+
+<img align="center" src="https://funkyimg.com/i/2WaBf.png">
+
+Esto se puede hacer de manera intuitiva a través de la pestaña **Hosts**. Una vez hecho, y este paso es
+importante, lo que haremos será seleccionar en primer lugar nuestro Gateway (192.168.1.1) y presionar en **Add
+to Target 1**, seguidamente seleccionamos la dirección IP de nuestra víctima y presionamos en **Add To Target
+2**:
+
+<img align="center" src="https://funkyimg.com/i/2WaBr.png">
+
+Ya con este esquema configurado, verificamos desde la pestaña **Targets** que todo esté como debe estar:
+
+<img align="center" src="https://funkyimg.com/i/2WaBz.png">
+
+Si es así, continuamos. Nos iremos a la pestaña **Mitm** y pincharemos en **ARP Poissoning**. Acto seguido, se
+nos abrirá una ventana, en ella seleccionamos la casilla **Sniff Remote Connections** y presionamos en **Aceptar**.
+
+Tras hacer esto, deberíamos ver lo siguiente desde la ventana principal:
+
+<img align="center" src="https://funkyimg.com/i/2WaBF.png">
+
+Ahora toca hacer la prueba de fuego. Cargamos los siguientes comandos desde consola:
+
+<img align="center" src="https://funkyimg.com/i/2WaBJ.png">
 
 
 
