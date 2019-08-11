@@ -2939,10 +2939,23 @@ Ahora toca hacer la prueba de fuego. Cargamos los siguientes comandos desde cons
 
 <img align="center" src="https://funkyimg.com/i/2WaBJ.png">
 
+Una vez estos están corriendo, simulamos la navegación desde el dispositivo cuyo tráfico se está envenenando.
 
+En este caso, se accede a una dirección URL de noticias, obteniendo los siguientes resultados:
 
+<img align="center" src="https://funkyimg.com/i/2WaBL.png">
 
+Cabe decir que a su vez estamos usando **driftnet**, razón por la que además de visualizar la dirección URL
+que se está visitando, somos capaces de ver las imágenes que cargan a tiempo real en dicha página web. 
 
+Si le damos un tiempo, conseguiremos extraer incluso más imágenes aún:
+
+<img align="center" src="https://funkyimg.com/i/2WaBN.png">
+
+A su vez, podemos aprovechar el propio **Ettercap** para capturar credenciales de autenticación a una página
+web:
+
+<img align="center" src="https://funkyimg.com/i/2WaC1.png">
 
 
 
