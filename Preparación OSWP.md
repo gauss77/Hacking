@@ -45,7 +45,7 @@
             * [Uso de Airdecap para el desencriptado de paquetes](#uso-de-airdecap-para-el-desencriptado-de-paquetes)
             * [Análisis del desencriptado con Tshark y Wireshark](#análisis-del-desencriptado-con-tshark-y-wireshark)
             * [Concepto de enrutamiento](#concepto-de-enrutamiento)
-            * [Espionaje con Ettercap y Driftnet + enrutamiento con iptables](#espionaje-con-ettercap-y-driftnet-+-enrutamiento-con-iptables)
+            * [Espionaje con Ettercap, Driftnet y enrutamiento con iptables](#espionaje-con-ettercap,-driftnet-+-enrutamiento-con-iptables)
         * [Ataques graciosos](#ataques-graciosos)
             * [Uso de Xersoploit](#uso-de-xerosploit)
             * [Reemplazado de imágenes web](#reemplazado-de-imágenes-web)
@@ -2860,7 +2860,7 @@ dicha estación. En caso contrario, no será posible desencriptar su tráfico.
 
 #### Concepto de enrutamiento
 
-#### Espionaje con Ettercap y Driftnet + enrutamiento con iptables
+#### Espionaje con Ettercap, Driftnet + enrutamiento con iptables
 
 
 
