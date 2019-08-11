@@ -2292,44 +2292,38 @@ iremos viendo poco a poco, pero primero un poco de cultura :)
 
 ### Concepto de Rainbow Table
 
-Las "**tablas arcoiris**, son tablas de consulta que ofrecen un compromiso espacio-tiempo para obtener claves
-en texto simple a partir del resultado de una función de hash.
+Hoy las contraseñas ya no se guardan sin cifrar –o eso se espera. Cuando los usuarios de una plataforma fijan
+una clave de acceso para su cuenta, esta secuencia de caracteres no aparece en texto plano en una base de
+datos en algún servidor, puesto que no sería seguro: si encontrara la forma de entrar en ella, un hacker lo
+tendría muy fácil para acceder a todas las cuentas de un determinado usuario.
 
-Cualquier sistema informático que requiera una autenticación por contraseña debe contener una base de datos de
-contraseñas, ya sea ordenada o en texto llano, y existen diversos métodos para el almacenamiento de dichas
-contraseñas. Debido a que las tablas son vulnerables al robo, el almacenamiento de la contraseña en texto
-llano es peligroso. 
+Para el eCommerce, la banca en línea o los servicios gubernamentales online esto tendría consecuencias
+fatales. En lugar de ello, los servicios online utilizan diversos mecanismos criptográficos para cifrar las
+contraseñas de sus usuarios de modo que en las bases de datos solo aparezca un valor hash (valor resumen) de
+la clave.
 
-Por lo tanto, la mayoría de las bases de datos almacenan un hash criptográfico de la contraseña del usuario en
-la base de datos. En un entorno así, nadie, incluyendo la propia autenticación de sistema puede determinar
-cual es la contraseña del usuario simplemente observando el valor almacenado en la base de datos. En cambio,
-cuando un usuario introduce su contraseña para autenticarse, se calcula el hash de la contraseña introducida y
-se compara con el valor almacenado para ese usuario (que fue hash antes de ser almacenado). Si los dos valores
-hash coinciden, se concede el acceso.
+Incluso conociendo la función criptográfica que lo ha originado, desde este valor hash no es posible deducir
+la contraseña, porque no es posible reconstruir el procedimiento a la inversa. Esto lleva a los
+ciberdelincuentes a recurrir a los ataques de fuerza bruta, en los cuales un programa informático intenta
+“adivinar” la secuencia correcta de caracteres que constituye la contraseña durante tanto tiempo como haga
+falta.
 
-Una persona que tenga acceso a la tabla de contraseñas no puede simplemente copiar la entrada de la base de
-datos del usuario para obtener acceso (utilizar el hash como una contraseña sería, por supuesto, un error ya
-que el sistema de autenticación haría un hash por segunda vez, produciendo un resultado que no coincide con el
-valor almacenado). Con el fin de obtener la contraseña de un usuario, hay que encontrar una contraseña que
-produce el mismo valor hash.
+Este método puede combinarse con los llamados “diccionarios” de contraseñas. En estos archivos, que circulan
+libremente en Internet, pueden encontrarse numerosas contraseñas que bien son muy populares o ya fueron
+interceptadas en el pasado. 
 
-Las tablas arcoíris son una herramienta que se ha desarrollado en un esfuerzo por obtener una contraseña
-mirando solamente a un valor hash.
+Los hackers tienden a probar primero todas las contraseñas del diccionario, lo que les permite ahorrar tiempo,
+aunque, en función de la complejidad de las contraseñas (longitud y tipo de caracteres), este proceso puede
+resultar más largo y consumir más recursos de lo esperado.
 
-Las tablas de arcoíris no siempre son necesarias, ya que existen métodos más simples de reversión de hash
-disponible, como ataques de fuerza bruta y ataques de diccionario, que son los métodos más simples disponibles.
-Sin embargo, estos no son adecuados para sistemas que utilizan contraseñas largas, debido a la dificultad de
-almacenar todas las opciones disponibles.
+También disponibles en la Red y también un recurso para descifrar claves secretas, las tablas rainbow van un
+paso más allá de los diccionarios. Estos ficheros, que pueden llegar a tener un tamaño de varios cientos de
+gigabytes, contienen un listado de claves junto con sus valores hash, pero de forma incompleta: para reducir
+su tamaño y así su necesidad de espacio en memoria, se crean cadenas de valores a partir de las cuales pueden
+reconstruirse fácilmente los demás valores. Con estas tablas los valores hash encontrados en un banco de datos
+pueden ordenarse con sus claves en texto plano.
 
-Para abordar esta cuestión de la escala, se han llegado a generar tablas de búsqueda inversa que almacenan
-sólo una pequeña selección de los hashes, de manera que cuando se invierte, se pueden generar contraseñas de
-cadenas largas de texto. Aunque la búsqueda inversa de un hash en una tabla encadenada llevaría más tiempo de
-cálculo, el tiempo de búsqueda en la tabla en sí misma puede ser mucho menor, por lo que los hashes de las
-contraseñas más largas se pueden almacenar.
-
-Las tablas arcoíris son un refinamiento de esta técnica de encadenamiento y proporcionan una solución a un
-problema llamado «colisiones en cadena».
-
+Un ejemplo claro: https://hashkiller.co.uk/
 ### Cracking con Pyrit
 
 
