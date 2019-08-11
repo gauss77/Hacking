@@ -1835,7 +1835,7 @@ prestarle un poco más de atención. Actualmente, **aircrack-ng** cuenta con el 
 para generar un archivo de '**.hccap**'.
 
 ¿Por qué queremos generar un archivo **HCCAP**?, porque luego a través de la herramienta **hccap2john**
-podemos transformar ese archivo a un hash, igual que como haríamos como **ssh2john** u otra utilidad.
+podemos transformar ese archivo a un hash, igual que como haríamos como **ssh2john** u otra utilidad semejante.
 
 Por tanto, aquí una demostración:
 
