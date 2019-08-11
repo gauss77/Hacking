@@ -2266,7 +2266,7 @@ Parsed 7 packets (7 802.11-packets), got 1 AP(s)
     #4: HMAC_SHA1_AES, good, spread 2
 ```
 
-#### Técnicas de aumento de la velocidad de cómputo
+### Técnicas de aumento de la velocidad de cómputo
 
 Si bien es cierto que considero que la velocidad de cómputo de mi ordenador es bastante aceptable
 (7.000/10.000 contraseñas por segundo), ¿hay alguna forma de ir más rápido aún?, ¿hay alguna forma de
@@ -2290,7 +2290,7 @@ hacer los siguientes pasos:
 Esta reducción de pasos es equivalente a la velocidad del tiempo de cómputo, es decir, es mucho menor. Lo
 iremos viendo poco a poco, pero primero un poco de cultura :)
 
-### Concepto de Rainbow Table
+#### Concepto de Rainbow Table
 
 Hoy las contraseñas ya no se guardan sin cifrar –o eso se espera. Cuando los usuarios de una plataforma fijan
 una clave de acceso para su cuenta, esta secuencia de caracteres no aparece en texto plano en una base de
@@ -2325,7 +2325,7 @@ pueden ordenarse con sus claves en texto plano.
 
 Un ejemplo claro: https://hashkiller.co.uk/
 
-### Cracking con Pyrit
+#### Cracking con Pyrit
 
 Dicho esto y aunque todavía no vamos a meternos del todo con las **Rainbow Tables**, empecemos viendo cómo
 podemos hacer uso de **Pyrit** para crackear contraseñas a través de ataques por diccionario. Primero veremos
@@ -2372,7 +2372,7 @@ Si nos fijamos... **2.466 PMKs por segundo**, lo cual es bastante triste conside
 **aircrack**, pero no nos preocupemos, a pesar de que ahora estamos decepcionados, más adelante nos
 sorprenderá.
 
-### Cracking con Cowpatty
+#### Cracking con Cowpatty
 
 El uso de **Cowpatty** para emplear un ataque de fuerza bruta es el siguiente:
 
@@ -2407,7 +2407,7 @@ The PSK is "hottie4u".
 Importante destacar que siempre hay que especificar el **ESSID** de la red. Como vemos, obtenemos la
 contraseña pero el cómputo es incluso mucho menor... **634 contraseñas por segundo**, lo mejoraremos.
 
-### Cracking con Airolib
+#### Cracking con Airolib
 
 Ahora, es cuando vamos a ir aumentando la velocidad de cómputo. **Airolib** nos permite crear un diccionario
 de claves pre-computadas (PMK's), lo cual es una maravilla para el caso.
@@ -2543,7 +2543,7 @@ Valores clave:
 
 Lo sé, flipante, pero es que se puede ir aún más rápido.
 
-### Rainbow Table con Genpmk
+#### Rainbow Table con Genpmk
 
 Hemos visto cómo podemos aumentar considerablemente la velocidad de cómputo haciendo uso de la suite de
 **aircrack**. Ahora distanciémonos un poco de **aircrack** y pensemos en **Cowpatty** y **Pyrit**, no nos
@@ -2591,7 +2591,7 @@ key no. 24000: tigers15
 Esto lo que ha hecho ha sido generarnos un nuevo diccionario **dic.genpmk** de claves precomputadas. Llegados
 a este punto, podemos hacer lo que se describe en los siguientes puntos.
 
-### Cracking con Cowpatty frente a Rainbow Table
+#### Cracking con Cowpatty frente a Rainbow Table
 
 Aprovechando el diccionario **dic.genpmk** generado con **genpmk**, hacemos lo siguiente:
 
@@ -2616,7 +2616,7 @@ Puntos clave:
 
 ¿Intentamos ir algo más rápido?
 
-### Cracking con Pyrit frente a Rainbow Table
+#### Cracking con Pyrit frente a Rainbow Table
 
 Aprovechando una vez más el mismo diccionario **dic.genpmk** generado con **genpmk**, hacemos lo siguiente:
 
@@ -2643,7 +2643,7 @@ Puntos clave:
 Ya en este punto se podría decir que trabajando a unas casi 2 millones de contraseñas por segundo, estaríamos
 más que contentos, ¿verdad?, pero es que se puede ir aún más rápido todavía.
 
-### Cracking con Pyrit a través de ataque por Base de Datos
+#### Cracking con Pyrit a través de ataque por Base de Datos
 
 Este es ya el considerado como el método más potente. Comenzamos importando todas las contraseñas de nuestro
 diccionario desde **Pyrit**:
