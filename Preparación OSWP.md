@@ -2120,6 +2120,85 @@ segundo, lo cual hace que en cuestión de segundos nos podamos recorrer todo el 
 
 #### Proceso de ataque con Bettercap
 
+Todo el proceso llevado a cabo hasta ahora, puede ser realizado desde **Bettercap**. Sí que es cierto que
+aunque para el caso visto prefiero tirar del método convencional, en ocasiones uso **Bettercap** para los
+ataques de PKMID que explicaré más adelante, para redes WPA/WPA2 sin clientes.
+
+Lo primero de todo para llevar a cabo el procedimiento, es poner nuestra tarjeta de red en modo monitor tal y
+como se detalló en los puntos anteriormente vistos. Posteriormente, desde **Bettercap**, podemos hacer lo
+siguiente:
+
+```bash
+┌─[root@parrot]─[/opt/bettercap]
+└──╼ #./bettercap -iface wlan0mon
+bettercap v2.24.1 (built for linux amd64 with go1.10.4) [type 'help' for a list of commands]
+
+ wlan0mon  » wifi.recon on
+[21:07:22] [sys.log] [inf] wifi using interface wlan0mon (e4:70:b8:d3:93:5c)
+[21:07:22] [sys.log] [inf] wifi started (min rssi: -200 dBm)
+[21:07:22] [sys.log] [inf] wifi channel hopper started.
+ wlan0mon  » [21:07:22] [wifi.ap.new] wifi access point MOVISTAR_49BA (-92 dBm) detected as 84:aa:9c:f1:49:bc (MitraStar Technology Corp.).
+ wlan0mon  » [21:07:22] [wifi.ap.new] wifi access point MOVISTAR_2F95 (-93 dBm) detected as e8:d1:1b:21:2f:96 (Askey Computer Corp).
+ wlan0mon  » [21:07:22] [wifi.ap.new] wifi access point LowiF7D3 (-84 dBm) detected as 10:62:d0:f6:f7:d8 (Technicolor CH USA Inc.).
+ wlan0mon  » [21:07:22] [wifi.ap.new] wifi access point MOVISTAR_A908 (-90 dBm) detected as fc:b4:e6:99:a9:09 (Askey Computer Corp).
+ wlan0mon  » [21:07:22] [wifi.ap.new] wifi access point devolo-30d32d583e03 (-96 dBm) detected as 30:d3:2d:58:3e:03 (devolo AG).
+ wlan0mon  » [21:07:24] [wifi.ap.new] wifi access point MOVISTAR_1677 (-54 dBm) detected as 1c:b0:44:d4:16:78 (Askey Computer Corp).
+ wlan0mon  » [21:07:24] [wifi.ap.new] wifi access point MIWIFI_psGP (-94 dBm) detected as 50:78:b3:ee:bb:ac.
+ wlan0mon  » [21:07:25] [wifi.ap.new] wifi access point Wlan1 (-81 dBm) detected as f8:8e:85:df:3e:13 (Comtrend Corporation).
+ wlan0mon  » [21:07:27] [wifi.ap.new] wifi access point linksys (-73 dBm) detected as 00:12:17:70:d5:2c (Cisco-Linksys, LLC).
+ wlan0mon  » [21:07:27] [wifi.ap.new] wifi access point devolo-30d32d583c6b (-82 dBm) detected as 30:d3:2d:58:3c:6b (devolo AG).
+ wlan0mon  » [21:07:27] [wifi.client.new] new station 78:4f:43:24:01:4e (Apple, Inc.) detected for linksys (00:12:17:70:d5:2c)
+ wlan0mon  » [21:07:27] [wifi.ap.new] wifi access point MOVISTAR_3126 (-93 dBm) detected as cc:d4:a1:0c:31:28 (MitraStar Technology Corp.).
+ wlan0mon  » [21:07:27] [wifi.ap.new] wifi access point vodafone4038 (-92 dBm) detected as 28:9e:fc:0c:40:3e (Sagemcom Broadband SAS).
+ wlan0mon  » [21:07:27] [wifi.client.new] new station f0:7b:cb:04:d7:37 (Hon Hai Precision Ind. Co.,Ltd.) detected for linksys (00:12:17:70:d5:2c)
+```
+
+Es decir, a través del comando **wifi.recon on**, monitorizamos las redes disponibles del entorno, tal y como
+lo haríamos desde **airodump**. Una vez hecho, por comodidad, filtramos los resultados por el número de
+clientes/estaciones disponibles para los distintos AP's:
+
+```bash
+ wlan0mon  » set wifi.show.sort clients desc
+ ```
+
+ Por último, a través de la utilidad **ticker**, podemos especificar los comandos que queramos que se ejecuten
+ a intervalos regulares de tiempo. En mi caso, especificaré que quiero hacer una limpieza de pantalla seguido
+ de la operación **wifi.show**, que se encargará de listarme los puntos de acceso disponibles en el entorno en
+base al criterio de filtrado a nivel de clientes que especifiqué en la operación anterior:
+
+```bash
+ wlan0mon  » set ticker.commands 'clear; wifi.show'
+ wlan0mon  » ticker on
+```
+
+Una vez presionemos la tecla 'Enter', obtendremos unos resultados como estos:
+
+```bash
+┌─────────┬───────────────────┬─────────────────────┬──────────────────┬──────────────────────┬─────┬───────────┬────────┬───────┬──────────┐
+│  RSSI   │       BSSID       │        SSID         │    Encryption    │         WPS          │ Ch  │ Clients ▾ │  Sent  │ Recvd │   Seen   │
+├─────────┼───────────────────┼─────────────────────┼──────────────────┼──────────────────────┼─────┼───────────┼────────┼───────┼──────────┤
+│ -81 dBm │ 30:d3:2d:58:3c:6b │ devolo-30d32d583c6b │ WPA2 (CCMP, PSK) │ 2.0                  │ 11  │ 1         │ 326 B  │ 84 B  │ 21:15:40 │
+│ -69 dBm │ 1c:b0:44:d4:16:85 │ MOVISTAR_PLUS_1677  │ WPA2 (CCMP, PSK) │ 2.0                  │ 112 │ 1         │ 516 B  │ 344 B │ 21:15:31 │
+│ -74 dBm │ 00:12:17:70:d5:2c │ linksys             │ OPEN             │                      │ 11  │ 1         │ 383 kB │ 31 kB │ 21:15:40 │
+│ -95 dBm │ fc:b4:e6:99:a9:09 │ MOVISTAR_A908       │ WPA2 (CCMP, PSK) │ 2.0                  │ 1   │           │        │       │ 21:15:34 │
+│ -87 dBm │ f8:8e:85:df:3e:13 │ Wlan1               │ WPA (TKIP, PSK)  │ 1.0                  │ 9   │           │ 7.1 kB │       │ 21:15:39 │
+│ -95 dBm │ e8:d1:1b:21:2f:96 │ MOVISTAR_2F95       │ WPA2 (CCMP, PSK) │ 2.0                  │ 1   │           │        │       │ 21:15:18 │
+│ -98 dBm │ d0:17:c2:30:45:7c │ pepephone_ADSLR9C0  │ WPA2 (CCMP, PSK) │                      │ 3   │           │        │       │ 21:15:19 │
+│ -95 dBm │ cc:d4:a1:0c:31:28 │ MOVISTAR_3126       │ WPA2 (CCMP, PSK) │ 2.0 (not configured) │ 11  │           │        │       │ 21:15:39 │
+│ -97 dBm │ a0:ab:1b:45:ad:4f │ MiFibra-FA4C-EXT    │ WPA2 (TKIP, PSK) │ 2.0                  │ 1   │           │        │       │ 21:15:01 │
+│ -90 dBm │ 84:aa:9c:f1:49:bc │ MOVISTAR_49BA       │ WPA2 (CCMP, PSK) │ 2.0                  │ 1   │           │        │       │ 21:15:35 │
+│ -93 dBm │ 50:78:b3:ee:bb:ac │ MIWIFI_psGP         │ WPA2 (CCMP, PSK) │ 2.0                  │ 6   │           │        │       │ 21:15:37 │
+│ -91 dBm │ 28:9e:fc:0c:40:3e │ vodafone4038        │ WPA2 (TKIP, PSK) │ 2.0                  │ 11  │           │        │       │ 21:15:40 │
+│ -54 dBm │ 1c:b0:44:d4:16:78 │ MOVISTAR_1677       │ WPA2 (CCMP, PSK) │ 2.0                  │ 6   │           │ 172 B  │       │ 21:15:37 │
+│ -88 dBm │ 10:62:d0:f6:f7:d8 │ LowiF7D3            │ WPA2 (TKIP, PSK) │ 2.0                  │ 1   │           │ 267 B  │       │ 21:15:35 │
+│ -69 dBm │ 06:b0:44:d4:16:85 │ MOVISTAR_1677       │ WPA2 (CCMP, PSK) │ 2.0                  │ 112 │           │        │       │ 21:15:31 │
+└─────────┴───────────────────┴─────────────────────┴──────────────────┴──────────────────────┴─────┴───────────┴────────┴───────┴──────────┘
+
+wlan0mon (ch. 40) / ↑ 0 B / ↓ 538 kB / 1392 pkts
+
+ wlan0mon  »  
+```
+
 
 
 
