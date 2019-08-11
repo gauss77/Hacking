@@ -2115,6 +2115,8 @@ siguiente:
 ebe21289a38f16ee01a35c240c356e5f:2034fbb1c553:34415d46d138:hacklab:vampress1
 ```
 
+En este caso, para los curiosos, haciendo uso de una **GeForce GTX 1050** estaríamos yendo a 79.177 Hashes por
+segundo, lo cual hace que en cuestión de segundos nos podamos recorrer todo el rockyou entero.
 
 
 
