@@ -64,11 +64,7 @@
                 * [Ataque via hcxdumptool](#ataque-via-hcxdumptool)
                 * [Uso de hcxpcaptool](#uso-de-hcxpcaptool)
         * [Ataques por WPS](#ataques-por-wps)
-            * [Uso de Reaver y pixiewps](#uso-de-reaver-y-pixiewps)
-            * [Tips con WPSApp](#tips-con-wpsapp)
-            * [Ataques por WPS](#ataques-por-wps)
             * [Uso de Wifimosys](#uso-de-wifimosys)
-            * [Uso de Linset](#uso-de-linset)
         * [Redes WPA Ocultas](#redes-wpa-ocultas)
         * [Redes WEP](#redes-wep)
 
@@ -3888,6 +3884,8 @@ O también:
 └──╼ #hashcat -m 16800 --show myHashes 
 2fb026310184f6efcb0fd0d69b198b3a*1cb044d41678*b0febdab6d9d*4d4f5649535441525f31363737:KqpsEFunpXXXXXXXXXXXXX
 ```
+
+### Ataques por WPS
 
 
 
