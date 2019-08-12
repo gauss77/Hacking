@@ -3591,7 +3591,7 @@ Information Element) de una simple trama EAPOL, lo cual es flipante y maravillos
 
 ##### Ataque desde Bettercap
 
-Aunque no lo hago así, lo explico también. Imaginemos que queremos capturar los Hashes de múltiples redes
+Aunque no lo hago así, os lo explico también. Imaginemos que queremos capturar los Hashes de múltiples redes
 inalámbricas de nuestro entorno. Olvidémonos ya de los Handshakes, y de ataques de de-autenticación y todas
 estas técnicas que habíamos visto previamente.
 
