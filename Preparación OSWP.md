@@ -3393,7 +3393,8 @@ MariaDB [rogue_AP]> grant all privileges on rogue_AP.* to 'fakeap'@'localhost';
 Query OK, 0 rows affected (0.00 sec)
 ```
 
-Y ahora ya tras introducir las credenciales desde la web, veremos que estas son introducidas en nuestra base de datos:
+Y ahora ya tras introducir las credenciales desde la web, veremos que estas son añadidasq a nuestra base de
+datos:
 
 ```bash
 MariaDB [rogue_AP]> select *from wpa_keys;
