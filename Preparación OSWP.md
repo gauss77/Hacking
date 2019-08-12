@@ -3901,7 +3901,8 @@ de la que dispone.
 
 El sistema operativo **Wifislax**, se podría decir que es un sistema operativo orientado al Hacking y
 Auditoría WiFi. Cuenta con bastantes herramientas de automatización como Fluxion, Linset o Wifimosys que
-automatizan todo lo que nosotros hemos estado haciendo a mano, principalmente orientados a **Script Kiddies**.
+automatizan todo lo que nosotros hemos estado haciendo a mano. Es un OS principalmente orientados a **Script
+Kiddies**.
 
 Una de las herramientas de **Wifislax** que uso con bastante frecuencia es **WPSPinGenerator**, por no decir
 que es la única herramienta que utilizo de este OS. ¿Qué nos permite hacer **WPSPinGenerator**?, veámoslo con un ejemplo práctico.
