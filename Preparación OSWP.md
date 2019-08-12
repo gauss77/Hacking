@@ -3417,7 +3417,7 @@ punto de acceso en el canal especificado.
 La idea en este punto, es analizar el entorno y listar los puntos de acceso disponibles. Aquel cuya contraseña
 queramos averiguar, será el que clonaremos, generando un nuevo punto de acceso **OPN** con el mismo ESSID.
 
-Supongamos que la red cuya contraseña quiero averiguar es **MOVISTAR1677**, perfecto pues entonces hacemos lo
+Supongamos que la red cuya contraseña quiero averiguar es **MOVISTAR_1677**, perfecto pues entonces hacemos lo
 siguiente:
 
 ```bash
