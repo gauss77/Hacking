@@ -59,7 +59,7 @@
            * [Sincronización de reglas definidas con el Fake AP](#sincronización-de-reglas-definidas-con-el-fake-ap)
            * [Robo de datos](#robo-de-datos)
         * [Ataque a redes sin clientes](#ataque-a-redes-sin-clientes)
-            * [Client-less PKMID Attack](#client--less-pmkid-attack)
+            * [Clientless PKMID Attack](#clientless-pmkid-attack)
                 * [Ataque desde Bettercap](#ataque-desde-bettercap)
                 * [Uso de hcxpcaptool](#uso-de-hcxpcaptool)
                 * [Ataque via hcxdumptool](#ataque-via-hcxdumptool)
@@ -3573,6 +3573,23 @@ contraseñas por parte de varios clientes, estas se van apilando, pudiendo ver t
 introducidas.
 
 ### Ataque a redes sin clientes
+
+Hasta ahora, hemos visto todas las técnicas necesarias para averiguar la contraseña de una red Wifi que
+funcione por protocolo WPA/WPA2 y autenticación PSK, pero siempre con la condición de que esta debe de poseer clientes.
+
+¿Qué pasa si la red no cuenta con clientes?, ¿se puede averiguar la contraseña?, la respuesta es sí, y no...
+no es con un ataque de falsa autenticación.
+
+#### Clientless PKMID Attack
+
+Esta nueva metodología nos permitirá romper la seguridad de WPA y WPA2 mediante el denominado Pairwise Master
+Key Identifier o PMKID, una característica roaming habilitada en muchos dispositivos.
+
+La principal diferencia con ataques existentes es que en este ataque, la captura de un EAPOL o saludo de
+4-vías no es necesaria, como en casos anteriores. El nuevo ataque es realizado con el RSN IE (Robust Network
+Information Element) de una simple trama EAPOL, lo cual es flipante y maravilloso.
+
+##### Ataque desde Bettercap
 
 
 
