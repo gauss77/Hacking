@@ -3190,6 +3190,39 @@ Xero»modules ➮ help
 Xero»modules ➮ move
 ```
 
+### Evil Twin Attack
+
+En este punto, veremos una de las técnicas más comunes para obtener la contraseña de una red inalámbrica
+ajena, por medio de técnicas Phishing aplicadas sobre WiFi.
+
+Si has leído todo lo anterior hasta este punto, habrás visto como es muy común que las estaciones emitan el
+paquete **Probe Request** cuando estas no están asociadas a ningún AP:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar]
+└──╼ #tshark -i wlan0mon -Y "wlan.fc.type_subtype==4" 2>/dev/null
+    1 0.000000000 Apple_7d:1f:e9 → Broadcast    802.11 195 Probe Request, SN=1063, FN=0, Flags=........C, SSID=MOVISTAR_PLUS_2A51
+    2 0.019968349 Apple_7d:1f:e9 → Broadcast    802.11 195 Probe Request, SN=1064, FN=0, Flags=........C, SSID=MOVISTAR_PLUS_2A51
+```
+
+Lo que haremos en los siguientes puntos, es justamente aprovechar estos paquetes para asociar a nuestros
+clientes a un AP falso gestionado por nosotros, desde donde a través de reglas de enrutamiento y
+redireccionamientos haremos que estos sean redirigidoa a una página falsa la cual solicitará la contraseña de
+la red WiFi.
+
+La idea es que una vez los clientes víctima introduzcan las credenciales, estas viajen en texto claro hacia
+nosotros, pudiendo visualizarlas para posteriormente llevar a cabo la autenticación contra la red inalámbrica
+ajena.
+
+Cabe decir que el paso de solicitar la contraseña de la red inalámbrica es opcional, de la misma manera
+podríamos solicitar algún otro tipo de dato.
+
+#### Creación de fichero DHCP
+
+
+
+
+
 
 
 
