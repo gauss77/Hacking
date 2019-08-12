@@ -3922,7 +3922,8 @@ Una vez seleccionamos la red, fijaros que interesante:
 <img align="center" src="https://funkyimg.com/i/2Wc3a.png">
 
 Nos lista los posibles PINES para esa red. Generalmente, a los 3 intentos, el router bloquea el WPS para que
-no se puedan enviar más solicitudes. Sin embargo, a veces en vez de ser 5 pines, suelen ser 2, o incluso 1.
+no se puedan enviar más solicitudes. Sin embargo, a veces en vez de ser 5 pines, la herramienta nos reporta 2,
+o incluso 1.
 
 Para este caso, que son 5, el PIN correcto estaba en la primera posición (no es mi red), y tras seleccionar la
 opción **2**, obtenemos los siguientes resultados:
