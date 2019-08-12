@@ -3884,8 +3884,8 @@ O también:
 
 ### Ataques por WPS
 
-Ya como último de los puntos a tratar para redes de protocolo **WPA/WPA2**, no puedo acabar la sección sin
-mencionar el famoso **WPS**.
+Ya como casi último de los puntos a tratar para redes de protocolo **WPA/WPA2**, no puedo acabar la sección
+sin mencionar el famoso **WPS**.
 
 Desde mi experiencia, os podría estar comentando ahora mismo cómo usar **pixiedust**, **reaver** o derivados,
 pero prefiero mostraros herramientas de utilidad que realmente den resultados, o que por lo menos tengan una
