@@ -3219,6 +3219,54 @@ podríamos solicitar algún otro tipo de dato.
 
 #### Creación de fichero DHCP
 
+Comenzaremos creando un simple fichero DHCP con nombre **dhcpd.conf** bajo la ruta **/etc/**:
+
+```bash
+┌─[root@parrot]─[/etc]
+└──╼ #pwd
+/etc
+┌─[root@parrot]─[/etc]
+└──╼ #cat dhcpd.conf 
+authoritative;
+default-lease-time 600;
+max-lease-time 7200;
+subnet 192.168.1.128 netmask 255.255.255.128 {
+option subnet-mask 255.255.255.128;
+option broadcast-address 192.168.1.255;
+option routers 192.168.1.129;
+option domain-name-servers 8.8.8.8;
+range 192.168.1.130 192.168.1.140;
+}
+```
+
+En este fichero, indicamos que el promedio de vida mínimo será de 600 segundos y el máximos de 7200. Entre este rango, una vez pasado el tiempo estimado se asignará una nueva IP al cliente (simplemente por hacerla dinámica).
+
+Para evitar entrar en conflicto con la topología de mi red real, como la pasarela es la 192.168.1.1 y algunos de los equipos están configurados en el rango del 192.168.1.2 al 192.168.1.100, lo que he hecho ha sido asignar un nuevo segmento, comprendido entre el rango 192.168.1.130 hasta el 192.168.1.140. Asignaremos como máscara de red la 255.255.255.128 y como nueva pasarela la 192.168.1.129. Todo esta configuración será gestionada por una nueva interfaz que crearemos en breve.
+
+#### Configuración de página web
+
+Nos descargaremos la siguiente plantilla para hacer nuestro ataque: 
+
+* http://ge.tt/9EyXb5w2
+
+#### Inicialización de servicios
+
+Iniciamos los servicios **mysql** y **apache2**:
+
+```bash
+┌─[root@parrot]─[/etc]
+└──╼ #service apache2 start && service mysql start
+┌─[root@parrot]─[/etc]
+└──╼ #echo $?
+0
+```
+
+Posteriormente comprobamos que nuestro servidor web funciona correctamente:
+
+<img align="center" src="https://funkyimg.com/i/2WbYt.png">
+
+Todo este diseño es personalizable y se puede retocar sin ningún tipo de problema desde el HTML. En mi caso,
+lo voy a dejar así.
 
 
 
