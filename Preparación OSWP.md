@@ -59,7 +59,7 @@
            * [Sincronización de reglas definidas con el Fake AP](#sincronización-de-reglas-definidas-con-el-fake-ap)
            * [Robo de datos](#robo-de-datos)
         * [Ataque a redes sin clientes](#ataque-a-redes-sin-clientes)
-            * [Clientless PKMID Attack](#clientless-pmkid-attack)
+            * [Clientless PKMID Attack](#clientless-pkmid-attack)
                 * [Ataque desde Bettercap](#ataque-desde-bettercap)
                 * [Ataque via hcxdumptool](#ataque-via-hcxdumptool)
                 * [Uso de hcxpcaptool](#uso-de-hcxpcaptool)
