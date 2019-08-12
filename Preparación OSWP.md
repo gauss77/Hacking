@@ -65,10 +65,7 @@
                 * [Uso de hcxpcaptool](#uso-de-hcxpcaptool)
         * [Ataques por WPS](#ataques-por-wps)
             * [Uso de Wifimosys](#uso-de-wifimosys)
-        * [Redes WPA Ocultas](#redes-wpa-ocultas)
-        * [Redes WEP](#redes-wep)
-
-            
+        * [Redes WPA Ocultas](#redes-wpa-ocultas)           
             
        
 
@@ -3886,6 +3883,93 @@ O también:
 ```
 
 ### Ataques por WPS
+
+Ya como último de los puntos a tratar para redes de protocolo **WPA/WPA2**, no puedo acabar la sección sin
+mencionar el famoso **WPS**.
+
+Desde mi experiencia, os podría estar comentando ahora mismo cómo usar **pixiedust**, **reaver** o derivados,
+pero prefiero mostraros herramientas de utilidad que realmente den resultados, o que por lo menos tengan una
+tasa de éxito más probable.
+
+#### Uso de WPSPinGenerator
+
+Si os fijáis, en todo el **Gist**, hemos hecho la gran parte de procedimientos a mano, me refiero, sin hacer
+uso de herramientas automatizadas. No suelo acostumbrar a hacer uso de herramientas que te automatizan un
+procedimiento, sobre todo por la curiosidad que me causa el cómo funciona esa por debajo. Sin embargo, para
+este caso, hay una de ellas especialmente destinadas a **WPS** que sí que utilizo, por la gran tasa de acierto
+de la que dispone.
+
+El sistema operativo **Wifislax**, se podría decir que es un sistema operativo orientado al Hacking y
+Auditoría WiFi. Cuenta con bastantes herramientas de automatización como Fluxion, Linset o Wifimosys que
+automatizan todo lo que nosotros hemos estado haciendo a mano, principalmente orientados a **Script Kiddies**.
+
+Una de las herramientas de **Wifislax** que uso con bastante frecuencia es **WPSPinGenerator**, por no decir
+que es la única herramienta que utilizo de este OS. ¿Qué nos permite hacer **WPSPinGenerator**?, veámoslo con un ejemplo práctico.
+
+Al principio, es necesario seleccionar la interfaz de red con la que trabajar, especificar los canales sobre
+los cual queremos escanear, en fin... lo típico. Esta parte me la saltaré.
+
+Una vez escaneamos las redes disponibles de nuestro entorno, vemos algo como esto:
+
+<img align="center" src="https://funkyimg.com/i/2Wc39.png">
+
+Si nos fijamos, vemos que para cada red inalámbrica, es nos dice si esta cuenta o no con un PIN genérico.
+(Recomiendo que leas cómo funciona la asociación a través de PIN).
+
+Una vez seleccionamos la red, fijaros que interesante:
+
+<img align="center" src="https://funkyimg.com/i/2Wc3a.png">
+
+Nos lista los posibles PINES para esa red. Generalmente, a los 3 intentos, el router bloquea el WPS para que
+no se puedan enviar más solicitudes. Sin embargo, a veces en vez de ser 5 pines, suelen ser 2, o incluso 1.
+
+Para este caso, que son 5, el PIN correcto estaba en la primera posición (no es mi red), y tras seleccionar la
+opción **2**, obtenemos los siguientes resultados:
+
+<img align="center" src="https://funkyimg.com/i/2Wc3g.png">
+
+La contraseña de la red inalámbrica en texto claro directamente. Por si no la ves bien:
+
+<img align="center" src="https://funkyimg.com/i/2Wc3q.png">
+
+¿Lo bueno de esto?, que no importa cuantas veces cambies la contraseña... pues si el PIN sigue siendo el mismo
+para la eternidad, como atacantes siempre vamos a ser capaces de verla en cuestión de segundos,
+independientemente de su longitud o robustez.
+
+### Redes WPA Ocultas
+
+Ya para acabar este Gist, os cito una técnica para redes WPA que están configuradas como ocultas.
+
+Generalmente, desde **aircrack**, se listan las redes ocultas de esta forma:
+
+`<length: 0>`
+
+¿Qué hacemos en este caso cuando la red está oculta?, bueno, sabemos que a nivel de filtrado no vamos a tener
+problema... pues filtramos por la **BSSID** y problema resuelto. Sin embargo, hay un pequeño fallo de esta
+configuración que nos permite dar con la **ESSID** del AP.
+
+Si efecutamos un ataque de de-autenticación global para expulsar a todos los clientes (o dirigido en caso de
+que haya sólo uno), cuando estos tratan de re-asociarse al AP, uno de los paquetes que mandan ya hemos visto que son los **Probe Request**:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar]
+└──╼ #tshark -i wlan0mon -Y "wlan.fc.type_subtype==4" 2>/dev/null
+   59 3.094674701 HonHaiPr_17:91:c0 → Broadcast    802.11 240 Probe Request, SN=1378, FN=0, Flags=........C, SSID=Wildcard (Broadcast)
+   63 3.304134536 HonHaiPr_17:91:c0 → Broadcast    802.11 240 Probe Request, SN=1379, FN=0, Flags=........C, SSID=Wildcard (Broadcast)
+   98 4.671950803 Apple_48:66:14 → Broadcast    802.11 213 Probe Request, SN=1113, FN=0, Flags=........C, SSID=Wildcard (Broadcast)
+  100 4.682076898 Apple_48:66:14 → Broadcast    802.11 213 Probe Request, SN=1114, FN=0, Flags=........C, SSID=Wildcard (Broadcast)
+```
+
+Perfecto, pues de estos paquetes, siempre el primero emitido antes de empezar con la fase de asociación emite
+por defecto el **ESSID** de la red en texto claro, de manera no oculta y transparente para el atacante.
+
+De esta forma, podemos ser capaces de extraer el **ESSID** de la red tras aplicar un ataque de
+de-autenticación sobre una de las estaciones presentes. ¿Pero qué es lo bueno de esto?, que ni nosotros
+tenemos que hacer el trabajo. Una vez la propia suite de **aircrack** detecta estos paquetes Probe, los parsea
+en busca del **ESSID** de la red oculta. En caso de obtenerla, sustituye el campo `<length: 0>` por el **ESSID** descubierto, automáticamente.
+
+
+
 
 
 
