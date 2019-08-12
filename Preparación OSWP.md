@@ -58,7 +58,6 @@
            * [Control y creación de reglas de enrutamiento por iptables](#control-y-creación-de-reglas-de-enrutamiento-por-iptables)
            * [Sincronización de reglas definidas con el Fake AP](#sincronización-de-reglas-definidas-con-el-fake-ap)
            * [Robo de datos](#robo-de-datos)
-        * [Generación de contraseñas con crunch](#generación-de-contraseñas-con-crunch)
         * [Ataque a redes sin clientes](#ataque-a-redes-sin-clientes)
             * [Client-less PKMID Attack](#client--less-pmkid-attack)
                 * [Ataque desde Bettercap](#ataque-desde-bettercap)
@@ -3573,7 +3572,9 @@ De manera que tras introducir las credenciales de acceso, estas son depositadas 
 contraseñas por parte de varios clientes, estas se van apilando, pudiendo ver todo el histórico de contraseñas
 introducidas.
 
-### Generación de contraseñas con Crunch
+### Ataque a redes sin clientes
+
+
 
 
 
