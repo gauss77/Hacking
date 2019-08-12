@@ -3914,7 +3914,7 @@ Una vez escaneamos las redes disponibles de nuestro entorno, vemos algo como est
 
 <img align="center" src="https://funkyimg.com/i/2Wc39.png">
 
-Si nos fijamos, vemos que para cada red inalámbrica, es nos dice si esta cuenta o no con un PIN genérico.
+Si nos fijamos, vemos que para cada red inalámbrica, se nos dice si esta cuenta o no con un PIN genérico.
 (Recomiendo que leas cómo funciona la asociación a través de PIN).
 
 Una vez seleccionamos la red, fijaros que interesante:
