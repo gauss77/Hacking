@@ -3190,9 +3190,6 @@ Xero»modules ➮ help
 Xero»modules ➮ move
 ```
 
-Entre ellos, seleccionaremos la opción **replace**, que se encargará de llevar a cabo la sustitución de
-imágenes sobre la página web que nuestra víctima esté visitando:
-
 
 
 
